@@ -139,6 +139,49 @@ body {
     color: #ff6b6b;
 }
 
+/* Featured Locations */
+.featured-locations {
+    padding: 4rem 0;
+    background: white;
+}
+
+.featured-locations h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 0 2rem;
+}
+
+.location-card {
+    background: #f9f9f9;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.location-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.location-card h3 {
+    color: #ff6b6b;
+    margin-bottom: 0.5rem;
+}
+
+.location-card p {
+    color: #666;
+}
+
 /* Footer */
 .main-footer {
     background: #333;
