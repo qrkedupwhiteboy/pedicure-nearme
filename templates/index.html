@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Pedicures Near Me | Best Local Nail Salons</title>
+    <meta name="description" content="Discover the best pedicure services near you. Browse reviews, prices, and book your perfect pedicure today.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/logo-placeholder.png') }}" alt="Pedicure Near Me Directory" width="180" height="60">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/search">Find Pedicures</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>Find the Perfect Pedicure Near You</h1>
+                <p class="hero-description">
+                    Discover top-rated nail salons in your area. Compare prices, read reviews, and book your appointment instantly.
+                </p>
+                <div class="location-search">
+                    <input type="text" id="location-input" placeholder="Enter your location or enable GPS">
+                    <button onclick="getCurrentLocation()" class="location-btn">
+                        <span class="icon">📍</span> Use my location
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works">
+            <div class="container">
+                <h2>How It Works</h2>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-icon">🔍</div>
+                        <h3>Discover</h3>
+                        <p>Enter your location or use GPS to find pedicure services near you</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">⭐</div>
+                        <h3>Compare</h3>
+                        <p>Read verified reviews and compare prices to find your perfect match</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">📅</div>
+                        <h3>Book</h3>
+                        <p>Choose your preferred time and book your appointment instantly</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">💅</div>
+                        <h3>Enjoy</h3>
+                        <p>Relax and enjoy your professional pedicure experience</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 Pedicure Near Me Directory. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/geolocation.js') }}"></script>
+</body>
+</html>
