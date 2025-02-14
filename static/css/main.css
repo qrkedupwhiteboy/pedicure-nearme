@@ -59,14 +59,73 @@ body {
     padding: 32px
 }
 
+.hero-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
 .hero-container {
+    flex: 0 1 60%;
     display: flex;
     flex-direction: column;
-    padding: 4rem 0 4rem;
-    background: #245d97;
     color: white;
     text-align: left;
     justify-content: start;
+}
+
+.featured-pedicures {
+    flex: 0 1 35%;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.featured-pedicures h2 {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.featured-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.featured-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 8px;
+    color: #333;
+}
+
+.featured-image {
+    height: 120px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.featured-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #1065b9;
+}
+
+.featured-card p {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.featured-card .price {
+    color: #1c79ca;
+    font-weight: bold;
+    font-size: 1.1rem;
 }
 
 
