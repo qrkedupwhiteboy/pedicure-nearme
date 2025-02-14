@@ -53,29 +53,38 @@ body {
 /* Hero section */
 .hero {
     padding: 8rem 0 4rem;
-    background: linear-gradient(135deg, #1c79ca 0%, #0f5195 100%);
+    background: #245d97;
     color: white;
     text-align: center;
     padding: 32px
 }
 
+.hero-container {
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 0 4rem;
+    background: #245d97;
+    color: white;
+    text-align: left;
+    justify-content: start;
+}
+
+
 .hero h1 {
     font-size: 3rem;
-    margin-bottom: 1rem;
 }
 
 .hero-description {
+    text-align: left;
     font-size: 1.2rem;
-    max-width: 100%;
-    margin: 0 auto 2rem;
+    max-width: 50%;
+    padding-bottom: 24px
 }
 
 .location-search {
     display: flex;
     gap: 1rem;
-    max-width: 600px;
-    margin: 0 auto;
-    justify-content: center;
+    justify-content: start;
 }
 
 #location-input {
