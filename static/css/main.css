@@ -47,13 +47,13 @@ body {
 }
 
 .main-nav a:hover {
-    color: #ff6b6b;
+    color: #8bc1ee;
 }
 
 /* Hero section */
 .hero {
     padding: 8rem 0 4rem;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+    background: linear-gradient(135deg, #1769b2 0%, #145490 100%);
     color: white;
     text-align: center;
     padding: 32px
@@ -89,8 +89,8 @@ body {
 
 .location-btn {
     padding: 1rem 2rem;
-    background: #333;
-    color: white;
+    background: #c1ddf6;
+    color: #0f2742;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -100,7 +100,7 @@ body {
 }
 
 .location-btn:hover {
-    background: #444;
+    background: #8bc1ee;
 }
 
 /* How it works section */
