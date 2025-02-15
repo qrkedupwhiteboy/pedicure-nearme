@@ -37,25 +37,36 @@
                         {% if location %}<input type="hidden" name="location" value="{{ location }}">{% endif %}
                         {% if state %}<input type="hidden" name="state" value="{{ state }}">{% endif %}
                         
-                        <select name="min_rating" class="filter-select">
+                        <select name="min_rating" class="filter-select" id="min-rating" aria-label="Filter by minimum rating">
                             <option value="">Minimum Rating</option>
                             {% for rating in range(5, 0, -1) %}
-                            <option value="{{ rating }}" {% if filters.min_rating and filters.min_rating|float == rating %}selected{% endif %}>{{ rating }}+ Stars</option>
+                                <option value="{{ rating }}" {{ "selected" if filters.min_rating and filters.min_rating|float == rating else "" }}>
+                                    {{ rating }}+ Stars
+                                </option>
                             {% endfor %}
                         </select>
                         
-                        <select name="price_level" class="filter-select">
+                        <select name="price_level" class="filter-select" id="price-level" aria-label="Filter by price level">
                             <option value="">Price Level</option>
-                            <option value="$" {% if filters and filters.price_level == '$' %}selected{% endif %}>$</option>
-                            <option value="$$" {% if filters and filters.price_level == '$$' %}selected{% endif %}>$$</option>
-                            <option value="$$$" {% if filters and filters.price_level == '$$$' %}selected{% endif %}>$$$</option>
-                            <option value="$$$$" {% if filters and filters.price_level == '$$$$' %}selected{% endif %}>$$$$</option>
+                            {% set price_levels = ["$", "$$", "$$$", "$$$$"] %}
+                            {% for price in price_levels %}
+                                <option value="{{ price }}" {{ "selected" if filters and filters.price_level == price else "" }}>
+                                    {{ price }}
+                                </option>
+                            {% endfor %}
                         </select>
                         
-                        <select name="sort" class="filter-select">
-                            <option value="rating" {% if filters and filters.sort_by == 'rating' %}selected{% endif %}>Sort by Rating</option>
-                            <option value="reviews" {% if filters and filters.sort_by == 'reviews' %}selected{% endif %}>Sort by Review Count</option>
-                            <option value="name" {% if filters and filters.sort_by == 'name' %}selected{% endif %}>Sort by Name</option>
+                        <select name="sort" class="filter-select" id="sort-by" aria-label="Sort results by">
+                            {% set sort_options = [
+                                ("rating", "Sort by Rating"),
+                                ("reviews", "Sort by Review Count"),
+                                ("name", "Sort by Name")
+                            ] %}
+                            {% for value, label in sort_options %}
+                                <option value="{{ value }}" {{ "selected" if filters and filters.sort_by == value else "" }}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
                         </select>
                         
                         <button type="submit" class="filter-button">Apply Filters</button>
