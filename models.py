@@ -4,7 +4,12 @@ from sqlalchemy.orm import sessionmaker
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load environment variables from .env file
+load_dotenv(verbose=True)
+
+# Verify DATABASE_URL is loaded
+if not os.getenv('DATABASE_URL'):
+    raise ValueError("DATABASE_URL environment variable is not set. Check your .env file.")
 
 Base = declarative_base()
 
