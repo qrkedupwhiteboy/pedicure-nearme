@@ -192,7 +192,16 @@ body {
 /* How it works section */
 .how-it-works {
     padding: 4rem 0;
+    display: flex;
     background: #f9f9f9;
+}
+
+.how-it-works-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.how-it-works-headings {
 }
 
 .how-it-works h2 {
