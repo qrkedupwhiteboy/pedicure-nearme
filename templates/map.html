@@ -38,7 +38,7 @@
         
 </head>
 <body>
-    <div id="map"></div>
+    {{ map_html|safe }}
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="{{ url_for('static', filename='js/geolocation.js') }}"></script>
 </body>
