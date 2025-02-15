@@ -57,6 +57,10 @@
                     <th>Description</th>
                     <th>Reviews</th>
                     <th>Main Category</th>
+                    <th>Categories</th>
+                    <th>Reviews per Rating</th>
+                    <th>Hours</th>
+                    <th>Detailed Reviews</th>
                     <th>Workday Timing</th>
                     <th>Closed On</th>
                 </tr>
@@ -74,6 +78,10 @@
                     <td>{{ listing.description }}</td>
                     <td>{{ listing.reviews }}</td>
                     <td>{{ listing.main_category }}</td>
+                    <td><pre>{{ listing.categories }}</pre></td>
+                    <td><pre>{{ listing.reviews_per_rating }}</pre></td>
+                    <td><pre>{{ listing.hours }}</pre></td>
+                    <td><pre>{{ listing.detailed_reviews }}</pre></td>
                     <td>{{ listing.workday_timing }}</td>
                     <td>{{ listing.closed_on }}</td>
                 </tr>
