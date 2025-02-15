@@ -33,12 +33,16 @@ def import_csv_to_db(csv_path, chunk_size=10000):
         try:
             # Process records before insert
             for record in records:
-                # Extract city and state from address if they're null
-                if pd.isna(record.get('city')) or pd.isna(record.get('state')):
+                # Extract business name, city and state from address if they're null
+                if pd.isna(record.get('business_name')) or pd.isna(record.get('city')) or pd.isna(record.get('state')):
                     address = record.get('address', '')
                     if address and isinstance(address, str):
                         parts = address.split(',')
                         if len(parts) >= 2:
+                            # First part might contain business name and street
+                            street_parts = parts[0].strip().split(' ', 1)
+                            if len(street_parts) > 1 and not street_parts[0].isdigit():
+                                record['business_name'] = street_parts[0]
                             # Last part usually contains state and zip
                             state_zip = parts[-1].strip().split()
                             if len(state_zip) >= 2:
