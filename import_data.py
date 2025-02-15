@@ -31,6 +31,28 @@ def import_csv_to_db(csv_path, chunk_size=10000):
         session = Session()
         
         try:
+            # Process records before insert
+            for record in records:
+                # Extract city and state from address if they're null
+                if pd.isna(record.get('city')) or pd.isna(record.get('state')):
+                    address = record.get('address', '')
+                    if address and isinstance(address, str):
+                        parts = address.split(',')
+                        if len(parts) >= 2:
+                            # Last part usually contains state and zip
+                            state_zip = parts[-1].strip().split()
+                            if len(state_zip) >= 2:
+                                record['state'] = state_zip[0]
+                            # Second to last part usually contains city
+                            record['city'] = parts[-2].strip()
+                
+                # Convert NaN/None to None for consistency
+                for key in record:
+                    if pd.isna(record[key]):
+                        record[key] = None
+                    elif key == 'website' and record[key] == 'NaN':
+                        record[key] = None
+            
             # Bulk insert chunk
             session.bulk_insert_mappings(PedicureListing, records)
             session.commit()
@@ -38,7 +60,6 @@ def import_csv_to_db(csv_path, chunk_size=10000):
             rows_imported = len(records)
             total_rows += rows_imported
             print(f"Chunk {chunk_number}: Imported {rows_imported} rows. Total: {total_rows}")
-            
         except Exception as e:
             print(f"Error importing chunk {chunk_number}: {str(e)}")
             session.rollback()
