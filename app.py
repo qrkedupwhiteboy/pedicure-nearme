@@ -65,28 +65,56 @@ def home():
 def search():
     session = Session()
     try:
+        # Get filter parameters
         city = request.args.get('location', '').split('-')[0].strip().title()
         state = request.args.get('state', '').upper()
+        min_rating = request.args.get('min_rating', type=float)
+        price_level = request.args.get('price_level')
+        sort_by = request.args.get('sort', 'rating')  # Default sort by rating
+        page = request.args.get('page', 1, type=int)
+        per_page = 12  # Number of listings per page
         
+        # Build query
         query = session.query(PedicureListing)
         
+        # Apply filters
         if city:
             query = query.filter(PedicureListing.city == city)
         if state:
             query = query.filter(PedicureListing.state == state)
+        if min_rating:
+            query = query.filter(PedicureListing.rating >= min_rating)
+        if price_level:
+            query = query.filter(PedicureListing.price_level == price_level)
             
-        # Order by rating and number of reviews
-        listings = query.order_by(
-            PedicureListing.rating.desc(),
-            PedicureListing.reviews.desc()
-        ).limit(20).all()
+        # Apply sorting
+        if sort_by == 'rating':
+            query = query.order_by(PedicureListing.rating.desc(), PedicureListing.reviews.desc())
+        elif sort_by == 'reviews':
+            query = query.order_by(PedicureListing.reviews.desc())
+        elif sort_by == 'name':
+            query = query.order_by(PedicureListing.business_name)
+            
+        # Get total count for pagination
+        total = query.count()
+        
+        # Apply pagination
+        listings = query.offset((page - 1) * per_page).limit(per_page).all()
         
         location_name = city if city else STATE_NAMES.get(state, state)
         
         return render_template('listings.html', 
-                             listings=listings, 
+                             listings=listings,
                              location=location_name,
-                             is_city=bool(city))
+                             is_city=bool(city),
+                             current_page=page,
+                             total_pages=(total + per_page - 1) // per_page,
+                             total_listings=total,
+                             filters={
+                                 'min_rating': min_rating,
+                                 'price_level': price_level,
+                                 'sort_by': sort_by
+                             })
     finally:
         session.close()
 
