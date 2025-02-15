@@ -4,6 +4,7 @@ import sys
 from sqlalchemy import create_engine
 import os
 from dotenv import load_dotenv
+import json
 
 def import_csv_to_db(csv_path, chunk_size=10000):
     """
@@ -58,12 +59,21 @@ def import_csv_to_db(csv_path, chunk_size=10000):
                                 if len(parts) >= 3:
                                     record['city'] = parts[-3].strip()
                 
-                # Convert NaN/None to None for consistency
+                # Handle JSON fields and convert NaN/None to None for consistency
                 for key in record:
                     if pd.isna(record[key]):
                         record[key] = None
                     elif key == 'website' and record[key] == 'NaN':
                         record[key] = None
+                    elif key in ['categories', 'reviews_per_rating', 'images', 'hours', 'detailed_reviews']:
+                        try:
+                            if isinstance(record[key], str):
+                                # Validate JSON format
+                                json.loads(record[key])
+                            else:
+                                record[key] = None
+                        except (json.JSONDecodeError, TypeError):
+                            record[key] = None
             
             # Bulk insert chunk
             session.bulk_insert_mappings(PedicureListing, records)
