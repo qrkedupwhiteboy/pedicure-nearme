@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewButtons = document.querySelectorAll('.view-button');
     const mapContainer = document.querySelector('.map-container');
     const listingsGrid = document.querySelector('.listings-grid');
+    const mapFrame = document.querySelector('.map-frame');
 
     viewButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -52,6 +53,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.dataset.view === 'map') {
                 mapContainer.style.display = 'block';
                 listingsGrid.style.display = 'none';
+                // Ensure map is properly loaded
+                if (mapFrame) {
+                    mapFrame.src = mapFrame.src;
+                }
             } else {
                 mapContainer.style.display = 'none';
                 listingsGrid.style.display = 'block';

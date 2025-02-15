@@ -142,19 +142,32 @@ def search():
                     ]
                 else:
                     map_center = [39.8283, -98.5795]  # Default to center of USA
+                
                 m = folium.Map(location=map_center, zoom_start=12)
                 
-                # Add markers for each listing
+                # Add markers for each listing with enhanced popups
                 for listing in listings:
                     if listing.latitude and listing.longitude:
+                        popup_html = f"""
+                            <div style="width: 200px;">
+                                <h3 style="color: #1c79ca; margin-bottom: 8px;">{listing.business_name}</h3>
+                                <p style="margin: 4px 0;">Rating: {'★' * int(listing.rating)}{' ☆' * (5-int(listing.rating))} ({listing.rating})</p>
+                                <p style="margin: 4px 0; color: #666;">{listing.address}</p>
+                                {f'<p style="margin: 4px 0; color: #4caf50;">{listing.price_level}</p>' if listing.price_level else ''}
+                                {f'<p style="margin: 4px 0;"><a href="tel:{listing.phone}" style="color: #1c79ca;">{listing.phone}</a></p>' if listing.phone else ''}
+                            </div>
+                        """
                         folium.Marker(
                             [listing.latitude, listing.longitude],
-                            popup=f"<b>{listing.business_name}</b><br>Rating: {listing.rating}★<br>{listing.address}",
+                            popup=folium.Popup(popup_html, max_width=300),
                             icon=folium.Icon(color='red', icon='info-sign')
                         ).add_to(m)
                 
-                # Save map to template directory
-                m.save('templates/map.html')
+                # Add location search box
+                m.add_child(folium.LatLngPopup())
+                
+                # Save map to static directory
+                m.save('static/map.html')
         except Exception as e:
             print(f"Error creating map: {str(e)}")
         
