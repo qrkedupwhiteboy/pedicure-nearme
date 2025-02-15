@@ -167,10 +167,11 @@ def search():
                 # Add location search box
                 m.add_child(folium.LatLngPopup())
                 
-                # Save map to static directory
-                m.save('static/map.html')
+                # Get the map HTML directly
+                map_html = m._repr_html_()
         except Exception as e:
             print(f"Error creating map: {str(e)}")
+            map_html = ""
         
         location_name = location.title() if location else STATE_NAMES.get(state) or state
         
@@ -223,7 +224,7 @@ def view_data():
 @app.route('/map')
 def map_view():
     """Render the map view page."""
-    return render_template('map.html')
+    return render_template('map.html', map_html="")
 
 if __name__ == '__main__':
     app.run(debug=True)
