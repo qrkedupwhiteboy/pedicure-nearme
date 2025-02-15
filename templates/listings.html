@@ -55,7 +55,7 @@
                         <select name="min_rating" class="filter-select" id="min-rating" aria-label="Filter by minimum rating">
                             <option value="">Minimum Rating</option>
                             {% for rating in range(5, 0, -1) %}
-                                <option value="{{ rating }}"{% if filters and filters.min_rating and (filters.min_rating|string|float == rating|float) %} selected{% endif %}>
+                                <option value="{{ rating }}"{{ ' selected' if filters and filters.min_rating and filters.min_rating|float == rating else '' }}>
                                     {{ rating }}+ Stars
                                 </option>
                             {% endfor %}
@@ -65,7 +65,7 @@
                             <option value="">Price Level</option>
                             {% set price_levels = ["$", "$$", "$$$", "$$$$"] %}
                             {% for price in price_levels %}
-                                <option value="{{ price }}"{% if filters and filters.price_level and (filters.price_level == price) %} selected{% endif %}>
+                                <option value="{{ price }}"{{ ' selected' if filters and filters.price_level == price else '' }}>
                                     {{ price }}
                                 </option>
                             {% endfor %}
@@ -78,7 +78,7 @@
                                 ("name", "Sort by Name")
                             ] %}
                             {% for value, label in sort_options %}
-                                <option value="{{ value }}"{% if filters and filters.sort_by and (filters.sort_by == value) %} selected{% endif %}>
+                                <option value="{{ value }}"{{ ' selected' if filters and filters.sort_by == value else '' }}>
                                     {{ label }}
                                 </option>
                             {% endfor %}
@@ -135,9 +135,9 @@
             </div>
             
             <!-- Pagination -->
-            {% if total_pages and (total_pages|int > 1) %}
+            {% if total_pages and total_pages|int > 1 %}
             <div class="pagination">
-                {% if current_page and (current_page|int > 1) %}
+                {% if current_page and current_page|int > 1 %}
                 <a href="{{ url_for('search', page=current_page-1, location=location, state=state, min_rating=filters.min_rating, price_level=filters.price_level, sort=filters.sort_by) }}" class="page-link">&laquo; Previous</a>
                 {% endif %}
                 
@@ -149,7 +149,7 @@
                     {% endif %}
                 {% endfor %}
                 
-                {% if current_page and total_pages and (current_page|int < total_pages|int) %}
+                {% if current_page and total_pages and current_page|int < total_pages|int %}
                 <a href="{{ url_for('search', page=current_page+1, location=location, state=state, min_rating=filters.min_rating, price_level=filters.price_level, sort=filters.sort_by) }}" class="page-link">Next &raquo;</a>
                 {% endif %}
             </div>
