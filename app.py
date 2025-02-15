@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
@@ -65,9 +65,28 @@ def home():
 def search():
     session = Session()
     try:
-        # Example query - we'll expand this later
-        listings = session.query(PedicureListing).limit(50).all()
-        return render_template('search.html', listings=listings)
+        city = request.args.get('location', '').split('-')[0].strip().title()
+        state = request.args.get('state', '').upper()
+        
+        query = session.query(PedicureListing)
+        
+        if city:
+            query = query.filter(PedicureListing.city == city)
+        if state:
+            query = query.filter(PedicureListing.state == state)
+            
+        # Order by rating and number of reviews
+        listings = query.order_by(
+            PedicureListing.rating.desc(),
+            PedicureListing.reviews.desc()
+        ).limit(20).all()
+        
+        location_name = city if city else STATE_NAMES.get(state, state)
+        
+        return render_template('listings.html', 
+                             listings=listings, 
+                             location=location_name,
+                             is_city=bool(city))
     finally:
         session.close()
 

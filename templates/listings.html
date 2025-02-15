@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Pedicures in {{ location }} | Best Local Nail Salons</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/logo-placeholder.png') }}" alt="Pedicure Near Me Directory" width="180" height="60">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/search">Find Pedicures</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="listings-header">
+            <div class="container">
+                <h1>{% if is_city %}Top Pedicures in{% else %}Pedicures in{% endif %} {{ location }}</h1>
+                <p class="results-count">Showing {{ listings|length }} top-rated pedicure locations</p>
+            </div>
+        </section>
+
+        <section class="listings-grid">
+            <div class="container">
+                {% for listing in listings %}
+                <div class="listing-card">
+                    <div class="listing-image">
+                        {% if listing.featured_image %}
+                        <img src="{{ listing.featured_image }}" alt="{{ listing.business_name }}">
+                        {% endif %}
+                    </div>
+                    <div class="listing-content">
+                        <h2>{{ listing.business_name }}</h2>
+                        <div class="listing-meta">
+                            <span class="rating">★ {{ "%.1f"|format(listing.rating) }}</span>
+                            <span class="reviews">({{ listing.reviews }} reviews)</span>
+                            {% if listing.price_level %}
+                            <span class="price-level">{{ listing.price_level }}</span>
+                            {% endif %}
+                        </div>
+                        <p class="address">{{ listing.address }}</p>
+                        {% if listing.hours %}
+                        <div class="hours">
+                            {{ listing.hours|truncate(100) }}
+                        </div>
+                        {% endif %}
+                        {% if listing.phone %}
+                        <div class="phone">
+                            {{ listing.phone }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 Pedicure Near Me Directory. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
