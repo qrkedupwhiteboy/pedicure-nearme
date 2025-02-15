@@ -17,8 +17,17 @@ def search():
     session = Session()
     try:
         # Example query - we'll expand this later
-        listings = session.query(PedicureListing).limit(10).all()
+        listings = session.query(PedicureListing).limit(50).all()
         return render_template('search.html', listings=listings)
+    finally:
+        session.close()
+
+@app.route('/data')
+def view_data():
+    session = Session()
+    try:
+        listings = session.query(PedicureListing).limit(100).all()
+        return render_template('data.html', listings=listings)
     finally:
         session.close()
 
