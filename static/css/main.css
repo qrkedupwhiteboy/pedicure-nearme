@@ -264,7 +264,6 @@ body {
 /* Pedicure Information Section */
 .pedicure-info {
     padding: 4rem 0;
-    background: #f5f5f5;
 }
 
 .info-grid {
@@ -276,7 +275,6 @@ body {
     background: white;
     padding: 2rem;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .info-section h2 {
