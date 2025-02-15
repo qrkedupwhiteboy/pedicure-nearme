@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from models import Session, PedicureListing
-from sqlalchemy import text
+from sqlalchemy import text, func
 import os
 from dotenv import load_dotenv
 
@@ -12,23 +12,30 @@ app = Flask(__name__)
 def home():
     session = Session()
     try:
-        # Query distinct states and their cities
-        locations = session.query(
+        # Query cities with their listing counts
+        city_counts = session.query(
+            PedicureListing.state,
+            PedicureListing.city,
+            func.count(PedicureListing.id).label('count')
+        ).group_by(
             PedicureListing.state,
             PedicureListing.city
-        ).distinct().order_by(
+        ).having(
+            PedicureListing.city.isnot(None)
+        ).order_by(
             PedicureListing.state,
-            PedicureListing.city
+            text('count DESC')
         ).all()
 
-        # Organize into state-city dictionary
+        # Organize into state-city dictionary with top 5 cities per state
         states_cities = {}
-        for state, city in locations:
-            if state and city:  # Only include non-null values
+        for state, city, count in city_counts:
+            if state:  # Only include non-null values
                 if state not in states_cities:
-                    states_cities[state] = []
-                if city not in states_cities[state]:  # Avoid duplicates
-                    states_cities[state].append(city)
+                    states_cities[state] = {'top_cities': [], 'total_cities': 0}
+                if len(states_cities[state]['top_cities']) < 5:
+                    states_cities[state]['top_cities'].append(city)
+                states_cities[state]['total_cities'] += 1
 
         return render_template('index.html', states_cities=states_cities)
     finally:

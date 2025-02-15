@@ -419,6 +419,17 @@ body {
     color: #1c79ca;
 }
 
+.city-link.see-all {
+    margin-top: 0.5rem;
+    color: #1c79ca;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.city-link.see-all:hover {
+    text-decoration: underline;
+}
+
 /* FAQ Section */
 .faq-section {
     padding: 4rem 0;

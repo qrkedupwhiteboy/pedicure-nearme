@@ -210,13 +210,16 @@
                     </div>
                 </div>
                 <div class="states-grid">
-                    {% for state, cities in states_cities.items() %}
+                    {% for state, data in states_cities.items() %}
                     <div class="state-section">
                         <h3 class="state-name">{{ state }}</h3>
                         <div class="city-links">
-                            {% for city in cities %}
+                            {% for city in data.top_cities %}
                             <a href="/search?location={{ city|lower }}-{{ state|lower }}" class="city-link">{{ city }}</a>
                             {% endfor %}
+                            {% if data.total_cities > 5 %}
+                            <a href="/search?state={{ state|lower }}" class="city-link see-all">See all {{ data.total_cities }} cities in {{ state }} →</a>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
