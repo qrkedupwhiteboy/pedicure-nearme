@@ -23,7 +23,7 @@ class PedicureListing(Base):
     business_name = Column(String(500))
     address = Column(String(500))
     city = Column(String(100))
-    state = Column(String(2))
+    state = Column(String(100))
     zip_code = Column(String(10))
     latitude = Column(Float)
     longitude = Column(Float)
