@@ -10,7 +10,29 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    session = Session()
+    try:
+        # Query distinct states and their cities
+        locations = session.query(
+            PedicureListing.state,
+            PedicureListing.city
+        ).distinct().order_by(
+            PedicureListing.state,
+            PedicureListing.city
+        ).all()
+
+        # Organize into state-city dictionary
+        states_cities = {}
+        for state, city in locations:
+            if state and city:  # Only include non-null values
+                if state not in states_cities:
+                    states_cities[state] = []
+                if city not in states_cities[state]:  # Avoid duplicates
+                    states_cities[state].append(city)
+
+        return render_template('index.html', states_cities=states_cities)
+    finally:
+        session.close()
 
 @app.route('/search')
 def search():
