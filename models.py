@@ -20,8 +20,8 @@ class PedicureListing(Base):
     __tablename__ = 'pedicure_listings'
 
     id = Column(Integer, primary_key=True)
-    business_name = Column(String(255))
-    address = Column(String(255))
+    business_name = Column(String(500))
+    address = Column(String(500))
     city = Column(String(100))
     state = Column(String(2))
     zip_code = Column(String(10))
@@ -30,7 +30,7 @@ class PedicureListing(Base):
     rating = Column(Float)
     total_ratings = Column(Integer)
     phone = Column(String(20))
-    website = Column(String(255))
+    website = Column(Text)  # Changed to Text for unlimited length
     business_hours = Column(Text)
     price_level = Column(String(10))
 
