@@ -415,6 +415,11 @@ body {
     transition: color 0.2s;
 }
 
+.city-link .city-highlight {
+    color: #1c79ca;
+    font-weight: 500;
+}
+
 .city-link:hover {
     color: #1c79ca;
 }

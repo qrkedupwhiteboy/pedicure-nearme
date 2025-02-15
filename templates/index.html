@@ -212,10 +212,10 @@
                 <div class="states-grid">
                     {% for state, data in states_cities.items() %}
                     <div class="state-section">
-                        <h3 class="state-name">{{ state }}</h3>
+                        <h3 class="state-name">Pedicures in {{ data.name }}</h3>
                         <div class="city-links">
                             {% for city in data.top_cities %}
-                            <a href="/search?location={{ city|lower }}-{{ state|lower }}" class="city-link">{{ city }}</a>
+                            <a href="/search?location={{ city|lower }}-{{ state|lower }}" class="city-link">Pedicures in <span class="city-highlight">{{ city }}</span></a>
                             {% endfor %}
                             {% if data.total_cities > 5 %}
                             <a href="/search?state={{ state|lower }}" class="city-link see-all">See all {{ data.total_cities }} cities in {{ state }} →</a>

@@ -3,6 +3,7 @@ from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
 from dotenv import load_dotenv
+import us  # For state name handling
 
 load_dotenv()
 
@@ -30,12 +31,18 @@ def home():
         # Organize into state-city dictionary with top 5 cities per state
         states_cities = {}
         for state, city, count in city_counts:
-            if state:  # Only include non-null values
-                if state not in states_cities:
-                    states_cities[state] = {'top_cities': [], 'total_cities': 0}
-                if len(states_cities[state]['top_cities']) < 5:
-                    states_cities[state]['top_cities'].append(city)
-                states_cities[state]['total_cities'] += 1
+            if state and len(state) == 2:  # Only include valid state codes
+                state_obj = us.states.lookup(state)
+                if state_obj:
+                    if state not in states_cities:
+                        states_cities[state] = {
+                            'name': state_obj.name,
+                            'top_cities': [], 
+                            'total_cities': 0
+                        }
+                    if len(states_cities[state]['top_cities']) < 5:
+                        states_cities[state]['top_cities'].append(city)
+                    states_cities[state]['total_cities'] += 1
 
         return render_template('index.html', states_cities=states_cities)
     finally:
