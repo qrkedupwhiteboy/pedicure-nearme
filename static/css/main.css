@@ -191,26 +191,27 @@ body {
 
 /* How it works section */
 .how-it-works {
-    padding: 4rem 0;
+    padding: 4rem 4rem;
     display: flex;
-    background: #f9f9f9;
 }
 
 .how-it-works-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 2rem;
 }
 
 .how-it-works-headings {
+    
 }
 
 .how-it-works h2 {
-    text-align: center;
+    text-align: left;
     font-size: 2.5rem;
 }
 
 .section-description {
-    text-align: center;
+    text-align: left;
     color: #666;
     max-width: 800px;
     margin: 0 auto 3rem;
