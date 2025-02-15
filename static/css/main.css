@@ -55,8 +55,7 @@ body {
     padding: 8rem 0 4rem;
     background: #245d97;
     color: white;
-    text-align: center;
-    padding: 32px
+    padding: 32px;
 }
 
 .hero-flex {
@@ -135,12 +134,11 @@ body {
 }
 
 .hero-description {
-    text-align: left;
     font-size: 1.2rem;
-    max-width: 100%;
+    max-width: 65ch;
     padding-bottom: 24px;
-    text-wrap: pretty
-
+    text-wrap: pretty;
+    line-height: 1.6;
 }
 
 .location-search {
@@ -211,10 +209,9 @@ body {
 }
 
 .section-description {
-    text-align: left;
     color: #666;
-    max-width: 800px;
-    margin: 0 auto 3rem;
+    max-width: 65ch;
+    margin-bottom: 3rem;
     line-height: 1.8;
     font-size: 1.1rem;
 }
@@ -363,8 +360,8 @@ body {
 }
 
 .featured-locations h2 {
-    text-align: center;
     font-size: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .states-grid {
@@ -413,7 +410,6 @@ body {
 }
 
 .faq-section h2 {
-    text-align: center;
     font-size: 2.5rem;
     margin-bottom: 3rem;
 }
