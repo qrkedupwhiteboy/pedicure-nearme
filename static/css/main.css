@@ -215,8 +215,14 @@ body {
     margin-bottom: 3rem;
 }
 
-.section-header h2 {
-    margin-bottom: 1rem;
+.section-title-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.section-title-container h2 {
+    margin: 0;
 }
 
 .section-description {
