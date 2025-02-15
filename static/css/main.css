@@ -288,6 +288,8 @@ body {
     background: white;
     padding: 2rem;
     border-radius: 12px;
+    display: flex;
+    gap: 2rem;
 }
 
 .info-section h2 {
@@ -298,8 +300,8 @@ body {
 
 /* Types & Benefits */
 .pedicure-types {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
 }
 
