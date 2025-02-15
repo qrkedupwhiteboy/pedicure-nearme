@@ -43,3 +43,4 @@ instance/
 # Project specific
 .aider*
 static/images/logo-placeholder.png
+data/
