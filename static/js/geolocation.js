@@ -45,21 +45,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const listingsGrid = document.querySelector('.listings-grid');
     const mapFrame = document.querySelector('.map-frame');
 
+    // Set initial state
+    mapContainer.style.display = 'none';
+    listingsGrid.style.display = 'grid';
+
     viewButtons.forEach(button => {
         button.addEventListener('click', function() {
+            // Remove active class from all buttons
             viewButtons.forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
             this.classList.add('active');
             
             if (this.dataset.view === 'map') {
                 mapContainer.style.display = 'block';
                 listingsGrid.style.display = 'none';
-                // Ensure map is properly loaded
+                // Force map reload
                 if (mapFrame) {
                     mapFrame.src = mapFrame.src;
                 }
             } else {
                 mapContainer.style.display = 'none';
-                listingsGrid.style.display = 'block';
+                listingsGrid.style.display = 'grid';
             }
         });
     });
