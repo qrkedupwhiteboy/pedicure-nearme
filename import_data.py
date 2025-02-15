@@ -59,6 +59,10 @@ def import_csv_to_db(csv_path, chunk_size=10000):
                                 if len(parts) >= 3:
                                     record['city'] = parts[-3].strip()
                 
+                # Skip records with UK state
+                if record.get('state') == 'UK':
+                    continue
+                    
                 # Handle JSON fields and convert NaN/None to None for consistency
                 for key in record:
                     if pd.isna(record[key]):
