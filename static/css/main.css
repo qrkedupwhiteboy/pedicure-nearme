@@ -582,6 +582,7 @@ body {
     margin: 0 auto;
     padding: 2rem;
     height: 600px;
+    position: relative;
 }
 
 .map-container iframe {
@@ -590,6 +591,9 @@ body {
     border: none;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .listings-grid {
