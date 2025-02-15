@@ -29,7 +29,7 @@ class PedicureListing(Base):
     longitude = Column(Float)
     rating = Column(Float)
     total_ratings = Column(Integer)
-    phone = Column(String(20))
+    phone = Column(String(50))  # Increased length for phone numbers with extensions
     website = Column(Text)  # Changed to Text for unlimited length
     business_hours = Column(Text)
     price_level = Column(String(10))
