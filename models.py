@@ -29,8 +29,18 @@ class PedicureListing(Base):
     longitude = Column(Float)
     rating = Column(Float)
     total_ratings = Column(Integer)
-    phone = Column(String(50))  # Increased length for phone numbers with extensions
-    website = Column(Text)  # Changed to Text for unlimited length
+    phone = Column(String(50))
+    website = Column(Text)
+    description = Column(Text)
+    reviews = Column(Integer)
+    featured_image = Column(Text)
+    main_category = Column(String(100))
+    categories = Column(Text)
+    workday_timing = Column(Text)
+    closed_on = Column(Text)
+    reviews_per_rating = Column(Text)  # JSON string storing review counts per rating
+    hours = Column(Text)  # JSON string storing business hours
+    detailed_reviews = Column(Text)  # JSON string storing detailed review data
     business_hours = Column(Text)
     price_level = Column(String(10))
 

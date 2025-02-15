@@ -43,6 +43,11 @@
                     <th>Rating</th>
                     <th>Phone</th>
                     <th>Website</th>
+                    <th>Description</th>
+                    <th>Reviews</th>
+                    <th>Main Category</th>
+                    <th>Workday Timing</th>
+                    <th>Closed On</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,6 +60,11 @@
                     <td>{{ listing.rating }}</td>
                     <td>{{ listing.phone }}</td>
                     <td>{{ listing.website }}</td>
+                    <td>{{ listing.description }}</td>
+                    <td>{{ listing.reviews }}</td>
+                    <td>{{ listing.main_category }}</td>
+                    <td>{{ listing.workday_timing }}</td>
+                    <td>{{ listing.closed_on }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
