@@ -64,8 +64,18 @@
             </div>
         </section>
 
-        <section class="listings-grid">
-            <div class="container">
+        <section class="listings-view">
+            <div class="view-toggle">
+                <button class="view-button active" data-view="grid">Grid View</button>
+                <button class="view-button" data-view="map">Map View</button>
+            </div>
+            
+            <div class="map-container" style="display: none;">
+                <iframe src="{{ url_for('static', filename='map.html') }}" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+            
+            <div class="listings-grid">
+                <div class="container">
                 {% for listing in listings %}
                 <div class="listing-card">
                     <div class="listing-image">

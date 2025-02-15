@@ -3,6 +3,10 @@ from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
 from dotenv import load_dotenv
+from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
+import folium
+from sqlalchemy import or_
 
 # State code to full name mapping
 STATE_NAMES = {
@@ -65,9 +69,34 @@ def home():
 def search():
     session = Session()
     try:
-        # Get filter parameters
-        city = request.args.get('location', '').split('-')[0].strip().title()
+        # Get search parameters
+        location = request.args.get('location', '').strip()
         state = request.args.get('state', '').upper()
+        
+        # Initialize geocoder
+        geolocator = Nominatim(user_agent="pedicure_finder")
+        
+        # Try to geocode the location
+        try:
+            if location:
+                # Check if it's a ZIP code
+                if location.isdigit() and len(location) == 5:
+                    geo_location = geolocator.geocode(f"{location}, USA")
+                    if geo_location:
+                        # Search within ~5 mile radius (0.07 degrees)
+                        radius = 0.07
+                        query = session.query(PedicureListing).filter(
+                            PedicureListing.latitude.between(geo_location.latitude - radius, geo_location.latitude + radius),
+                            PedicureListing.longitude.between(geo_location.longitude - radius, geo_location.longitude + radius)
+                        )
+                else:
+                    # Assume it's a city name
+                    city = location.split('-')[0].strip().title()
+                    query = session.query(PedicureListing).filter(PedicureListing.city == city)
+            elif state:
+                query = session.query(PedicureListing).filter(PedicureListing.state == state)
+            else:
+                query = session.query(PedicureListing)
         min_rating = request.args.get('min_rating', type=float)
         price_level = request.args.get('price_level')
         sort_by = request.args.get('sort', 'rating')  # Default sort by rating
@@ -101,7 +130,27 @@ def search():
         # Apply pagination
         listings = query.offset((page - 1) * per_page).limit(per_page).all()
         
-        location_name = city if city else STATE_NAMES.get(state, state)
+        # Create map
+        if listings:
+            map_center = [
+                sum(l.latitude for l in listings if l.latitude)/len(listings),
+                sum(l.longitude for l in listings if l.longitude)/len(listings)
+            ]
+            m = folium.Map(location=map_center, zoom_start=12)
+            
+            # Add markers for each listing
+            for listing in listings:
+                if listing.latitude and listing.longitude:
+                    folium.Marker(
+                        [listing.latitude, listing.longitude],
+                        popup=f"<b>{listing.business_name}</b><br>Rating: {listing.rating}★<br>{listing.address}",
+                        icon=folium.Icon(color='red', icon='info-sign')
+                    ).add_to(m)
+            
+            # Save map to template directory
+            m.save('templates/map.html')
+        
+        location_name = location.title() if location else STATE_NAMES.get(state, state)
         
         return render_template('listings.html', 
                              listings=listings,
