@@ -67,16 +67,17 @@ def home():
 
 @app.route('/search')
 def search():
+    """Handle search requests for pedicure listings."""
     session = Session()
     try:
-        # Get search parameters
-        location = request.args.get('location', '').strip()
-        state = request.args.get('state', '').upper()
-        min_rating = request.args.get('min_rating', type=float)
-        price_level = request.args.get('price_level')
-        sort_by = request.args.get('sort', 'rating')  # Default sort by rating
-        page = request.args.get('page', 1, type=int)
-        per_page = 12  # Number of listings per page
+        # Get search parameters with proper type hints
+        location: str = request.args.get('location', '').strip()
+        state: str = request.args.get('state', '').upper()
+        min_rating: float | None = request.args.get('min_rating', type=float)
+        price_level: str | None = request.args.get('price_level')
+        sort_by: str = request.args.get('sort', 'rating')  # Default sort by rating
+        page: int = request.args.get('page', 1, type=int)
+        per_page: int = 12  # Number of listings per page
         
         # Initialize base query
         query = session.query(PedicureListing)
@@ -131,10 +132,16 @@ def search():
         # Create map
         try:
             if listings:
-                map_center = [
-                    sum(l.latitude for l in listings if l.latitude)/len(listings),
-                    sum(l.longitude for l in listings if l.longitude)/len(listings)
-                ]
+                valid_coords = [(l.latitude, l.longitude) 
+                               for l in listings 
+                               if l.latitude is not None and l.longitude is not None]
+                if valid_coords:
+                    map_center = [
+                        sum(lat for lat, _ in valid_coords) / len(valid_coords),
+                        sum(lon for _, lon in valid_coords) / len(valid_coords)
+                    ]
+                else:
+                    map_center = [39.8283, -98.5795]  # Default to center of USA
                 m = folium.Map(location=map_center, zoom_start=12)
                 
                 # Add markers for each listing
@@ -151,7 +158,7 @@ def search():
         except Exception as e:
             print(f"Error creating map: {str(e)}")
         
-        location_name = location.title() if location else STATE_NAMES.get(state, state)
+        location_name = location.title() if location else STATE_NAMES.get(state) or state
         
         return render_template('listings.html', 
                              listings=listings,

@@ -44,8 +44,9 @@ class PedicureListing(Base):
     business_hours = Column(Text)
     price_level = Column(String(10))
 
-    def __repr__(self):
-        return f"<PedicureListing(name='{self.business_name}', city='{self.city}')>"
+    def __repr__(self) -> str:
+        """Return string representation of the listing."""
+        return f"<PedicureListing(name='{self.business_name or ''}', city='{self.city or ''}')>"
 
 # Database connection
 engine = create_engine(os.getenv('DATABASE_URL'))
