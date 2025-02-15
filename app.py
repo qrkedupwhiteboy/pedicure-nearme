@@ -72,6 +72,7 @@ def search():
     try:
         # Get search parameters with proper type hints
         location: str = request.args.get('location', '').strip()
+        format: str = request.args.get('format', 'html')  # New parameter for JSON/HTML response
         state: str = request.args.get('state', '').upper()
         min_rating: float | None = request.args.get('min_rating', type=float)
         price_level: str | None = request.args.get('price_level')
@@ -173,6 +174,23 @@ def search():
         
         location_name = location.title() if location else STATE_NAMES.get(state) or state
         
+        if format == 'json':
+            return {
+                'listings': [{
+                    'id': l.id,
+                    'business_name': l.business_name,
+                    'address': l.address,
+                    'latitude': l.latitude,
+                    'longitude': l.longitude,
+                    'rating': l.rating,
+                    'reviews': l.reviews,
+                    'phone': l.phone
+                } for l in listings],
+                'total': total,
+                'page': page,
+                'pages': (total + per_page - 1) // per_page
+            }
+        
         return render_template('listings.html', 
                              listings=listings,
                              location=location_name,
@@ -201,6 +219,11 @@ def view_data():
         return render_template('data.html', listings=listings)
     finally:
         session.close()
+
+@app.route('/map')
+def map_view():
+    """Render the map view page."""
+    return render_template('map.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
