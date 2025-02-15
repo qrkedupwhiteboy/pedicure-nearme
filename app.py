@@ -85,6 +85,10 @@ def search():
         per_page = 12  # Number of listings per page
         
         try:
+            # Initialize base query
+            query = session.query(PedicureListing)
+            
+            # Apply location filters
             if location:
                 # Check if it's a ZIP code
                 if location.isdigit() and len(location) == 5:
@@ -92,33 +96,22 @@ def search():
                     if geo_location:
                         # Search within ~5 mile radius (0.07 degrees)
                         radius = 0.07
-                        query = session.query(PedicureListing).filter(
+                        query = query.filter(
                             PedicureListing.latitude.between(geo_location.latitude - radius, geo_location.latitude + radius),
                             PedicureListing.longitude.between(geo_location.longitude - radius, geo_location.longitude + radius)
                         )
                 else:
                     # Assume it's a city name
                     city = location.split('-')[0].strip().title()
-                    query = session.query(PedicureListing).filter(PedicureListing.city == city)
+                    query = query.filter(PedicureListing.city == city)
             elif state:
-                query = session.query(PedicureListing).filter(PedicureListing.state == state)
-            else:
-                query = session.query(PedicureListing)
-            # Apply filters
+                query = query.filter(PedicureListing.state == state)
+            
+            # Apply additional filters
             if min_rating:
                 query = query.filter(PedicureListing.rating >= min_rating)
             if price_level:
                 query = query.filter(PedicureListing.price_level == price_level)
-        
-        # Apply filters
-        if city:
-            query = query.filter(PedicureListing.city == city)
-        if state:
-            query = query.filter(PedicureListing.state == state)
-        if min_rating:
-            query = query.filter(PedicureListing.rating >= min_rating)
-        if price_level:
-            query = query.filter(PedicureListing.price_level == price_level)
             
         # Apply sorting
         if sort_by == 'rating':
