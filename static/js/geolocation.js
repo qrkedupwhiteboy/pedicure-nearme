@@ -104,12 +104,10 @@ function searchLocation() {
     }
 }
 
-// Initialize map when DOM is loaded
+// Initialize map and add view toggle functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initMap();
-
-// Add view toggle functionality
-document.addEventListener('DOMContentLoaded', function() {
+    
     const viewButtons = document.querySelectorAll('.view-button');
     const mapContainer = document.querySelector('.map-container');
     const listingsGrid = document.querySelector('.listings-grid');
