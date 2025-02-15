@@ -8,8 +8,11 @@ from dotenv import load_dotenv
 load_dotenv(verbose=True)
 
 # Verify DATABASE_URL is loaded
-if not os.getenv('DATABASE_URL'):
-    raise ValueError("DATABASE_URL environment variable is not set. Check your .env file.")
+database_url = os.getenv('DATABASE_URL')
+if not database_url:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    env_path = os.path.join(current_dir, '.env')
+    raise ValueError(f"DATABASE_URL environment variable is not set. \nChecking for .env file at: {env_path}\nMake sure the .env file exists and contains: DATABASE_URL=postgresql://emrsn@localhost:5432/pedicure_directory")
 
 Base = declarative_base()
 
