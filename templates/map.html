@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_5596a90f6cbbb2d0b9b7feb8bd24bdf7 {
+                #map_b7a2a6053fd20c9b9e0abba1965e4714 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -39,14 +39,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_5596a90f6cbbb2d0b9b7feb8bd24bdf7" ></div>
+            <div class="folium-map" id="map_b7a2a6053fd20c9b9e0abba1965e4714" ></div>
         
 </body>
 <script>
     
     
-            var map_5596a90f6cbbb2d0b9b7feb8bd24bdf7 = L.map(
-                "map_5596a90f6cbbb2d0b9b7feb8bd24bdf7",
+            var map_b7a2a6053fd20c9b9e0abba1965e4714 = L.map(
+                "map_b7a2a6053fd20c9b9e0abba1965e4714",
                 {
                     center: [39.8283, -98.5795],
                     crs: L.CRS.EPSG3857,
@@ -60,24 +60,24 @@
 
         
     
-            var tile_layer_5a3c5b31e66374bf2f6100f8a7c1197a = L.tileLayer(
+            var tile_layer_c054bf619f355b8bc5e129fcbeef7e96 = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
             );
         
     
-            tile_layer_5a3c5b31e66374bf2f6100f8a7c1197a.addTo(map_5596a90f6cbbb2d0b9b7feb8bd24bdf7);
+            tile_layer_c054bf619f355b8bc5e129fcbeef7e96.addTo(map_b7a2a6053fd20c9b9e0abba1965e4714);
         
     
-                var lat_lng_popup_bd06d8228fdb1880c4d208c5340b327a = L.popup();
+                var lat_lng_popup_3e2cbd47d9ae50d8723ce0f39e716839 = L.popup();
                 function latLngPop(e) {
-                    lat_lng_popup_bd06d8228fdb1880c4d208c5340b327a
+                    lat_lng_popup_3e2cbd47d9ae50d8723ce0f39e716839
                         .setLatLng(e.latlng)
                         .setContent("Latitude: " + e.latlng.lat.toFixed(4) +
                                     "<br>Longitude: " + e.latlng.lng.toFixed(4))
-                        .openOn(map_5596a90f6cbbb2d0b9b7feb8bd24bdf7);
+                        .openOn(map_b7a2a6053fd20c9b9e0abba1965e4714);
                     }
-                map_5596a90f6cbbb2d0b9b7feb8bd24bdf7.on('click', latLngPop);
+                map_b7a2a6053fd20c9b9e0abba1965e4714.on('click', latLngPop);
             
 </script>
 </html>
