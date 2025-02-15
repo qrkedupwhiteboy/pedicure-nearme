@@ -35,12 +35,12 @@ class PedicureListing(Base):
     reviews = Column(Integer)
     featured_image = Column(Text)
     main_category = Column(String(100))
-    categories = Column(Text)
+    categories = Column(Text)  # JSON array of category strings
     workday_timing = Column(Text)
     closed_on = Column(Text)
-    reviews_per_rating = Column(Text)  # JSON string storing review counts per rating
-    hours = Column(Text)  # JSON string storing business hours
-    detailed_reviews = Column(Text)  # JSON string storing detailed review data
+    reviews_per_rating = Column(Text)  # JSON object with rating counts
+    hours = Column(Text)  # JSON array of daily hours objects
+    detailed_reviews = Column(Text)  # JSON array of review objects
     business_hours = Column(Text)
     price_level = Column(String(10))
 
