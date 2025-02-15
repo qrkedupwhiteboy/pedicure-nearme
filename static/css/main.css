@@ -555,46 +555,6 @@ body {
     padding: 3rem 0;
 }
 
-.view-toggle {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.view-button {
-    padding: 0.5rem 1.5rem;
-    border: 1px solid #1c79ca;
-    background: white;
-    color: #1c79ca;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.view-button.active {
-    background: #1c79ca;
-    color: white;
-}
-
-.map-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    height: 600px;
-    position: relative;
-}
-
-.map-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: absolute;
-    top: 0;
-    left: 0;
-}
 
 .listings-grid {
     padding: 3rem 0;
