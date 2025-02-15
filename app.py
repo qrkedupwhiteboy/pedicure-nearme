@@ -81,11 +81,10 @@ def search():
         # Initialize base query
         query = session.query(PedicureListing)
         
+        # Initialize geocoder and handle location-based filtering
         try:
-            # Initialize geocoder
             geolocator = Nominatim(user_agent="pedicure_finder")
             
-            # Apply location filters
             if location:
                 # Check if it's a ZIP code
                 if location.isdigit() and len(location) == 5:
@@ -108,7 +107,7 @@ def search():
             if location and not location.isdigit():
                 city = location.split('-')[0].strip().title()
                 query = query.filter(PedicureListing.city == city)
-            
+        
         # Apply additional filters
         if min_rating:
             query = query.filter(PedicureListing.rating >= min_rating)
@@ -122,77 +121,50 @@ def search():
             query = query.order_by(PedicureListing.reviews.desc())
         elif sort_by == 'name':
             query = query.order_by(PedicureListing.business_name)
-            
-            # Get total count for pagination
-            total = query.count()
-            
-            # Apply pagination
-            listings = query.offset((page - 1) * per_page).limit(per_page).all()
-            
-            # Create map
-            if listings:
-                try:
-                    map_center = [
-                        sum(l.latitude for l in listings if l.latitude)/len(listings),
-                        sum(l.longitude for l in listings if l.longitude)/len(listings)
-                    ]
-                    m = folium.Map(location=map_center, zoom_start=12)
-                    
-                    # Add markers for each listing
-                    for listing in listings:
-                        if listing.latitude and listing.longitude:
-                            folium.Marker(
-                                [listing.latitude, listing.longitude],
-                                popup=f"<b>{listing.business_name}</b><br>Rating: {listing.rating}★<br>{listing.address}",
-                                icon=folium.Icon(color='red', icon='info-sign')
-                            ).add_to(m)
-                    
-                    # Save map to template directory
-                    m.save('templates/map.html')
-                except Exception as e:
-                    print(f"Error creating map: {str(e)}")
-            
-            location_name = location.title() if location else STATE_NAMES.get(state, state)
-            
-            return render_template('listings.html', 
-                                 listings=listings,
-                                 location=location_name,
-                                 is_city=bool(location and not location.isdigit()),
-                                 current_page=page,
-                                 total_pages=(total + per_page - 1) // per_page,
-                                 total_listings=total,
-                                 filters={
-                                     'min_rating': min_rating,
-                                     'price_level': price_level,
-                                     'sort_by': sort_by
-                                 })
-        except GeocoderTimedOut:
-            # Handle geocoding timeout gracefully
-            return render_template('listings.html',
-                                 listings=[],
-                                 location=location.title() if location else STATE_NAMES.get(state, state),
-                                 is_city=bool(location and not location.isdigit()),
-                                 current_page=1,
-                                 total_pages=0,
-                                 total_listings=0,
-                                 filters={
-                                     'min_rating': min_rating,
-                                     'price_level': price_level,
-                                     'sort_by': sort_by
-                                 })
         
-    return render_template('listings.html', 
-                         listings=listings,
-                         location=location_name,
-                         is_city=bool(location and not location.isdigit()),
-                         current_page=page,
-                         total_pages=(total + per_page - 1) // per_page,
-                         total_listings=total,
-                         filters={
-                             'min_rating': min_rating,
-                             'price_level': price_level,
-                             'sort_by': sort_by
-                         })
+        # Get total count for pagination
+        total = query.count()
+        
+        # Apply pagination
+        listings = query.offset((page - 1) * per_page).limit(per_page).all()
+        
+        # Create map
+        try:
+            if listings:
+                map_center = [
+                    sum(l.latitude for l in listings if l.latitude)/len(listings),
+                    sum(l.longitude for l in listings if l.longitude)/len(listings)
+                ]
+                m = folium.Map(location=map_center, zoom_start=12)
+                
+                # Add markers for each listing
+                for listing in listings:
+                    if listing.latitude and listing.longitude:
+                        folium.Marker(
+                            [listing.latitude, listing.longitude],
+                            popup=f"<b>{listing.business_name}</b><br>Rating: {listing.rating}★<br>{listing.address}",
+                            icon=folium.Icon(color='red', icon='info-sign')
+                        ).add_to(m)
+                
+                # Save map to template directory
+                m.save('templates/map.html')
+        except Exception as e:
+            print(f"Error creating map: {str(e)}")
+        
+        location_name = location.title() if location else STATE_NAMES.get(state, state)
+        
+        return render_template('listings.html', 
+                             listings=listings,
+                             location=location_name,
+                             is_city=bool(location and not location.isdigit()),
+                             current_page=page,
+                             total_pages=(total + per_page - 1) // per_page,
+                             total_listings=total,
+                             filters={
+                                 'min_rating': min_rating,
+                                 'price_level': price_level,
+                                 'sort_by': sort_by
+                             })
     finally:
         session.close()
 
