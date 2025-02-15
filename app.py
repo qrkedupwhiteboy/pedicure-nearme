@@ -72,21 +72,18 @@ def search():
         # Get search parameters
         location = request.args.get('location', '').strip()
         state = request.args.get('state', '').upper()
-        
-        # Initialize geocoder
-        geolocator = Nominatim(user_agent="pedicure_finder")
-        
-        # Try to geocode the location
-        # Get filter parameters
         min_rating = request.args.get('min_rating', type=float)
         price_level = request.args.get('price_level')
         sort_by = request.args.get('sort', 'rating')  # Default sort by rating
         page = request.args.get('page', 1, type=int)
         per_page = 12  # Number of listings per page
         
+        # Initialize base query
+        query = session.query(PedicureListing)
+        
         try:
-            # Initialize base query
-            query = session.query(PedicureListing)
+            # Initialize geocoder
+            geolocator = Nominatim(user_agent="pedicure_finder")
             
             # Apply location filters
             if location:
@@ -106,12 +103,17 @@ def search():
                     query = query.filter(PedicureListing.city == city)
             elif state:
                 query = query.filter(PedicureListing.state == state)
+        except GeocoderTimedOut:
+            # Handle geocoding timeout gracefully
+            if location and not location.isdigit():
+                city = location.split('-')[0].strip().title()
+                query = query.filter(PedicureListing.city == city)
             
-            # Apply additional filters
-            if min_rating:
-                query = query.filter(PedicureListing.rating >= min_rating)
-            if price_level:
-                query = query.filter(PedicureListing.price_level == price_level)
+        # Apply additional filters
+        if min_rating:
+            query = query.filter(PedicureListing.rating >= min_rating)
+        if price_level:
+            query = query.filter(PedicureListing.price_level == price_level)
             
         # Apply sorting
         if sort_by == 'rating':
@@ -121,20 +123,21 @@ def search():
         elif sort_by == 'name':
             query = query.order_by(PedicureListing.business_name)
             
-        # Get total count for pagination
-        total = query.count()
+    # Get total count for pagination
+    total = query.count()
         
-        # Apply pagination
-        listings = query.offset((page - 1) * per_page).limit(per_page).all()
+    # Apply pagination
+    listings = query.offset((page - 1) * per_page).limit(per_page).all()
         
-        # Create map
-        if listings:
+    # Create map
+    if listings:
+        try:
             map_center = [
                 sum(l.latitude for l in listings if l.latitude)/len(listings),
                 sum(l.longitude for l in listings if l.longitude)/len(listings)
             ]
             m = folium.Map(location=map_center, zoom_start=12)
-            
+                
             # Add markers for each listing
             for listing in listings:
                 if listing.latitude and listing.longitude:
@@ -143,24 +146,26 @@ def search():
                         popup=f"<b>{listing.business_name}</b><br>Rating: {listing.rating}★<br>{listing.address}",
                         icon=folium.Icon(color='red', icon='info-sign')
                     ).add_to(m)
-            
+                
             # Save map to template directory
             m.save('templates/map.html')
+        except Exception as e:
+            print(f"Error creating map: {str(e)}")
         
-        location_name = location.title() if location else STATE_NAMES.get(state, state)
+    location_name = location.title() if location else STATE_NAMES.get(state, state)
         
-        return render_template('listings.html', 
-                             listings=listings,
-                             location=location_name,
-                             is_city=bool(city),
-                             current_page=page,
-                             total_pages=(total + per_page - 1) // per_page,
-                             total_listings=total,
-                             filters={
-                                 'min_rating': min_rating,
-                                 'price_level': price_level,
-                                 'sort_by': sort_by
-                             })
+    return render_template('listings.html', 
+                         listings=listings,
+                         location=location_name,
+                         is_city=bool(location and not location.isdigit()),
+                         current_page=page,
+                         total_pages=(total + per_page - 1) // per_page,
+                         total_listings=total,
+                         filters={
+                             'min_rating': min_rating,
+                             'price_level': price_level,
+                             'sort_by': sort_by
+                         })
     finally:
         session.close()
 
