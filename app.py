@@ -77,6 +77,13 @@ def search():
         geolocator = Nominatim(user_agent="pedicure_finder")
         
         # Try to geocode the location
+        # Get filter parameters
+        min_rating = request.args.get('min_rating', type=float)
+        price_level = request.args.get('price_level')
+        sort_by = request.args.get('sort', 'rating')  # Default sort by rating
+        page = request.args.get('page', 1, type=int)
+        per_page = 12  # Number of listings per page
+        
         try:
             if location:
                 # Check if it's a ZIP code
@@ -97,14 +104,11 @@ def search():
                 query = session.query(PedicureListing).filter(PedicureListing.state == state)
             else:
                 query = session.query(PedicureListing)
-        min_rating = request.args.get('min_rating', type=float)
-        price_level = request.args.get('price_level')
-        sort_by = request.args.get('sort', 'rating')  # Default sort by rating
-        page = request.args.get('page', 1, type=int)
-        per_page = 12  # Number of listings per page
-        
-        # Build query
-        query = session.query(PedicureListing)
+            # Apply filters
+            if min_rating:
+                query = query.filter(PedicureListing.rating >= min_rating)
+            if price_level:
+                query = query.filter(PedicureListing.price_level == price_level)
         
         # Apply filters
         if city:
