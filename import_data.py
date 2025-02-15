@@ -68,11 +68,16 @@ def import_csv_to_db(csv_path, chunk_size=10000):
                     elif key in ['categories', 'reviews_per_rating', 'images', 'hours', 'detailed_reviews']:
                         try:
                             if isinstance(record[key], str):
-                                # Validate JSON format
-                                json.loads(record[key])
+                                # Validate and parse JSON format
+                                parsed_json = json.loads(record[key])
+                                record[key] = json.dumps(parsed_json)  # Normalize JSON formatting
+                                print(f"Successfully parsed JSON for {key}: {record[key][:100]}...")
                             else:
+                                print(f"Warning: {key} is not a string: {type(record[key])}")
                                 record[key] = None
-                        except (json.JSONDecodeError, TypeError):
+                        except (json.JSONDecodeError, TypeError) as e:
+                            print(f"Error parsing JSON for {key}: {str(e)}")
+                            print(f"Value was: {record[key]}")
                             record[key] = None
             
             # Bulk insert chunk
