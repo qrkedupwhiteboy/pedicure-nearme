@@ -27,6 +27,11 @@ def view_data():
     session = Session()
     try:
         listings = session.query(PedicureListing).limit(100).all()
+        # Add debug print
+        if listings:
+            print(f"First listing: {listings[0].__dict__}")
+        else:
+            print("No listings found")
         return render_template('data.html', listings=listings)
     finally:
         session.close()
