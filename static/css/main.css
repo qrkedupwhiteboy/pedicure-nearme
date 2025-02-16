@@ -562,9 +562,11 @@ body {
 
 .listings-grid .container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
     padding: 0 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .listing-card {
@@ -637,6 +639,19 @@ body {
     color: #1c79ca;
     font-size: 0.9rem;
     font-weight: 500;
+}
+
+/* Responsive grid */
+@media (max-width: 1024px) {
+    .listings-grid .container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .listings-grid .container {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Footer */
