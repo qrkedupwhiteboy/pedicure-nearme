@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text
+from typing import Optional, Tuple
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
@@ -40,9 +41,23 @@ class PedicureListing(Base):
     hours = Column(Text)  # JSON data
     detailed_reviews = Column(String(10000))  # JSON data
 
+    # Valid US state codes
+    US_STATES = {
+        'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+        'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+        'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+        'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+        'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+        'DC'  # Including District of Columbia
+    }
+
     @staticmethod
-    def parse_address(address):
-        """Parse address string into components."""
+    def parse_address(address: str) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+        """
+        Parse address string into components.
+        Returns (city, state, zip_code) tuple, with None for invalid/missing components.
+        Only returns valid US state codes.
+        """
         if not address:
             return None, None, None
         
@@ -54,14 +69,22 @@ class PedicureListing(Base):
                 # Last part typically contains state and zip
                 state_zip = parts[-1].split()
                 if len(state_zip) >= 2:
-                    state = state_zip[0]
+                    state = state_zip[0].upper()
                     zip_code = state_zip[1]
                 else:
-                    state = state_zip[0] if state_zip else None
+                    state = state_zip[0].upper() if state_zip else None
                     zip_code = None
+                
+                # Validate state code
+                if state not in PedicureListing.US_STATES:
+                    return None, None, None
                 
                 # Second to last part is typically the city
                 city = parts[-2]
+                
+                # Basic zip code validation
+                if zip_code and not (zip_code.isdigit() and len(zip_code) == 5):
+                    zip_code = None
                 
                 return city, state, zip_code
         except:
