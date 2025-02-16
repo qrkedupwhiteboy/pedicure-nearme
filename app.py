@@ -226,7 +226,7 @@ def listing_detail(listing_id):
     """Display detailed information for a specific listing."""
     session = Session()
     try:
-        listing = session.query(PedicureListing).get_or_404(listing_id)
+        listing = session.query(PedicureListing).filter(PedicureListing.id == listing_id).first_or_404()
         return render_template('listing.html', listing=listing)
     finally:
         session.close()
