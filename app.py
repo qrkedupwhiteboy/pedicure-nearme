@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, abort
 from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
@@ -226,7 +226,9 @@ def listing_detail(listing_id):
     """Display detailed information for a specific listing."""
     session = Session()
     try:
-        listing = session.query(PedicureListing).filter(PedicureListing.id == listing_id).first_or_404()
+        listing = session.query(PedicureListing).filter(PedicureListing.id == listing_id).first()
+        if listing is None:
+            abort(404)
         return render_template('listing.html', listing=listing)
     finally:
         session.close()
