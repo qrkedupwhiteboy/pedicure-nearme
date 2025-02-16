@@ -3,6 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 from dotenv import load_dotenv
+from sqlalchemy.dialects.postgresql import JSONB
+
 
 # Load environment variables from .env file
 load_dotenv(verbose=True)
@@ -25,23 +27,24 @@ class PedicureListing(Base):
     city = Column(String(100))
     state = Column(String(100))
     zip_code = Column(String(10))
-    latitude = Column(Float)
-    longitude = Column(Float)
+    coordinates = Column(JSONB)
     rating = Column(Float)
     total_ratings = Column(Integer)
+    review_keywords = Column(JSONB)
+    link = Column(Text)
     phone = Column(String(50))
     website = Column(Text)
     description = Column(Text)
     reviews = Column(Integer)
     featured_image = Column(Text)
     main_category = Column(String(100))
-    categories = Column(Text)  # JSON array of category strings
-    workday_timing = Column(Text)
-    closed_on = Column(Text)
-    reviews_per_rating = Column(Text)  # JSON object with rating counts
-    hours = Column(Text)  # JSON array of daily hours objects
-    detailed_reviews = Column(Text)  # JSON array of review objects
-    business_hours = Column(Text)
+    categories = Column(JSONB)  # JSON array of category strings
+    workday_timing = Column(JSONB)
+    closed_on = Column(JSONB)
+    reviews_per_rating = Column(JSONB)  # JSON object with rating counts
+    hours = Column(JSONB)  # JSON array of daily hours objects
+    detailed_reviews = Column(JSONB)  # JSON array of review objects
+    business_hours = Column(JSONB)
     price_level = Column(String(10))
 
     def __repr__(self) -> str:
