@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ listing.business_name }} - Pedicure Services</title>
+    <meta name="description" content="View details, reviews, and booking information for {{ listing.business_name }} in {{ listing.city }}, {{ listing.state }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/" aria-label="Home">
+                    <img src="{{ url_for('static', filename='images/logo-placeholder.png') }}" 
+                         alt="Pedicure Near Me Directory" 
+                         width="180" 
+                         height="60">
+                </a>
+            </div>
+            <nav class="main-nav" aria-label="Main navigation">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/search">Find Pedicures</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="listing-detail">
+        <div class="listing-hero">
+            <div class="container">
+                <div class="listing-header">
+                    <h1>{{ listing.business_name }}</h1>
+                    <div class="listing-meta">
+                        <span class="rating">★ {{ "%.1f"|format(listing.rating) }}</span>
+                        <span class="reviews">({{ listing.reviews }} reviews)</span>
+                        {% if listing.price_level %}
+                        <span class="price-level">{{ listing.price_level }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="listing-content container">
+            <div class="listing-main">
+                {% if listing.featured_image %}
+                <div class="listing-gallery">
+                    <img src="{{ listing.featured_image }}" alt="{{ listing.business_name }}">
+                </div>
+                {% endif %}
+
+                <div class="listing-info">
+                    <section class="info-section">
+                        <h2>Location & Contact</h2>
+                        <p class="address">{{ listing.address }}<br>{{ listing.city }}, {{ listing.state }} {{ listing.zip_code }}</p>
+                        {% if listing.phone %}
+                        <p class="phone">📞 <a href="tel:{{ listing.phone }}">{{ listing.phone }}</a></p>
+                        {% endif %}
+                        {% if listing.website %}
+                        <p class="website">🌐 <a href="{{ listing.website }}" target="_blank" rel="noopener">Visit Website</a></p>
+                        {% endif %}
+                    </section>
+
+                    {% if listing.business_hours %}
+                    <section class="info-section">
+                        <h2>Business Hours</h2>
+                        <div class="hours-grid">
+                            {{ listing.business_hours|safe }}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    {% if listing.description %}
+                    <section class="info-section">
+                        <h2>About</h2>
+                        <p class="description">{{ listing.description }}</p>
+                    </section>
+                    {% endif %}
+
+                    {% if listing.main_category or listing.categories %}
+                    <section class="info-section">
+                        <h2>Services</h2>
+                        <div class="categories">
+                            {% if listing.main_category %}
+                            <span class="main-category">{{ listing.main_category }}</span>
+                            {% endif %}
+                            {% if listing.categories %}
+                            <div class="category-tags">
+                                {% for category in listing.categories.split(',') %}
+                                <span class="category-tag">{{ category.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    {% if listing.detailed_reviews %}
+                    <section class="info-section">
+                        <h2>Reviews</h2>
+                        <div class="reviews-grid">
+                            {{ listing.detailed_reviews|safe }}
+                        </div>
+                    </section>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 Pedicure Near Me Directory. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -654,6 +654,101 @@ body {
     }
 }
 
+/* Individual listing page */
+.listing-detail {
+    padding-bottom: 4rem;
+}
+
+.listing-hero {
+    background: #245d97;
+    color: white;
+    padding: 3rem 0;
+}
+
+.listing-header {
+    text-align: center;
+}
+
+.listing-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.listing-main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.listing-gallery {
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.listing-gallery img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.info-section {
+    background: white;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.info-section h2 {
+    color: #1c79ca;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.hours-grid {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.categories {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.main-category {
+    font-size: 1.2rem;
+    color: #1c79ca;
+    font-weight: 500;
+}
+
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.category-tag {
+    background: #f1f7fe;
+    color: #1c79ca;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.reviews-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* Update listing card to be clickable */
+.listing-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 /* Footer */
 .main-footer {
     background: #333;
