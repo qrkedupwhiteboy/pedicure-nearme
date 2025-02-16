@@ -20,29 +20,22 @@ class PedicureListing(Base):
     __tablename__ = 'pedicure_listings'
 
     id = Column(Integer, primary_key=True)
-    business_name = Column(String(500))
-    address = Column(String(500))
-    city = Column(String(100))
-    state = Column(String(100))
-    zip_code = Column(String(10))
-    latitude = Column(Float)
-    longitude = Column(Float)
-    rating = Column(Float)
-    total_ratings = Column(Integer)
-    phone = Column(String(50))
-    website = Column(Text)
-    description = Column(Text)
+    name = Column(String(500))
+    description = Column(String(10000))
     reviews = Column(Integer)
+    rating = Column(Integer)
+    website = Column(Text)
+    phone = Column(String(50))
     featured_image = Column(Text)
     main_category = Column(String(100))
-    categories = Column(Text)  # JSON array of category strings
-    workday_timing = Column(Text)
-    closed_on = Column(Text)
-    reviews_per_rating = Column(Text)  # JSON object with rating counts
-    hours = Column(Text)  # JSON array of daily hours objects
-    detailed_reviews = Column(Text)  # JSON array of review objects
-    business_hours = Column(Text)
-    price_level = Column(String(10))
+    categories = Column(Text)  # JSON array
+    address = Column(Text)
+    review_keywords = Column(Text)  # JSON data
+    link = Column(Text)
+    reviews_per_rating = Column(Text)  # JSON data
+    coordinates = Column(Text)  # JSON data
+    hours = Column(Text)  # JSON data
+    detailed_reviews = Column(String(10000))  # JSON data
 
     def __repr__(self) -> str:
         """Return string representation of the listing."""

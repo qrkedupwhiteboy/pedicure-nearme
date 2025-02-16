@@ -8,7 +8,7 @@ import json
 
 def import_csv_to_db(csv_path, chunk_size=10000):
     """
-    Import large CSV file to PostgreSQL database in chunks
+    Import CSV file to PostgreSQL database in chunks
     """
     load_dotenv()
     
@@ -34,55 +34,30 @@ def import_csv_to_db(csv_path, chunk_size=10000):
         try:
             # Process records before insert
             for record in records:
-                # Map 'name' field to 'business_name'
-                if 'name' in record:
-                    record['business_name'] = record['name']
-                    del record['name']  # Remove the original 'name' field
-                
-                # Extract city and state from address if they're null
-                if pd.isna(record.get('city')) or pd.isna(record.get('state')):
-                    address = record.get('address', '')
-                    if address and isinstance(address, str):
-                        parts = [p.strip() for p in address.split(',')]
-                        if len(parts) >= 2:
-                            # Handle US addresses
-                            if 'USA' in address or not any(uk_term in address.upper() for uk_term in ['UK', 'UNITED KINGDOM']):
-                                # Last part usually contains state and zip for US addresses
-                                state_zip = parts[-1].strip().split()
-                                if len(state_zip) >= 2 and len(state_zip[0]) == 2:  # US state code
-                                    record['state'] = state_zip[0]
-                                    record['city'] = parts[-2].strip()
-                            else:
-                                # Handle UK addresses
-                                record['state'] = 'UK'
-                                # City is usually second to last part before postcode
-                                if len(parts) >= 3:
-                                    record['city'] = parts[-3].strip()
-                
-                # Skip records with UK state
-                if record.get('state') == 'UK':
-                    continue
-                    
                 # Handle JSON fields and convert NaN/None to None for consistency
                 for key in record:
                     if pd.isna(record[key]):
                         record[key] = None
                     elif key == 'website' and record[key] == 'NaN':
                         record[key] = None
-                    elif key in ['categories', 'reviews_per_rating', 'images', 'hours', 'detailed_reviews']:
+                    elif key in ['categories', 'review_keywords', 'reviews_per_rating', 
+                               'coordinates', 'hours', 'detailed_reviews']:
                         try:
                             if isinstance(record[key], str):
                                 # Validate and parse JSON format
                                 parsed_json = json.loads(record[key])
                                 record[key] = json.dumps(parsed_json)  # Normalize JSON formatting
-                                print(f"Successfully parsed JSON for {key}: {record[key][:100]}...")
                             else:
-                                print(f"Warning: {key} is not a string: {type(record[key])}")
                                 record[key] = None
                         except (json.JSONDecodeError, TypeError) as e:
-                            print(f"Error parsing JSON for {key}: {str(e)}")
-                            print(f"Value was: {record[key]}")
+                            print(f"Error parsing JSON for {key} in record: {str(e)}")
                             record[key] = None
+                
+                # Ensure description and detailed_reviews don't exceed 10000 characters
+                if record.get('description'):
+                    record['description'] = record['description'][:10000]
+                if record.get('detailed_reviews'):
+                    record['detailed_reviews'] = record['detailed_reviews'][:10000]
             
             # Bulk insert chunk
             session.bulk_insert_mappings(PedicureListing, records)
