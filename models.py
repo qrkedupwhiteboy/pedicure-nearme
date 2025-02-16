@@ -15,7 +15,7 @@ class Business(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    description = Column(Text(10000))
+    description = Column(Text)
     reviews = Column(Float)
     rating = Column(Integer)
     website = Column(String)
@@ -29,7 +29,7 @@ class Business(Base):
     reviews_per_rating = Column(JSON)
     coordinates = Column(JSON)
     hours = Column(JSON)
-    detailed_reviews = Column(Text(10000))
+    detailed_reviews = Column(Text)
 
 # Create all tables
 Base.metadata.create_all(engine)
