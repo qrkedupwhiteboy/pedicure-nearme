@@ -9,16 +9,19 @@ def clean_json_string(json_str):
     """Clean and parse JSON string"""
     if not json_str:
         return None
+    if isinstance(json_str, dict):
+        return json_str
     try:
+        # Try direct JSON parsing
         return json.loads(json_str)
     except:
-        # Try to clean the string if it's malformed
         try:
-            # Replace single quotes with double quotes
+            # Try cleaning and parsing
             cleaned = json_str.replace("'", '"')
             return json.loads(cleaned)
         except:
-            return None
+            # If all parsing fails, return as string
+            return str(json_str)
 
 def import_csv(filename):
     session = Session()
@@ -35,7 +38,7 @@ def import_csv(filename):
                         name=row.get('name'),
                         description=row.get('description'),
                         reviews=float(row.get('reviews', 0)) if row.get('reviews') else 0,
-                        rating=int(row.get('rating', 0)) if row.get('rating') else 0,
+                        rating=float(row.get('rating', 0)) if row.get('rating') else 0,
                         website=row.get('website'),
                         phone=row.get('phone'),
                         featured_image=row.get('featured_image'),

@@ -17,7 +17,7 @@ class Business(Base):
     name = Column(String)
     description = Column(Text)
     reviews = Column(Float)
-    rating = Column(Integer)
+    rating = Column(Float)
     website = Column(String)
     phone = Column(String)
     featured_image = Column(String)
