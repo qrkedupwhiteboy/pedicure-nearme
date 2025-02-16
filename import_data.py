@@ -34,6 +34,13 @@ def import_csv_to_db(csv_path, chunk_size=10000):
         try:
             # Process records before insert
             for record in records:
+                # Parse address components
+                if record.get('address'):
+                    city, state, zip_code = PedicureListing.parse_address(record['address'])
+                    record['city'] = city
+                    record['state'] = state
+                    record['zip_code'] = zip_code
+
                 # Handle JSON fields and convert NaN/None to None for consistency
                 for key in record:
                     if pd.isna(record[key]):
