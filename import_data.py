@@ -29,9 +29,10 @@ def clean_json_string(json_str):
                 return None
 
 def import_csv(filename):
-    session = Session()
     row_count = 0
     error_count = 0
+    batch_size = 100
+    current_batch = []
     
     try:
         with open(filename, 'r', encoding='utf-8') as file:
@@ -57,12 +58,13 @@ def import_csv(filename):
                         hours=clean_json_string(row.get('hours')),
                         detailed_reviews=clean_json_string(row.get('detailed_reviews'))
                     )
-                    session.add(business)
+                    current_batch.append(business)
                     row_count += 1
                     
-                    # Commit in batches of 100 to avoid memory issues
-                    if row_count % 100 == 0:
-                        session.commit()
+                    # Process batch when it reaches batch_size
+                    if len(current_batch) >= batch_size:
+                        process_batch(current_batch)
+                        current_batch = []
                         print(f"Processed {row_count} records...")
                 
                 except Exception as e:
@@ -70,15 +72,27 @@ def import_csv(filename):
                     print(f"Error processing row {row_num}: {str(e)}")
                     continue
             
-            # Final commit for remaining records
-            session.commit()
+            # Process any remaining records in the last batch
+            if current_batch:
+                process_batch(current_batch)
+            
             print(f"\nImport completed:")
             print(f"Successfully imported {row_count} records")
             print(f"Errors encountered: {error_count}")
             
     except Exception as e:
         print(f"Fatal error occurred: {str(e)}")
+
+def process_batch(batch):
+    """Process a batch of business records"""
+    session = Session()
+    try:
+        for business in batch:
+            session.add(business)
+        session.commit()
+    except Exception as e:
         session.rollback()
+        raise e
     finally:
         session.close()
 
