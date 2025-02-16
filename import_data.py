@@ -9,7 +9,7 @@ def clean_json_string(json_str):
     """Clean and parse JSON string"""
     if not json_str:
         return None
-    if isinstance(json_str, dict):
+    if isinstance(json_str, (dict, list)):
         return json_str
     try:
         # Try direct JSON parsing
@@ -18,10 +18,15 @@ def clean_json_string(json_str):
         try:
             # Try cleaning and parsing
             cleaned = json_str.replace("'", '"')
+            cleaned = cleaned.replace('None', 'null')  # Replace Python None with JSON null
             return json.loads(cleaned)
         except:
-            # If all parsing fails, return as string
-            return str(json_str)
+            # If all parsing fails, try to evaluate as Python literal
+            try:
+                import ast
+                return ast.literal_eval(json_str)
+            except:
+                return None
 
 def import_csv(filename):
     session = Session()
