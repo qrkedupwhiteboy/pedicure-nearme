@@ -103,13 +103,24 @@ def get_geoapify_location():
             
             if reverse_response.ok:
                 reverse_data = reverse_response.json()
+                app.logger.debug(f"Reverse geocoding response: {reverse_data}")
+                
                 if reverse_data and 'features' in reverse_data and len(reverse_data['features']) > 0:
                     properties = reverse_data['features'][0]['properties']
+                    app.logger.debug(f"Location properties: {properties}")
+                    
                     # Add postcode to original location data if available
                     if 'postcode' in properties:
                         location_data['postcode'] = properties['postcode']
+                        app.logger.info(f"Found zipcode: {properties['postcode']}")
+                    else:
+                        app.logger.warning("No postcode found in reverse geocoding response")
+                else:
+                    app.logger.warning("No features found in reverse geocoding response")
+            else:
+                app.logger.error(f"Reverse geocoding failed: {reverse_response.status_code}")
             
-        app.logger.info(f"Successfully got location data: {location_data}")
+        app.logger.info(f"Final location data: {location_data}")
         return jsonify(location_data)
     except Exception as e:
         app.logger.error(f"Geoapify location error: {str(e)}")

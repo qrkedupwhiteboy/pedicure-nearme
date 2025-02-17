@@ -31,11 +31,19 @@ async function getUserLocation() {
             }
             
             // Use postcode if available, otherwise use city name
-            // Display the zipcode if available
+            // Display and store the zipcode if available
             const zipcodeDisplay = document.getElementById('current-zipcode');
             if (data.postcode) {
-                zipcodeDisplay.textContent = `Your current ZIP code: ${data.postcode}`;
+                const zipcode = data.postcode;
+                zipcodeDisplay.textContent = `Your current ZIP code: ${zipcode}`;
                 zipcodeDisplay.style.display = 'block';
+                
+                // Store zipcode in localStorage
+                localStorage.setItem('userZipcode', zipcode);
+                console.log('Stored zipcode:', zipcode);
+            } else {
+                console.warn('No zipcode found in location data');
+                localStorage.removeItem('userZipcode');
             }
             
             // Use postcode if available, otherwise use city name
@@ -85,5 +93,20 @@ document.addEventListener('click', (e) => {
     }
 });
 
+// Function to get stored zipcode
+function getStoredZipcode() {
+    const zipcode = localStorage.getItem('userZipcode');
+    console.log('Retrieved stored zipcode:', zipcode);
+    return zipcode;
+}
+
 // Initialize location detection when page loads
-document.addEventListener('DOMContentLoaded', getUserLocation);
+document.addEventListener('DOMContentLoaded', () => {
+    const storedZipcode = getStoredZipcode();
+    if (storedZipcode) {
+        const zipcodeDisplay = document.getElementById('current-zipcode');
+        zipcodeDisplay.textContent = `Your current ZIP code: ${storedZipcode}`;
+        zipcodeDisplay.style.display = 'block';
+    }
+    getUserLocation();
+});
