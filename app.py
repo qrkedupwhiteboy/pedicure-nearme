@@ -73,6 +73,7 @@ def home():
 def get_geoapify_location():
     """Proxy request to Geoapify IP location API"""
     try:
+        # First get location from IP
         url = f"https://api.geoapify.com/v1/ipinfo?apiKey={GEOAPIFY_API_KEY}"
         headers = {
             "Accept": "application/json"
@@ -89,6 +90,23 @@ def get_geoapify_location():
         if not location_data:
             app.logger.error("Empty response from Geoapify")
             return jsonify({'error': 'Empty response from Geoapify'}), 500
+
+        # If we have coordinates, get detailed location info including zipcode
+        if location_data.get('location') and 'latitude' in location_data['location'] and 'longitude' in location_data['location']:
+            lat = location_data['location']['latitude']
+            lon = location_data['location']['longitude']
+            
+            # Call reverse geocoding API
+            reverse_url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={GEOAPIFY_API_KEY}"
+            reverse_response = requests.get(reverse_url, headers=headers)
+            
+            if reverse_response.ok:
+                reverse_data = reverse_response.json()
+                if reverse_data and 'features' in reverse_data and len(reverse_data['features']) > 0:
+                    properties = reverse_data['features'][0]['properties']
+                    # Add postcode to original location data if available
+                    if 'postcode' in properties:
+                        location_data['postcode'] = properties['postcode']
             
         app.logger.info(f"Successfully got location data: {location_data}")
         return jsonify(location_data)
