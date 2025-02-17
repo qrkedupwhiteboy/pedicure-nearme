@@ -233,6 +233,63 @@ def listing_detail(listing_id):
     finally:
         session.close()
 
+@app.route('/get_ip_location')
+def get_ip_location():
+    """Get location from IP address and nearby locations"""
+    try:
+        client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+        if client_ip == '127.0.0.1':
+            # For local development, return a default location with nearby areas
+            return jsonify({
+                'zipcode': '10001',
+                'city': 'New York',
+                'state': 'NY',
+                'nearby_locations': [
+                    {'city': 'New York', 'state': 'NY', 'zipcode': '10001'},
+                    {'city': 'Brooklyn', 'state': 'NY', 'zipcode': '11201'},
+                    {'city': 'Queens', 'state': 'NY', 'zipcode': '11101'},
+                    {'city': 'Jersey City', 'state': 'NJ', 'zipcode': '07302'},
+                    {'city': 'Hoboken', 'state': 'NJ', 'zipcode': '07030'}
+                ]
+            })
+            
+        location_data = get_ip_info(client_ip)
+        if location_data and location_data.get('postal'):
+            # Query database for nearby locations
+            session = Session()
+            try:
+                nearby = session.query(
+                    PedicureListing.city,
+                    PedicureListing.state,
+                    PedicureListing.zipcode
+                ).filter(
+                    PedicureListing.latitude.between(
+                        location_data.get('latitude') - 0.5,
+                        location_data.get('latitude') + 0.5
+                    ),
+                    PedicureListing.longitude.between(
+                        location_data.get('longitude') - 0.5,
+                        location_data.get('longitude') + 0.5
+                    )
+                ).distinct().limit(5).all()
+                
+                return jsonify({
+                    'zipcode': location_data['postal'],
+                    'city': location_data.get('city'),
+                    'state': location_data.get('region_code'),
+                    'nearby_locations': [
+                        {'city': city, 'state': state, 'zipcode': zipcode}
+                        for city, state, zipcode in nearby
+                    ]
+                })
+            finally:
+                session.close()
+        
+        return jsonify({'error': 'Location not found'}), 404
+    except Exception as e:
+        app.logger.error(f"IP location error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/map')
 def map_view():
     """Render the map view page."""
