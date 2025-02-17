@@ -111,16 +111,11 @@ def get_zipcode():
             return jsonify({'error': 'Missing latitude or longitude'}), 400
             
         # Call reverse geocoding API
-        url = "https://api.geoapify.com/v1/geocode/reverse"
-        params = {
-            "lat": lat,
-            "lon": lon,
-            "apiKey": REVERSE_GEOCODE_KEY
+        url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={REVERSE_GEOCODE_KEY}"
+        headers = {
+            "Accept": "application/json"
         }
-        headers = CaseInsensitiveDict()
-        headers["Accept"] = "application/json"
-        
-        response = requests.get(url, params=params, headers=headers)
+        response = requests.get(url, headers=headers)
         
         # Log the actual URL being called for debugging
         app.logger.debug(f"Calling URL: {response.url}")
