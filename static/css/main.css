@@ -232,6 +232,16 @@ body {
     font-size: .8rem;
 }
 
+.current-zipcode {
+    margin-top: 8px;
+    color: white;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    display: none;  /* Hidden by default */
+}
+
 /* How it works section */
 .how-it-works {
     padding: 4rem 4rem;

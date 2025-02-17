@@ -31,6 +31,14 @@ async function getUserLocation() {
             }
             
             // Use postcode if available, otherwise use city name
+            // Display the zipcode if available
+            const zipcodeDisplay = document.getElementById('current-zipcode');
+            if (data.postcode) {
+                zipcodeDisplay.textContent = `Your current ZIP code: ${data.postcode}`;
+                zipcodeDisplay.style.display = 'block';
+            }
+            
+            // Use postcode if available, otherwise use city name
             const locationDisplay = data.postcode || 
                                  (data.city && data.city.name) || 
                                  'your location';
