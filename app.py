@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, jsonify
 from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
@@ -7,6 +7,17 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import folium
 from sqlalchemy import or_
+import requests
+from functools import lru_cache
+
+@lru_cache(maxsize=1000)
+def get_ip_info(ip):
+    """Cache IP geolocation results"""
+    try:
+        response = requests.get(f"https://ipapi.co/{ip}/json/")
+        return response.json()
+    except:
+        return None
 
 # State code to full name mapping
 STATE_NAMES = {
