@@ -283,7 +283,12 @@ def get_geoapify_location():
     """Proxy request to Geoapify IP location API"""
     try:
         url = f"https://api.geoapify.com/v1/ipinfo?apiKey={GEOAPIFY_API_KEY}"
-        response = requests.get(url, headers={'Accept': 'application/json'})
+        headers = {
+            "Accept": "application/json"
+        }
+        response = requests.get(url, headers=headers)
+        
+        app.logger.info(f"Geoapify API status code: {response.status_code}")
         
         if not response.ok:
             app.logger.error(f"Geoapify API error: Status {response.status_code}")
@@ -291,8 +296,10 @@ def get_geoapify_location():
             
         location_data = response.json()
         if not location_data:
+            app.logger.error("Empty response from Geoapify")
             return jsonify({'error': 'Empty response from Geoapify'}), 500
             
+        app.logger.info(f"Successfully got location data: {location_data}")
         return jsonify(location_data)
     except Exception as e:
         app.logger.error(f"Geoapify location error: {str(e)}")
