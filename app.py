@@ -27,6 +27,7 @@ STATE_NAMES = {
 load_dotenv()
 
 GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
+REVERSE_GEOCODE_KEY = os.getenv('REVERSE_GEOCODE_KEY')
 app = Flask(__name__)
 
 @app.route('/')
@@ -97,7 +98,7 @@ def get_geoapify_location():
             lon = location_data['location']['longitude']
             
             # Call reverse geocoding API
-            reverse_url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={GEOAPIFY_API_KEY}"
+            reverse_url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={REVERSE_GEOCODE_KEY}"
             reverse_response = requests.get(reverse_url, headers=headers)
             
             if reverse_response.ok:
