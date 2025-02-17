@@ -118,15 +118,21 @@ def get_nearby_locations():
             # 1 degree lat/lon ≈ 111km at equator, adjust as needed
             radius = 0.5  # roughly 50km
             
+            # Extract latitude and longitude from JSON coordinates
             nearby = session.query(
                 PedicureListing.city,
                 PedicureListing.state,
                 PedicureListing.zip_code,
                 func.count(PedicureListing.id).label('listing_count')
             ).filter(
-                PedicureListing.latitude.between(lat - radius, lat + radius),
-                PedicureListing.longitude.between(lon - radius, lon + radius),
+                text("(coordinates->>'latitude')::float BETWEEN :lat_min AND :lat_max"),
+                text("(coordinates->>'longitude')::float BETWEEN :lon_min AND :lon_max"),
                 PedicureListing.zip_code.isnot(None)
+            ).params(
+                lat_min=lat - radius,
+                lat_max=lat + radius,
+                lon_min=lon - radius,
+                lon_max=lon + radius
             ).group_by(
                 PedicureListing.city,
                 PedicureListing.state,
