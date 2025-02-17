@@ -8,6 +8,7 @@ from geopy.exc import GeocoderTimedOut
 import folium
 from sqlalchemy import or_
 import requests
+from requests.structures import CaseInsensitiveDict
 from functools import lru_cache
 
 # State code to full name mapping
@@ -109,18 +110,12 @@ def get_zipcode():
         if not lat or not lon:
             return jsonify({'error': 'Missing latitude or longitude'}), 400
             
-        # Call reverse geocoding API with proper formatting
-        url = "https://api.geoapify.com/v1/geocode/reverse"
-        params = {
-            "lat": lat,
-            "lon": lon,
-            "apiKey": REVERSE_GEOCODE_KEY,
-            "format": "json"
-        }
-        headers = {
-            "Accept": "application/json"
-        }
-        response = requests.get(url, params=params, headers=headers)
+        # Call reverse geocoding API
+        url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={REVERSE_GEOCODE_KEY}"
+        headers = CaseInsensitiveDict()
+        headers["Accept"] = "application/json"
+        
+        response = requests.get(url, headers=headers)
         
         # Log the actual URL being called for debugging
         app.logger.debug(f"Calling URL: {response.url}")
