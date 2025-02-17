@@ -40,6 +40,8 @@ class PedicureListing(Base):
     coordinates = Column(Text)  # JSON data
     hours = Column(Text)  # JSON data
     detailed_reviews = Column(String(10000))  # JSON data
+    latitude = Column(Float)
+    longitude = Column(Float)
 
     # Valid US state codes
     US_STATES = {

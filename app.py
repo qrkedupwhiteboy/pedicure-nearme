@@ -121,12 +121,12 @@ def get_nearby_locations():
             nearby = session.query(
                 PedicureListing.city,
                 PedicureListing.state,
-                PedicureListing.zipcode,
+                PedicureListing.zip_code,
                 func.count(PedicureListing.id).label('listing_count')
             ).filter(
                 PedicureListing.latitude.between(lat - radius, lat + radius),
                 PedicureListing.longitude.between(lon - radius, lon + radius),
-                PedicureListing.zipcode.isnot(None)
+                PedicureListing.zip_code.isnot(None)
             ).group_by(
                 PedicureListing.city,
                 PedicureListing.state,
@@ -139,7 +139,7 @@ def get_nearby_locations():
                 {
                     'city': loc.city,
                     'state': loc.state,
-                    'zipcode': loc.zipcode,
+                    'zipcode': loc.zip_code,
                     'listing_count': loc.listing_count
                 }
                 for loc in nearby
