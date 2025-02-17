@@ -14,11 +14,15 @@ async function getUserLocation() {
         }
         const data = await response.json();
         
+        // Log the full response for debugging
+        console.log('Geoapify response:', data);
+        
         if (data.error) {
             throw new Error(data.error);
         }
 
-        if (data.location && data.postal) {
+        // Check for location data in the correct structure
+        if (data && data.location && data.location.latitude && data.location.longitude) {
             const nearbyResponse = await fetch(`/nearby_locations?lat=${data.location.latitude}&lon=${data.location.longitude}`);
             const nearbyData = await nearbyResponse.json();
             
@@ -26,9 +30,15 @@ async function getUserLocation() {
                 showLocationSuggestions(nearbyData.nearby_locations);
             }
             
-            locationInput.setAttribute('placeholder', `Locations near ${data.postal.code}`);
+            // Use postcode if available, otherwise use city name
+            const locationDisplay = data.postcode || 
+                                 (data.city && data.city.name) || 
+                                 'your location';
+            
+            locationInput.setAttribute('placeholder', `Locations near ${locationDisplay}`);
         } else {
-            throw new Error('Location data incomplete');
+            console.log('Invalid location data structure:', data);
+            throw new Error('Could not determine location');
         }
     } catch (error) {
         console.log('Location detection unavailable:', error);
