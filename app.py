@@ -167,11 +167,30 @@ def map_view(zipcode):
     """Display a map of pedicure listings for a given zipcode"""
     session = Session()
     try:
-        # Query listings for the given zipcode
-        listings = session.query(PedicureListing).filter(
+        # Get filter parameters
+        min_rating = request.args.get('rating', type=float)
+        min_reviews = request.args.get('reviews', type=int)
+        sort_by = request.args.get('sort', 'rating')  # Default sort by rating
+        
+        # Build base query
+        query = session.query(PedicureListing).filter(
             PedicureListing.zip_code == zipcode,
             PedicureListing.coordinates.isnot(None)
-        ).all()
+        )
+        
+        # Apply filters
+        if min_rating:
+            query = query.filter(PedicureListing.rating >= min_rating)
+        if min_reviews:
+            query = query.filter(PedicureListing.reviews >= min_reviews)
+            
+        # Apply sorting
+        if sort_by == 'rating':
+            query = query.order_by(PedicureListing.rating.desc())
+        elif sort_by == 'reviews':
+            query = query.order_by(PedicureListing.reviews.desc())
+            
+        listings = query.all()
         
         if not listings:
             abort(404)

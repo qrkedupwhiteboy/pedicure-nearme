@@ -138,31 +138,29 @@
             <div class="sidebar">
                 <div class="filters">
                     <div class="filter-group">
-                        <h3>Service Type</h3>
+                        <h3>Sort By</h3>
                         <div class="filter-options">
-                            <div class="filter-option active">All</div>
-                            <div class="filter-option">Spa Pedicure</div>
-                            <div class="filter-option">Medical</div>
-                            <div class="filter-option">Gel</div>
-                            <div class="filter-option">Luxury</div>
+                            <div class="filter-option active" data-sort="rating">Rating</div>
+                            <div class="filter-option" data-sort="reviews">Review Count</div>
+                            <div class="filter-option" data-sort="distance">Distance</div>
                         </div>
                     </div>
                     <div class="filter-group">
-                        <h3>Price Range</h3>
+                        <h3>Minimum Rating</h3>
                         <div class="filter-options">
-                            <div class="filter-option active">All</div>
-                            <div class="filter-option">$</div>
-                            <div class="filter-option">$$</div>
-                            <div class="filter-option">$$$</div>
+                            <div class="filter-option active" data-rating="0">All</div>
+                            <div class="filter-option" data-rating="4.5">4.5+</div>
+                            <div class="filter-option" data-rating="4">4.0+</div>
+                            <div class="filter-option" data-rating="3.5">3.5+</div>
                         </div>
                     </div>
                     <div class="filter-group">
-                        <h3>Rating</h3>
+                        <h3>Minimum Reviews</h3>
                         <div class="filter-options">
-                            <div class="filter-option active">All</div>
-                            <div class="filter-option">4.5+</div>
-                            <div class="filter-option">4.0+</div>
-                            <div class="filter-option">3.5+</div>
+                            <div class="filter-option active" data-reviews="0">All</div>
+                            <div class="filter-option" data-reviews="100">100+</div>
+                            <div class="filter-option" data-reviews="50">50+</div>
+                            <div class="filter-option" data-reviews="25">25+</div>
                         </div>
                     </div>
                 </div>
@@ -185,6 +183,9 @@
     </div>
     
     <script>
+        // Store the current zipcode
+        const currentZipcode = window.location.pathname.split('/').pop();
+        
         // Add click handlers for listing cards
         document.querySelectorAll('.listing-card').forEach(card => {
             card.addEventListener('click', () => {
@@ -196,15 +197,61 @@
             });
         });
         
+        // Function to update listings based on filters
+        function updateListings() {
+            const activeSort = document.querySelector('[data-sort].active').dataset.sort;
+            const minRating = document.querySelector('[data-rating].active').dataset.rating;
+            const minReviews = document.querySelector('[data-reviews].active').dataset.reviews;
+            
+            // Build URL with filter parameters
+            const params = new URLSearchParams({
+                sort: activeSort,
+                rating: minRating,
+                reviews: minReviews
+            });
+            
+            // Reload page with new filters
+            window.location.href = `/map/${currentZipcode}?${params.toString()}`;
+        }
+        
         // Add click handlers for filter options
         document.querySelectorAll('.filter-option').forEach(option => {
             option.addEventListener('click', () => {
                 const parent = option.parentElement;
                 parent.querySelector('.active').classList.remove('active');
                 option.classList.add('active');
-                // TODO: Implement actual filtering
+                updateListings();
             });
         });
+        
+        // Calculate and display distances if user location is available
+        if (localStorage.getItem('userLat') && localStorage.getItem('userLon')) {
+            const userLat = parseFloat(localStorage.getItem('userLat'));
+            const userLon = parseFloat(localStorage.getItem('userLon'));
+            
+            document.querySelectorAll('.listing-card').forEach(card => {
+                const listingLat = parseFloat(card.dataset.lat);
+                const listingLon = parseFloat(card.dataset.lon);
+                
+                // Calculate distance using Haversine formula
+                const R = 6371; // Earth's radius in km
+                const dLat = (listingLat - userLat) * Math.PI / 180;
+                const dLon = (listingLon - userLon) * Math.PI / 180;
+                const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                          Math.cos(userLat * Math.PI / 180) * Math.cos(listingLat * Math.PI / 180) *
+                          Math.sin(dLon/2) * Math.sin(dLon/2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                const distance = R * c;
+                
+                // Add distance to the card
+                const distanceText = document.createElement('p');
+                distanceText.textContent = `Distance: ${distance.toFixed(1)} km`;
+                card.appendChild(distanceText);
+                
+                // Store distance for sorting
+                card.dataset.distance = distance;
+            });
+        }
     </script>
 </body>
 </html>
