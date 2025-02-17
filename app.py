@@ -41,6 +41,7 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     session = Session()
+    geoapify_api_key = os.getenv('GEOAPIFY_API_KEY')
     try:
         # Query cities with their listing counts
         city_counts = session.query(
@@ -73,7 +74,9 @@ def home():
                         states_cities[state]['top_cities'].append(city)
                     states_cities[state]['total_cities'] += 1
 
-        return render_template('index.html', states_cities=states_cities)
+        return render_template('index.html', 
+                             states_cities=states_cities,
+                             geoapify_api_key=geoapify_api_key)
     finally:
         session.close()
 
@@ -245,52 +248,35 @@ def listing_detail(listing_id):
     finally:
         session.close()
 
-@app.route('/get_ip_location')
-def get_ip_location():
-    """Get location from IP address using Geoapify"""
+@app.route('/nearby_locations')
+def nearby_locations():
+    """Get nearby locations based on coordinates"""
     try:
-        url = f"https://api.geoapify.com/v1/ipinfo?apiKey={GEOAPIFY_API_KEY}"
-        response = requests.get(url)
-        location_data = response.json()
+        lat = float(request.args.get('lat'))
+        lon = float(request.args.get('lon'))
         
-        if not response.ok:
-            app.logger.error(f"Geoapify API error: {location_data.get('message')}")
-            return jsonify({'error': 'Could not detect location'}), 500
-        # Extract location data from Geoapify response
-        if location_data and location_data.get('postal', {}).get('code'):
-            # Query database for nearby locations
-            session = Session()
-            try:
-                nearby = session.query(
-                    PedicureListing.city,
-                    PedicureListing.state,
-                    PedicureListing.zipcode
-                ).filter(
-                    PedicureListing.latitude.between(
-                        location_data.get('latitude') - 0.5,
-                        location_data.get('latitude') + 0.5
-                    ),
-                    PedicureListing.longitude.between(
-                        location_data.get('longitude') - 0.5,
-                        location_data.get('longitude') + 0.5
-                    )
-                ).distinct().limit(5).all()
-                
-                return jsonify({
-                    'zipcode': location_data['postal']['code'],
-                    'city': location_data.get('city', {}).get('name'),
-                    'state': location_data.get('state', {}).get('code'),
-                    'nearby_locations': [
-                        {'city': city, 'state': state, 'zipcode': zipcode}
-                        for city, state, zipcode in nearby
-                    ]
-                })
-            finally:
-                session.close()
-        
-        return jsonify({'error': 'Location not found'}), 404
+        session = Session()
+        try:
+            nearby = session.query(
+                PedicureListing.city,
+                PedicureListing.state,
+                PedicureListing.zipcode
+            ).filter(
+                PedicureListing.latitude.between(lat - 0.5, lat + 0.5),
+                PedicureListing.longitude.between(lon - 0.5, lon + 0.5)
+            ).distinct().limit(5).all()
+            
+            return jsonify({
+                'nearby_locations': [
+                    {'city': city, 'state': state, 'zipcode': zipcode}
+                    for city, state, zipcode in nearby
+                ]
+            })
+        finally:
+            session.close()
+            
     except Exception as e:
-        app.logger.error(f"IP location error: {str(e)}")
+        app.logger.error(f"Nearby locations error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 
