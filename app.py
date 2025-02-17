@@ -130,7 +130,7 @@ def get_nearby_locations():
             ).group_by(
                 PedicureListing.city,
                 PedicureListing.state,
-                PedicureListing.zipcode
+                PedicureListing.zip_code
             ).order_by(
                 text('listing_count DESC')
             ).limit(10).all()
