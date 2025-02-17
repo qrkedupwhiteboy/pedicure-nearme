@@ -234,7 +234,7 @@
                 const listingLon = parseFloat(card.dataset.lon);
                 
                 // Calculate distance using Haversine formula
-                const R = 6371; // Earth's radius in km
+                const R = 3963.1; // Earth's radius in miles
                 const dLat = (listingLat - userLat) * Math.PI / 180;
                 const dLon = (listingLon - userLon) * Math.PI / 180;
                 const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -245,7 +245,7 @@
                 
                 // Add distance to the card
                 const distanceText = document.createElement('p');
-                distanceText.textContent = `Distance: ${distance.toFixed(1)} km`;
+                distanceText.textContent = `Distance: ${distance.toFixed(1)} miles`;
                 card.appendChild(distanceText);
                 
                 // Store distance for sorting
