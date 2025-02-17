@@ -66,24 +66,33 @@ locationInput.addEventListener('focus', async () => {
     const lat = localStorage.getItem('userLat');
     const lon = localStorage.getItem('userLon');
     
+    console.log('Stored coordinates:', {lat, lon});
+    
     if (lat && lon) {
-        try {
-            const response = await fetch(`/get_zipcode?lat=${lat}&lon=${lon}`);
-            const data = await response.json();
-            
-            if (response.ok && data.zipcode) {
-                const zipcodeDisplay = document.getElementById('current-zipcode');
-                zipcodeDisplay.textContent = `Your current ZIP code: ${data.zipcode}`;
-                zipcodeDisplay.style.display = 'block';
-                
-                localStorage.setItem('userZipcode', data.zipcode);
-                console.log('Stored zipcode:', data.zipcode);
-            } else {
-                console.warn('Failed to get zipcode:', data.error);
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
             }
-        } catch (error) {
-            console.error('Error getting zipcode:', error);
-        }
+        };
+
+        fetch(`/get_zipcode?lat=${lat}&lon=${lon}`, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.zipcode) {
+                    const zipcodeDisplay = document.getElementById('current-zipcode');
+                    zipcodeDisplay.textContent = `Your current ZIP code: ${data.zipcode}`;
+                    zipcodeDisplay.style.display = 'block';
+                    
+                    localStorage.setItem('userZipcode', data.zipcode);
+                    console.log('Stored zipcode:', data.zipcode);
+                } else {
+                    console.warn('No zipcode in response:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Error getting zipcode:', error);
+            });
     }
     
     if (suggestionsContainer.children.length > 0) {
