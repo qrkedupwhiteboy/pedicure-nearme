@@ -206,8 +206,16 @@
             const listings = document.querySelector('.listings');
             const cards = Array.from(listings.getElementsByClassName('listing-card'));
             
+            // Store original cards if not already stored
+            if (!window.originalCards) {
+                window.originalCards = cards;
+            }
+            
+            // Start with original cards for each filter operation
+            let filteredCards = Array.from(window.originalCards);
+            
             // Filter cards based on criteria
-            const filteredCards = cards.filter(card => {
+            filteredCards = filteredCards.filter(card => {
                 const rating = parseFloat(card.querySelector('.rating').textContent.match(/\d+\.?\d*/)[0]);
                 const reviews = parseInt(card.querySelector('.rating').textContent.match(/\((\d+)/)[1]);
                 return rating >= minRating && reviews >= minReviews;
@@ -231,9 +239,21 @@
                 return 0;
             });
             
+            // Clone the filtered cards before appending
+            const clonedCards = filteredCards.map(card => card.cloneNode(true));
+            
             // Clear and re-append filtered and sorted cards
             listings.innerHTML = '';
-            filteredCards.forEach(card => listings.appendChild(card));
+            clonedCards.forEach(card => {
+                // Re-attach click event listener to cloned card
+                card.addEventListener('click', () => {
+                    const lat = parseFloat(card.dataset.lat);
+                    const lon = parseFloat(card.dataset.lon);
+                    const map = document.querySelector('#map-container iframe').contentWindow.L.map;
+                    map.setView([lat, lon], 15);
+                });
+                listings.appendChild(card);
+            });
             
             // Update map markers visibility
             const map = document.querySelector('#map-container iframe').contentWindow;
@@ -243,7 +263,7 @@
             markers.forEach(marker => marker.style.display = 'none');
             
             // Show only markers for visible listings
-            filteredCards.forEach(card => {
+            clonedCards.forEach(card => {
                 const lat = card.dataset.lat;
                 const lon = card.dataset.lon;
                 markers.forEach(marker => {
