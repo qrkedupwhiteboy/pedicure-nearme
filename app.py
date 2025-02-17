@@ -10,15 +10,6 @@ from sqlalchemy import or_
 import requests
 from functools import lru_cache
 
-@lru_cache(maxsize=1000)
-def get_ip_info(ip):
-    """Cache IP geolocation results"""
-    try:
-        response = requests.get(f"https://ipapi.co/{ip}/json/")
-        return response.json()
-    except:
-        return None
-
 # State code to full name mapping
 STATE_NAMES = {
     'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
