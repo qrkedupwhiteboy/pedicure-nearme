@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedicure Listings Map</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        #map-container {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        .listing-popup {
+            max-width: 300px;
+        }
+        .listing-popup h3 {
+            margin: 0 0 10px 0;
+            color: #1c79ca;
+        }
+        .listing-popup p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .listing-popup .rating {
+            color: #f39c12;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        {{ map_html|safe }}
+    </div>
+</body>
+</html>

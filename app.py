@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import folium
+from folium import Popup
+import json
 from sqlalchemy import or_
 import requests
 from requests.structures import CaseInsensitiveDict
@@ -159,6 +161,48 @@ def get_nearby_locations():
     except Exception as e:
         app.logger.error(f"Nearby locations error: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/map/<zipcode>')
+def map_view(zipcode):
+    """Display a map of pedicure listings for a given zipcode"""
+    session = Session()
+    try:
+        # Query listings for the given zipcode
+        listings = session.query(PedicureListing).filter(
+            PedicureListing.zip_code == zipcode,
+            PedicureListing.coordinates.isnot(None)
+        ).all()
+        
+        if not listings:
+            abort(404)
+            
+        # Create map centered on the first listing
+        first_coords = json.loads(listings[0].coordinates)
+        map_center = [first_coords['latitude'], first_coords['longitude']]
+        m = folium.Map(location=map_center, zoom_start=13)
+        
+        # Add markers for each listing
+        for listing in listings:
+            coords = json.loads(listing.coordinates)
+            popup_html = f"""
+                <div class='listing-popup'>
+                    <h3>{listing.name}</h3>
+                    <p>{listing.address}</p>
+                    <p class='rating'>Rating: {listing.rating}/5 ({listing.reviews} reviews)</p>
+                    <p>{listing.phone}</p>
+                    <a href='{listing.website}' target='_blank'>Visit Website</a>
+                </div>
+            """
+            
+            folium.Marker(
+                location=[coords['latitude'], coords['longitude']],
+                popup=Popup(popup_html, max_width=300),
+                icon=folium.Icon(color='blue', icon='info-sign')
+            ).add_to(m)
+            
+        return render_template('map_view.html', map_html=m._repr_html_())
+    finally:
+        session.close()
 
 @app.route('/get_zipcode', methods=['GET'])
 def get_zipcode():

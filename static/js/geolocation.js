@@ -19,8 +19,10 @@ function showNearbyLocations(locations) {
     // Add click handlers to suggestions
     document.querySelectorAll('.suggestion-item').forEach(item => {
         item.addEventListener('click', () => {
-            locationInput.value = item.dataset.value;
+            const zipcode = item.dataset.value;
+            locationInput.value = zipcode;
             suggestionsContainer.style.display = 'none';
+            window.open(`/map/${zipcode}`, '_blank');
         });
     });
     
@@ -111,10 +113,15 @@ locationInput.addEventListener('focus', async () => {
                     
                     // Add click handler for current location button
                     document.getElementById('use-current-location').addEventListener('click', () => {
-                        const lat = localStorage.getItem('userLat');
-                        const lon = localStorage.getItem('userLon');
-                        if (lat && lon) {
-                            window.location.href = `/search?lat=${lat}&lon=${lon}`;
+                        const zipcode = localStorage.getItem('userZipcode');
+                        if (zipcode) {
+                            window.open(`/map/${zipcode}`, '_blank');
+                        } else {
+                            const lat = localStorage.getItem('userLat');
+                            const lon = localStorage.getItem('userLon');
+                            if (lat && lon) {
+                                window.location.href = `/search?lat=${lat}&lon=${lon}`;
+                            }
                         }
                     });
                 } else {
