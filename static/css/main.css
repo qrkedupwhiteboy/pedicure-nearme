@@ -246,12 +246,24 @@ body {
 
 .current-zipcode {
     margin-top: 8px;
-    color: white;
-    font-size: 0.9rem;
-    padding: 4px 8px;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    text-align: center;
     display: none;  /* Hidden by default */
+}
+
+#use-current-location {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1c79ca;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+#use-current-location:hover {
+    background: white;
 }
 
 /* How it works section */

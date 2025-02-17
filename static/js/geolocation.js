@@ -104,11 +104,19 @@ locationInput.addEventListener('focus', async () => {
             .then(data => {
                 if (data.zipcode) {
                     const zipcodeDisplay = document.getElementById('current-zipcode');
-                    zipcodeDisplay.textContent = `Your current ZIP code: ${data.zipcode}`;
                     zipcodeDisplay.style.display = 'block';
                     
                     localStorage.setItem('userZipcode', data.zipcode);
                     console.log('Stored zipcode:', data.zipcode);
+                    
+                    // Add click handler for current location button
+                    document.getElementById('use-current-location').addEventListener('click', () => {
+                        const lat = localStorage.getItem('userLat');
+                        const lon = localStorage.getItem('userLon');
+                        if (lat && lon) {
+                            window.location.href = `/search?lat=${lat}&lon=${lon}`;
+                        }
+                    });
                 } else {
                     console.warn('No zipcode in response:', data);
                 }
@@ -142,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const storedZipcode = getStoredZipcode();
     if (storedZipcode) {
         const zipcodeDisplay = document.getElementById('current-zipcode');
-        zipcodeDisplay.textContent = `Your current ZIP code: ${storedZipcode}`;
         zipcodeDisplay.style.display = 'block';
     }
     getUserLocation();
