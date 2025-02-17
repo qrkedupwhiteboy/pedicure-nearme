@@ -209,6 +209,12 @@
                 rating: minRating,
                 reviews: minReviews
             });
+
+            // Add user coordinates if sorting by distance
+            if (activeSort === 'distance' && localStorage.getItem('userLat') && localStorage.getItem('userLon')) {
+                params.append('user_lat', localStorage.getItem('userLat'));
+                params.append('user_lon', localStorage.getItem('userLon'));
+            }
             
             // Reload page with new filters
             window.location.href = `/map/${currentZipcode}?${params.toString()}`;

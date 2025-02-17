@@ -184,11 +184,16 @@ def map_view(zipcode):
         if min_reviews:
             query = query.filter(PedicureListing.reviews >= min_reviews)
             
+        # Get user coordinates for distance calculation if provided
+        user_lat = request.args.get('user_lat', type=float)
+        user_lon = request.args.get('user_lon', type=float)
+
         # Apply sorting
         if sort_by == 'rating':
             query = query.order_by(PedicureListing.rating.desc())
         elif sort_by == 'reviews':
             query = query.order_by(PedicureListing.reviews.desc())
+        # Note: Distance sorting happens in memory after query
             
         listings = query.all()
         
