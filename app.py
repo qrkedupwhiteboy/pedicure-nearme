@@ -307,4 +307,4 @@ def map_view():
     return render_template('map.html', map_html="")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
