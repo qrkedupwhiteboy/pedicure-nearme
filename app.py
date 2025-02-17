@@ -72,9 +72,8 @@ def home():
 
 @app.route('/get_geoapify_location')
 def get_geoapify_location():
-    """Proxy request to Geoapify IP location API"""
+    """Get basic location data from IP"""
     try:
-        # First get location from IP
         url = f"https://api.geoapify.com/v1/ipinfo?apiKey={GEOAPIFY_API_KEY}"
         headers = {
             "Accept": "application/json"
@@ -92,37 +91,49 @@ def get_geoapify_location():
             app.logger.error("Empty response from Geoapify")
             return jsonify({'error': 'Empty response from Geoapify'}), 500
 
-        # If we have coordinates, get detailed location info including zipcode
-        if location_data.get('location') and 'latitude' in location_data['location'] and 'longitude' in location_data['location']:
-            lat = location_data['location']['latitude']
-            lon = location_data['location']['longitude']
-            
-            # Call reverse geocoding API
-            reverse_url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={REVERSE_GEOCODE_KEY}"
-            reverse_response = requests.get(reverse_url, headers=headers)
-            
-            if reverse_response.ok:
-                reverse_data = reverse_response.json()
-                app.logger.debug(f"Reverse geocoding response: {reverse_data}")
-                
-                if reverse_data and 'features' in reverse_data and len(reverse_data['features']) > 0:
-                    properties = reverse_data['features'][0]['properties']
-                    app.logger.debug(f"Location properties: {properties}")
-                    
-                    # Add postcode to original location data if available
-                    if 'postcode' in properties:
-                        location_data['postcode'] = properties['postcode']
-                        app.logger.info(f"Found zipcode: {properties['postcode']}")
-                    else:
-                        app.logger.warning("No postcode found in reverse geocoding response")
-                else:
-                    app.logger.warning("No features found in reverse geocoding response")
-            else:
-                app.logger.error(f"Reverse geocoding failed: {reverse_response.status_code}")
-            
-        app.logger.info(f"Final location data: {location_data}")
+        app.logger.info(f"Location data: {location_data}")
         return jsonify(location_data)
     except Exception as e:
         app.logger.error(f"Geoapify location error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/get_zipcode')
+def get_zipcode():
+    """Get zipcode from latitude and longitude"""
+    try:
+        lat = request.args.get('lat')
+        lon = request.args.get('lon')
+        
+        if not lat or not lon:
+            return jsonify({'error': 'Missing latitude or longitude'}), 400
+            
+        # Call reverse geocoding API
+        url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={REVERSE_GEOCODE_KEY}"
+        headers = {
+            "Accept": "application/json"
+        }
+        response = requests.get(url, headers=headers)
+        
+        if not response.ok:
+            app.logger.error(f"Reverse geocoding failed: {response.status_code}")
+            return jsonify({'error': 'Reverse geocoding failed'}), response.status_code
+            
+        data = response.json()
+        app.logger.debug(f"Reverse geocoding response: {data}")
+        
+        if data and 'features' in data and len(data['features']) > 0:
+            properties = data['features'][0]['properties']
+            if 'postcode' in properties:
+                app.logger.info(f"Found zipcode: {properties['postcode']}")
+                return jsonify({'zipcode': properties['postcode']})
+            else:
+                app.logger.warning("No postcode found in properties")
+                return jsonify({'error': 'No zipcode found'}), 404
+        else:
+            app.logger.warning("No features found in response")
+            return jsonify({'error': 'No location data found'}), 404
+            
+    except Exception as e:
+        app.logger.error(f"Zipcode lookup error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 

@@ -14,14 +14,12 @@ async function getUserLocation() {
         }
         const data = await response.json();
         
-        // Log the full response for debugging
         console.log('Geoapify response:', data);
         
         if (data.error) {
             throw new Error(data.error);
         }
 
-        // Check for location data in the correct structure
         if (data && data.location && data.location.latitude && data.location.longitude) {
             const nearbyResponse = await fetch(`/nearby_locations?lat=${data.location.latitude}&lon=${data.location.longitude}`);
             const nearbyData = await nearbyResponse.json();
@@ -30,27 +28,11 @@ async function getUserLocation() {
                 showLocationSuggestions(nearbyData.nearby_locations);
             }
             
-            // Use postcode if available, otherwise use city name
-            // Display and store the zipcode if available
-            const zipcodeDisplay = document.getElementById('current-zipcode');
-            if (data.postcode) {
-                const zipcode = data.postcode;
-                zipcodeDisplay.textContent = `Your current ZIP code: ${zipcode}`;
-                zipcodeDisplay.style.display = 'block';
-                
-                // Store zipcode in localStorage
-                localStorage.setItem('userZipcode', zipcode);
-                console.log('Stored zipcode:', zipcode);
-            } else {
-                console.warn('No zipcode found in location data');
-                localStorage.removeItem('userZipcode');
-            }
+            // Store coordinates for later use
+            localStorage.setItem('userLat', data.location.latitude);
+            localStorage.setItem('userLon', data.location.longitude);
             
-            // Use postcode if available, otherwise use city name
-            const locationDisplay = data.postcode || 
-                                 (data.city && data.city.name) || 
-                                 'your location';
-            
+            const locationDisplay = (data.city && data.city.name) || 'your location';
             locationInput.setAttribute('placeholder', `Locations near ${locationDisplay}`);
         } else {
             console.log('Invalid location data structure:', data);
@@ -79,8 +61,31 @@ function showLocationSuggestions(locations) {
     });
 }
 
-// Show suggestions when input is focused
-locationInput.addEventListener('focus', () => {
+// Get zipcode when input is focused
+locationInput.addEventListener('focus', async () => {
+    const lat = localStorage.getItem('userLat');
+    const lon = localStorage.getItem('userLon');
+    
+    if (lat && lon) {
+        try {
+            const response = await fetch(`/get_zipcode?lat=${lat}&lon=${lon}`);
+            const data = await response.json();
+            
+            if (response.ok && data.zipcode) {
+                const zipcodeDisplay = document.getElementById('current-zipcode');
+                zipcodeDisplay.textContent = `Your current ZIP code: ${data.zipcode}`;
+                zipcodeDisplay.style.display = 'block';
+                
+                localStorage.setItem('userZipcode', data.zipcode);
+                console.log('Stored zipcode:', data.zipcode);
+            } else {
+                console.warn('Failed to get zipcode:', data.error);
+            }
+        } catch (error) {
+            console.error('Error getting zipcode:', error);
+        }
+    }
+    
     if (suggestionsContainer.children.length > 0) {
         suggestionsContainer.style.display = 'block';
     }
