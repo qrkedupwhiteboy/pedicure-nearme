@@ -200,7 +200,7 @@ def map_view(zipcode):
                 icon=folium.Icon(color='blue', icon='info-sign')
             ).add_to(m)
             
-        return render_template('map_view.html', map_html=m._repr_html_())
+        return render_template('map_view.html', map_html=m._repr_html_(), listings=listings)
     finally:
         session.close()
 
