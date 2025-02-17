@@ -177,13 +177,13 @@ def map_view(zipcode):
             abort(404)
             
         # Create map centered on the first listing
-        first_coords = json.loads(listings[0].coordinates)
+        first_coords = listings[0].coordinates
         map_center = [first_coords['latitude'], first_coords['longitude']]
         m = folium.Map(location=map_center, zoom_start=13)
         
         # Add markers for each listing
         for listing in listings:
-            coords = json.loads(listing.coordinates)
+            coords = listing.coordinates
             popup_html = f"""
                 <div class='listing-popup'>
                     <h3>{listing.name}</h3>
