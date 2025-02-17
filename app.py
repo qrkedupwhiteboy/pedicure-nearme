@@ -283,12 +283,15 @@ def get_geoapify_location():
     """Proxy request to Geoapify IP location API"""
     try:
         url = f"https://api.geoapify.com/v1/ipinfo?apiKey={GEOAPIFY_API_KEY}"
-        response = requests.get(url)
-        location_data = response.json()
+        response = requests.get(url, headers={'Accept': 'application/json'})
         
         if not response.ok:
-            app.logger.error(f"Geoapify API error: {location_data.get('message')}")
+            app.logger.error(f"Geoapify API error: Status {response.status_code}")
             return jsonify({'error': 'Could not detect location'}), response.status_code
+            
+        location_data = response.json()
+        if not location_data:
+            return jsonify({'error': 'Empty response from Geoapify'}), 500
             
         return jsonify(location_data)
     except Exception as e:

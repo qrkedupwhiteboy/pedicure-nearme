@@ -9,19 +9,27 @@ async function getUserLocation() {
     locationInput.setAttribute('placeholder', 'Detecting your location...');
     try {
         const response = await fetch('/get_geoapify_location');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         
-        if (!response.ok) {
-            throw new Error('Failed to get location data');
+        if (data.error) {
+            throw new Error(data.error);
         }
-        const nearbyResponse = await fetch(`/nearby_locations?lat=${data.location.latitude}&lon=${data.location.longitude}`);
-        const nearbyData = await nearbyResponse.json();
-        
-        if (nearbyData.nearby_locations) {
-            showLocationSuggestions(nearbyData.nearby_locations);
+
+        if (data.location && data.postal) {
+            const nearbyResponse = await fetch(`/nearby_locations?lat=${data.location.latitude}&lon=${data.location.longitude}`);
+            const nearbyData = await nearbyResponse.json();
+            
+            if (nearbyData.nearby_locations) {
+                showLocationSuggestions(nearbyData.nearby_locations);
+            }
+            
+            locationInput.setAttribute('placeholder', `Locations near ${data.postal.code}`);
+        } else {
+            throw new Error('Location data incomplete');
         }
-        
-        locationInput.setAttribute('placeholder', `Locations near ${zipCode}`);
     } catch (error) {
         console.log('Location detection unavailable:', error);
         locationInput.setAttribute('placeholder', 'Enter your ZIP code or city');
