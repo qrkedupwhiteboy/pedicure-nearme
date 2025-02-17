@@ -200,45 +200,66 @@
         // Function to update listings based on filters
         function updateListings() {
             const activeSort = document.querySelector('[data-sort].active').dataset.sort;
-            const minRating = document.querySelector('[data-rating].active').dataset.rating;
-            const minReviews = document.querySelector('[data-reviews].active').dataset.reviews;
+            const minRating = parseFloat(document.querySelector('[data-rating].active').dataset.rating);
+            const minReviews = parseInt(document.querySelector('[data-reviews].active').dataset.reviews);
             
-            // Build URL with filter parameters
-            const params = new URLSearchParams({
-                sort: activeSort,
-                rating: minRating,
-                reviews: minReviews
+            const listings = document.querySelector('.listings');
+            const cards = Array.from(listings.getElementsByClassName('listing-card'));
+            
+            // Filter cards based on criteria
+            const filteredCards = cards.filter(card => {
+                const rating = parseFloat(card.querySelector('.rating').textContent.match(/\d+\.?\d*/)[0]);
+                const reviews = parseInt(card.querySelector('.rating').textContent.match(/\((\d+)/)[1]);
+                return rating >= minRating && reviews >= minReviews;
             });
-
-            // Add user coordinates if sorting by distance
-            if (activeSort === 'distance' && localStorage.getItem('userLat') && localStorage.getItem('userLon')) {
-                params.append('user_lat', localStorage.getItem('userLat'));
-                params.append('user_lon', localStorage.getItem('userLon'));
-            }
             
-            // If sorting by distance, sort the listing cards in the DOM
-            if (activeSort === 'distance') {
-                const listings = document.querySelector('.listings');
-                const cards = Array.from(listings.getElementsByClassName('listing-card'));
-                
-                cards.sort((a, b) => {
+            // Sort cards based on selected criteria
+            filteredCards.sort((a, b) => {
+                if (activeSort === 'rating') {
+                    const ratingA = parseFloat(a.querySelector('.rating').textContent.match(/\d+\.?\d*/)[0]);
+                    const ratingB = parseFloat(b.querySelector('.rating').textContent.match(/\d+\.?\d*/)[0]);
+                    return ratingB - ratingA;
+                } else if (activeSort === 'reviews') {
+                    const reviewsA = parseInt(a.querySelector('.rating').textContent.match(/\((\d+)/)[1]);
+                    const reviewsB = parseInt(b.querySelector('.rating').textContent.match(/\((\d+)/)[1]);
+                    return reviewsB - reviewsA;
+                } else if (activeSort === 'distance') {
                     const distanceA = parseFloat(a.dataset.distance);
                     const distanceB = parseFloat(b.dataset.distance);
                     return distanceA - distanceB;
-                });
-                
-                // Clear and re-append cards in sorted order
-                listings.innerHTML = '';
-                cards.forEach(card => listings.appendChild(card));
-            }
+                }
+                return 0;
+            });
             
-            // Reload page with new filters
-            window.location.href = `/map/${currentZipcode}?${params.toString()}`;
+            // Clear and re-append filtered and sorted cards
+            listings.innerHTML = '';
+            filteredCards.forEach(card => listings.appendChild(card));
+            
+            // Update map markers visibility
+            const map = document.querySelector('#map-container iframe').contentWindow;
+            const markers = map.document.querySelectorAll('.leaflet-marker-icon');
+            
+            // Hide all markers first
+            markers.forEach(marker => marker.style.display = 'none');
+            
+            // Show only markers for visible listings
+            filteredCards.forEach(card => {
+                const lat = card.dataset.lat;
+                const lon = card.dataset.lon;
+                markers.forEach(marker => {
+                    if (marker._latlng && 
+                        marker._latlng.lat === parseFloat(lat) && 
+                        marker._latlng.lng === parseFloat(lon)) {
+                        marker.style.display = '';
+                    }
+                });
+            });
         }
         
         // Add click handlers for filter options
         document.querySelectorAll('.filter-option').forEach(option => {
-            option.addEventListener('click', () => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
                 const parent = option.parentElement;
                 parent.querySelector('.active').classList.remove('active');
                 option.classList.add('active');
