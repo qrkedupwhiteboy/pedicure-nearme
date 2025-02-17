@@ -35,6 +35,7 @@ STATE_NAMES = {
 
 load_dotenv()
 
+GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
 app = Flask(__name__)
 
 @app.route('/')
@@ -246,26 +247,17 @@ def listing_detail(listing_id):
 
 @app.route('/get_ip_location')
 def get_ip_location():
-    """Get location from IP address and nearby locations"""
+    """Get location from IP address using Geoapify"""
     try:
-        client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
-        if client_ip == '127.0.0.1':
-            # For local development, return a default location with nearby areas
-            return jsonify({
-                'zipcode': '10001',
-                'city': 'New York',
-                'state': 'NY',
-                'nearby_locations': [
-                    {'city': 'New York', 'state': 'NY', 'zipcode': '10001'},
-                    {'city': 'Brooklyn', 'state': 'NY', 'zipcode': '11201'},
-                    {'city': 'Queens', 'state': 'NY', 'zipcode': '11101'},
-                    {'city': 'Jersey City', 'state': 'NJ', 'zipcode': '07302'},
-                    {'city': 'Hoboken', 'state': 'NJ', 'zipcode': '07030'}
-                ]
-            })
-            
-        location_data = get_ip_info(client_ip)
-        if location_data and location_data.get('postal'):
+        url = f"https://api.geoapify.com/v1/ipinfo?apiKey={GEOAPIFY_API_KEY}"
+        response = requests.get(url)
+        location_data = response.json()
+        
+        if not response.ok:
+            app.logger.error(f"Geoapify API error: {location_data.get('message')}")
+            return jsonify({'error': 'Could not detect location'}), 500
+        # Extract location data from Geoapify response
+        if location_data and location_data.get('postal', {}).get('code'):
             # Query database for nearby locations
             session = Session()
             try:
@@ -285,9 +277,9 @@ def get_ip_location():
                 ).distinct().limit(5).all()
                 
                 return jsonify({
-                    'zipcode': location_data['postal'],
-                    'city': location_data.get('city'),
-                    'state': location_data.get('region_code'),
+                    'zipcode': location_data['postal']['code'],
+                    'city': location_data.get('city', {}).get('name'),
+                    'state': location_data.get('state', {}).get('code'),
                     'nearby_locations': [
                         {'city': city, 'state': state, 'zipcode': zipcode}
                         for city, state, zipcode in nearby

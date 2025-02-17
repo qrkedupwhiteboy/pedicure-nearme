@@ -37,11 +37,15 @@ function getUserLocation() {
     }
 }
 
-// Fallback to IP-based location
+// Fallback to IP-based location using Geoapify
 async function fallbackToIPLocation() {
     try {
         const response = await fetch('/get_ip_location');
         const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
         
         if (data.nearby_locations) {
             showLocationSuggestions(data.nearby_locations);
@@ -51,7 +55,7 @@ async function fallbackToIPLocation() {
             locationInput.setAttribute('placeholder', `Locations near ${data.zipcode}`);
         }
     } catch (error) {
-        console.log('Location detection unavailable');
+        console.log('Location detection unavailable:', error);
         locationInput.setAttribute('placeholder', 'Enter your ZIP code or city');
     }
 }
