@@ -1,0 +1,58 @@
+// Get location input element
+const locationInput = document.getElementById('location-input');
+const suggestionsContainer = document.createElement('div');
+suggestionsContainer.className = 'location-suggestions';
+locationInput.parentNode.appendChild(suggestionsContainer);
+
+// Function to get user's location from browser geolocation API
+async function getUserLocation() {
+    try {
+        const response = await fetch('/get_ip_location');
+        const data = await response.json();
+        
+        if (data.nearby_locations) {
+            showLocationSuggestions(data.nearby_locations);
+        }
+        
+        if (data.zipcode) {
+            locationInput.setAttribute('placeholder', `Locations near ${data.zipcode}`);
+        }
+    } catch (error) {
+        console.log('Location detection unavailable');
+        locationInput.setAttribute('placeholder', 'Enter your ZIP code or city');
+    }
+}
+
+function showLocationSuggestions(locations) {
+    suggestionsContainer.innerHTML = locations.map(loc => `
+        <div class="suggestion-item" data-value="${loc.zipcode}">
+            <span class="suggestion-city">${loc.city}</span>
+            <span class="suggestion-detail">${loc.state} ${loc.zipcode}</span>
+        </div>
+    `).join('');
+
+    // Add click handlers to suggestions
+    document.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', () => {
+            locationInput.value = item.dataset.value;
+            suggestionsContainer.style.display = 'none';
+        });
+    });
+}
+
+// Show suggestions when input is focused
+locationInput.addEventListener('focus', () => {
+    if (suggestionsContainer.children.length > 0) {
+        suggestionsContainer.style.display = 'block';
+    }
+});
+
+// Hide suggestions when clicking outside
+document.addEventListener('click', (e) => {
+    if (!locationInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+        suggestionsContainer.style.display = 'none';
+    }
+});
+
+// Initialize location detection when page loads
+document.addEventListener('DOMContentLoaded', getUserLocation);
