@@ -4,6 +4,29 @@ const suggestionsContainer = document.createElement('div');
 suggestionsContainer.className = 'location-suggestions';
 locationInput.parentNode.appendChild(suggestionsContainer);
 
+// Function to display nearby locations
+function showNearbyLocations(locations) {
+    suggestionsContainer.innerHTML = locations.map(loc => `
+        <div class="suggestion-item" data-value="${loc.zipcode}">
+            <div class="suggestion-main">
+                <span class="suggestion-city">${loc.city}</span>
+                <span class="suggestion-detail">${loc.state} ${loc.zipcode}</span>
+            </div>
+            <span class="listing-count">${loc.listing_count} listings</span>
+        </div>
+    `).join('');
+
+    // Add click handlers to suggestions
+    document.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', () => {
+            locationInput.value = item.dataset.value;
+            suggestionsContainer.style.display = 'none';
+        });
+    });
+    
+    suggestionsContainer.style.display = 'block';
+}
+
 // Get user's location using backend proxy for Geoapify
 async function getUserLocation() {
     locationInput.setAttribute('placeholder', 'Detecting your location...');
@@ -25,7 +48,7 @@ async function getUserLocation() {
             const nearbyData = await nearbyResponse.json();
             
             if (nearbyData.nearby_locations) {
-                showLocationSuggestions(nearbyData.nearby_locations);
+                showNearbyLocations(nearbyData.nearby_locations);
             }
             
             // Store coordinates for later use

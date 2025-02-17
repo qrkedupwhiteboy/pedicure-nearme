@@ -98,6 +98,62 @@ def get_geoapify_location():
         app.logger.error(f"Geoapify location error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/nearby_locations', methods=['GET'])
+def get_nearby_locations():
+    """Get nearby zipcodes with pedicure listings"""
+    try:
+        lat = request.args.get('lat')
+        lon = request.args.get('lon')
+        
+        if not lat or not lon:
+            return jsonify({'error': 'Missing latitude or longitude'}), 400
+            
+        # Convert to float
+        lat = float(lat)
+        lon = float(lon)
+        
+        session = Session()
+        try:
+            # Find locations within rough radius using bounding box
+            # 1 degree lat/lon ≈ 111km at equator, adjust as needed
+            radius = 0.5  # roughly 50km
+            
+            nearby = session.query(
+                PedicureListing.city,
+                PedicureListing.state,
+                PedicureListing.zipcode,
+                func.count(PedicureListing.id).label('listing_count')
+            ).filter(
+                PedicureListing.latitude.between(lat - radius, lat + radius),
+                PedicureListing.longitude.between(lon - radius, lon + radius),
+                PedicureListing.zipcode.isnot(None)
+            ).group_by(
+                PedicureListing.city,
+                PedicureListing.state,
+                PedicureListing.zipcode
+            ).order_by(
+                text('listing_count DESC')
+            ).limit(10).all()
+            
+            locations = [
+                {
+                    'city': loc.city,
+                    'state': loc.state,
+                    'zipcode': loc.zipcode,
+                    'listing_count': loc.listing_count
+                }
+                for loc in nearby
+            ]
+            
+            return jsonify({'nearby_locations': locations})
+            
+        finally:
+            session.close()
+            
+    except Exception as e:
+        app.logger.error(f"Nearby locations error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/get_zipcode', methods=['GET'])
 def get_zipcode():
     """Get zipcode from latitude and longitude"""

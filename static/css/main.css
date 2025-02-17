@@ -179,6 +179,18 @@ body {
     border-bottom: 1px solid #f0f0f0;
 }
 
+.suggestion-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.listing-count {
+    color: #1c79ca;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
 .suggestion-item:last-child {
     border-bottom: none;
 }
