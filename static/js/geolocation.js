@@ -4,22 +4,16 @@ const suggestionsContainer = document.createElement('div');
 suggestionsContainer.className = 'location-suggestions';
 locationInput.parentNode.appendChild(suggestionsContainer);
 
-// Get user's location using Geoapify IP Geolocation
+// Get user's location using backend proxy for Geoapify
 async function getUserLocation() {
     locationInput.setAttribute('placeholder', 'Detecting your location...');
     try {
-        const response = await fetch(`https://api.geoapify.com/v1/ipinfo?apiKey=${GEOAPIFY_API_KEY}`);
+        const response = await fetch('/get_geoapify_location');
         const data = await response.json();
         
         if (!response.ok) {
             throw new Error('Failed to get location data');
         }
-
-        const zipCode = data.postal.code;
-        const city = data.city.name;
-        const state = data.state.code;
-
-        // Get nearby locations from our backend
         const nearbyResponse = await fetch(`/nearby_locations?lat=${data.location.latitude}&lon=${data.location.longitude}`);
         const nearbyData = await nearbyResponse.json();
         

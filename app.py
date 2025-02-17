@@ -41,7 +41,6 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     session = Session()
-    geoapify_api_key = os.getenv('GEOAPIFY_API_KEY')
     try:
         # Query cities with their listing counts
         city_counts = session.query(
@@ -75,8 +74,7 @@ def home():
                     states_cities[state]['total_cities'] += 1
 
         return render_template('index.html', 
-                             states_cities=states_cities,
-                             geoapify_api_key=geoapify_api_key)
+                             states_cities=states_cities)
     finally:
         session.close()
 
@@ -279,6 +277,23 @@ def nearby_locations():
         app.logger.error(f"Nearby locations error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/get_geoapify_location')
+def get_geoapify_location():
+    """Proxy request to Geoapify IP location API"""
+    try:
+        url = f"https://api.geoapify.com/v1/ipinfo?apiKey={GEOAPIFY_API_KEY}"
+        response = requests.get(url)
+        location_data = response.json()
+        
+        if not response.ok:
+            app.logger.error(f"Geoapify API error: {location_data.get('message')}")
+            return jsonify({'error': 'Could not detect location'}), response.status_code
+            
+        return jsonify(location_data)
+    except Exception as e:
+        app.logger.error(f"Geoapify location error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/map')
 def map_view():
