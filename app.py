@@ -301,6 +301,56 @@ def get_ip_location():
         app.logger.error(f"IP location error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/get_location')
+def get_location():
+    """Convert coordinates to location data using Nominatim"""
+    try:
+        lat = request.args.get('lat')
+        lon = request.args.get('lon')
+        
+        if not lat or not lon:
+            return jsonify({'error': 'Missing coordinates'}), 400
+            
+        geolocator = Nominatim(user_agent="pedicure_finder")
+        location = geolocator.reverse(f"{lat}, {lon}")
+        
+        if location and location.raw.get('address', {}).get('postcode'):
+            # Query database for nearby locations
+            session = Session()
+            try:
+                nearby = session.query(
+                    PedicureListing.city,
+                    PedicureListing.state,
+                    PedicureListing.zipcode
+                ).filter(
+                    PedicureListing.latitude.between(
+                        float(lat) - 0.5,
+                        float(lat) + 0.5
+                    ),
+                    PedicureListing.longitude.between(
+                        float(lon) - 0.5,
+                        float(lon) + 0.5
+                    )
+                ).distinct().limit(5).all()
+                
+                return jsonify({
+                    'zipcode': location.raw['address']['postcode'],
+                    'city': location.raw['address'].get('city'),
+                    'state': location.raw['address'].get('state'),
+                    'nearby_locations': [
+                        {'city': city, 'state': state, 'zipcode': zipcode}
+                        for city, state, zipcode in nearby
+                    ]
+                })
+            finally:
+                session.close()
+                
+        return jsonify({'error': 'Location not found'}), 404
+        
+    except Exception as e:
+        app.logger.error(f"Geolocation error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/map')
 def map_view():
     """Render the map view page."""

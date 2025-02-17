@@ -4,8 +4,41 @@ const suggestionsContainer = document.createElement('div');
 suggestionsContainer.className = 'location-suggestions';
 locationInput.parentNode.appendChild(suggestionsContainer);
 
-// Function to get user's location from browser geolocation API
-async function getUserLocation() {
+// Function to get user's location using HTML5 Geolocation API
+function getUserLocation() {
+    if (navigator.geolocation) {
+        locationInput.setAttribute('placeholder', 'Detecting your location...');
+        
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                try {
+                    const response = await fetch(`/get_location?lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
+                    const data = await response.json();
+                    
+                    if (data.nearby_locations) {
+                        showLocationSuggestions(data.nearby_locations);
+                    }
+                    
+                    if (data.zipcode) {
+                        locationInput.setAttribute('placeholder', `Locations near ${data.zipcode}`);
+                    }
+                } catch (error) {
+                    console.log('Error getting location data:', error);
+                    fallbackToIPLocation();
+                }
+            },
+            (error) => {
+                console.log('Geolocation error:', error.message);
+                fallbackToIPLocation();
+            }
+        );
+    } else {
+        fallbackToIPLocation();
+    }
+}
+
+// Fallback to IP-based location
+async function fallbackToIPLocation() {
     try {
         const response = await fetch('/get_ip_location');
         const data = await response.json();
