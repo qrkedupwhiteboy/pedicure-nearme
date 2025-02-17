@@ -216,6 +216,22 @@
                 params.append('user_lon', localStorage.getItem('userLon'));
             }
             
+            // If sorting by distance, sort the listing cards in the DOM
+            if (activeSort === 'distance') {
+                const listings = document.querySelector('.listings');
+                const cards = Array.from(listings.getElementsByClassName('listing-card'));
+                
+                cards.sort((a, b) => {
+                    const distanceA = parseFloat(a.dataset.distance);
+                    const distanceB = parseFloat(b.dataset.distance);
+                    return distanceA - distanceB;
+                });
+                
+                // Clear and re-append cards in sorted order
+                listings.innerHTML = '';
+                cards.forEach(card => listings.appendChild(card));
+            }
+            
             // Reload page with new filters
             window.location.href = `/map/${currentZipcode}?${params.toString()}`;
         }
