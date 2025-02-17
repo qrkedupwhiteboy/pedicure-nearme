@@ -97,7 +97,7 @@ def get_geoapify_location():
         app.logger.error(f"Geoapify location error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/get_zipcode')
+@app.route('/get_zipcode', methods=['GET'])
 def get_zipcode():
     """Get zipcode from latitude and longitude"""
     try:
@@ -107,12 +107,21 @@ def get_zipcode():
         if not lat or not lon:
             return jsonify({'error': 'Missing latitude or longitude'}), 400
             
-        # Call reverse geocoding API
-        url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={REVERSE_GEOCODE_KEY}"
+        # Call reverse geocoding API with proper formatting
+        url = "https://api.geoapify.com/v1/geocode/reverse"
+        params = {
+            "lat": lat,
+            "lon": lon,
+            "apiKey": REVERSE_GEOCODE_KEY,
+            "format": "json"
+        }
         headers = {
             "Accept": "application/json"
         }
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, params=params, headers=headers)
+        
+        # Log the actual URL being called for debugging
+        app.logger.debug(f"Calling URL: {response.url}")
         
         if not response.ok:
             app.logger.error(f"Reverse geocoding failed: {response.status_code}")
