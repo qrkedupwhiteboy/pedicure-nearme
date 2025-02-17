@@ -5,3 +5,4 @@ pandas==2.2.0
 python-dotenv==1.0.1
 geopy==2.4.1
 folium==0.15.1
+branca==0.7.1
