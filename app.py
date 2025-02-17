@@ -104,6 +104,8 @@ def get_zipcode():
         lat = request.args.get('lat')
         lon = request.args.get('lon')
         
+        app.logger.info(f"Received coordinates: lat={lat}, lon={lon}")
+        
         if not lat or not lon:
             return jsonify({'error': 'Missing latitude or longitude'}), 400
             
@@ -122,6 +124,7 @@ def get_zipcode():
         
         # Log the actual URL being called for debugging
         app.logger.debug(f"Calling URL: {response.url}")
+        app.logger.info(f"Geoapify raw response: {response.text}")
         
         if not response.ok:
             app.logger.error(f"Reverse geocoding failed: {response.status_code}")
