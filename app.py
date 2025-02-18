@@ -228,6 +228,18 @@ def map_view(zipcode):
     finally:
         session.close()
 
+@app.route('/listing/<int:listing_id>')
+def listing_page(listing_id):
+    """Display a single pedicure listing"""
+    session = Session()
+    try:
+        listing = session.query(PedicureListing).get(listing_id)
+        if not listing:
+            abort(404)
+        return render_template('listing.html', listing=listing)
+    finally:
+        session.close()
+
 @app.route('/get_zipcode', methods=['GET'])
 def get_zipcode():
     """Get zipcode from latitude and longitude"""

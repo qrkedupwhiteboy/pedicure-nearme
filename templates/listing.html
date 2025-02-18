@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ listing.name }} - Pedicure Directory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">Pedicure Directory</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/search">Find Pedicures</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="listing-detail">
+            <h1>{{ listing.name }}</h1>
+            <div class="rating">Rating: {{ listing.rating }}/5 ({{ listing.reviews }} reviews)</div>
+            <div class="address">{{ listing.address }}</div>
+            <div class="phone">{{ listing.phone }}</div>
+            {% if listing.website %}
+            <div class="website">
+                <a href="{{ listing.website }}" target="_blank">Visit Website</a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>
