@@ -1,4 +1,51 @@
 /* Reset and base styles */
+:root {
+    /* Light Box Shadows */
+    --shadow-light-large: 0 18px 48px -6px rgba(103, 111, 123, 0.12);
+    --shadow-light-medium: 0 8px 32px -4px rgba(103, 111, 123, 0.10);
+    --shadow-light-small: 0 6px 24px 0 rgba(103, 111, 123, 0.06);
+
+    /* Dark Box Shadows */
+    --shadow-dark-large: 0 12px 48px -8px rgba(8, 11, 18, 0.25);
+    --shadow-dark-medium: 0 8px 30px -4px rgba(8, 11, 18, 0.25);
+    --shadow-dark-small: 0 6px 22px -4px rgba(8, 11, 18, 0.25);
+
+    /* Font Families */
+    --font-family-inter: 'Inter', sans-serif;
+
+    /* Font Weights */
+    --font-weight-bold: 700;
+    --font-weight-semibold: 600;
+    --font-weight-medium: 500;
+    --font-weight-regular: 400;
+
+    /* Font Sizes */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: 22px;
+    --font-size-3xl: 24px;
+    --font-size-4xl: 32px;
+    --font-size-5xl: 48px;
+    --font-size-6xl: 64px;
+    --font-size-7xl: 72px;
+    --font-size-8xl: 80px;
+
+    /* Line Heights */
+    --line-height-xs: 16px;
+    --line-height-sm: 22px;
+    --line-height-base: 24px;
+    --line-height-lg: 28px;
+    --line-height-xl: 32px;
+    --line-height-2xl: 36px;
+    --line-height-3xl: 42px;
+    --line-height-4xl: 48px;
+    --line-height-5xl: 52px;
+    --line-height-6xl: 62px;
+}
+
 * {
     margin: 0;
     padding: 0;
