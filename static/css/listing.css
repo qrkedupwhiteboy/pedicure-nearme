@@ -368,4 +368,134 @@
       font-weight: 400;
       line-height: 22px;
   }
+
+  /* Layout */
+.services {
+    width: 746px;
+    height: 150px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  
+  .heading {
+    align-self: stretch;
+    height: 28px;
+    color: #111827;
+    font-size: 24px;
+    font-family: Inter;
+    font-weight: 600;
+    line-height: 32px;
+    word-wrap: break-word;
+  }
+  
+  .grid {
+    align-self: stretch;
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  
+  .column {
+    flex: 1 1 0;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  /* Service Item */
+  .item {
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .text {
+    color: #4E5562;
+    font-size: 14px;
+    font-family: Inter;
+    font-weight: 400;
+    line-height: 22px;
+    word-wrap: break-word;
+  }
+  
+  /* Icon styles */
+  .icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .icon path {
+    fill: #4E5562;
+  }
+
+  .Projects {
+    width: 746px;
+    height: 652px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 32px;
+    display: inline-flex;
+}
+
+.Heading {
+    align-self: stretch;
+    height: 28px;
+    color: #111827;
+    font-size: 24px;
+    font-family: Inter;
+    font-weight: 600;
+    line-height: 32px;
+    word-wrap: break-word;
+}
+
+.Row {
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 24px;
+    display: inline-flex;
+}
+
+.Project {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 24px;
+    display: inline-flex;
+}
+
+.Image {
+    width: 360px;
+    height: 240px;
+    background: rgba(0, 0, 0, 0.20);
+    border-radius: 8px;
+}
+
+.SecondaryButton {
+    align-self: stretch;
+    padding: 12px 24px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #E0E5EB;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex;
+}
+
+.Label {
+    color: #333D4C;
+    font-size: 16px;
+    font-family: Inter;
+    font-weight: 500;
+    line-height: 24px;
+    word-wrap: break-word;
+}
   
