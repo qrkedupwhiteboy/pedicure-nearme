@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedicures in {{ city }}, {{ state }} | Best Nail Salons</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/logo-placeholder.png') }}" alt="Pedicure Near Me Directory">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/search">Find Pedicures</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="listings-container">
+            <div class="filters-sidebar">
+                <h2>Filters</h2>
+                <div class="filter-section">
+                    <h3>Sort By</h3>
+                    <select id="sort-select">
+                        <option value="rating">Rating (High to Low)</option>
+                        <option value="reviews">Most Reviews</option>
+                        <option value="distance">Distance</option>
+                    </select>
+                </div>
+                <div class="filter-section">
+                    <h3>Minimum Rating</h3>
+                    <select id="rating-select">
+                        <option value="0">All Ratings</option>
+                        <option value="4.5">4.5+ Stars</option>
+                        <option value="4">4+ Stars</option>
+                        <option value="3.5">3.5+ Stars</option>
+                    </select>
+                </div>
+                <div class="filter-section">
+                    <h3>Minimum Reviews</h3>
+                    <select id="reviews-select">
+                        <option value="0">All Reviews</option>
+                        <option value="100">100+ Reviews</option>
+                        <option value="50">50+ Reviews</option>
+                        <option value="25">25+ Reviews</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="listings-content">
+                <h1>Pedicures in {{ city }}, {{ state }}</h1>
+                <p class="results-count">{{ listings|length }} pedicure locations found</p>
+                
+                <div id="listings-grid">
+                    {% for listing in listings %}
+                    <div class="listing-card" 
+                         data-rating="{{ listing.rating }}"
+                         data-reviews="{{ listing.reviews }}"
+                         data-lat="{{ listing.coordinates.latitude }}"
+                         data-lon="{{ listing.coordinates.longitude }}">
+                        <div class="listing-image">
+                            {% if listing.featured_image %}
+                            <img src="{{ listing.featured_image }}" alt="{{ listing.name }}">
+                            {% else %}
+                            <div class="placeholder-image">No Image Available</div>
+                            {% endif %}
+                        </div>
+                        <div class="listing-info">
+                            <h2><a href="/listing/{{ listing.id }}">{{ listing.name }}</a></h2>
+                            <div class="rating-reviews">
+                                <span class="rating">{{ listing.rating }}/5</span>
+                                <span class="reviews">({{ listing.reviews }} reviews)</span>
+                            </div>
+                            <p class="address">{{ listing.address }}</p>
+                            {% if listing.phone %}
+                            <p class="phone">{{ listing.phone }}</p>
+                            {% endif %}
+                            <span class="distance"></span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Get stored user location
+        const userLat = localStorage.getItem('userLat');
+        const userLon = localStorage.getItem('userLon');
+
+        // Calculate distances if user location is available
+        if (userLat && userLon) {
+            document.querySelectorAll('.listing-card').forEach(card => {
+                const listingLat = parseFloat(card.dataset.lat);
+                const listingLon = parseFloat(card.dataset.lon);
+                
+                // Calculate distance using Haversine formula
+                const R = 3963.1; // Earth's radius in miles
+                const dLat = (listingLat - userLat) * Math.PI / 180;
+                const dLon = (listingLon - userLon) * Math.PI / 180;
+                const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                          Math.cos(userLat * Math.PI / 180) * Math.cos(listingLat * Math.PI / 180) *
+                          Math.sin(dLon/2) * Math.sin(dLon/2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                const distance = R * c;
+                
+                card.dataset.distance = distance;
+                card.querySelector('.distance').textContent = `${distance.toFixed(1)} miles away`;
+            });
+        }
+
+        // Sorting and filtering functionality
+        function updateListings() {
+            const sortBy = document.getElementById('sort-select').value;
+            const minRating = parseFloat(document.getElementById('rating-select').value);
+            const minReviews = parseInt(document.getElementById('reviews-select').value);
+            
+            const listings = Array.from(document.querySelectorAll('.listing-card'));
+            const container = document.getElementById('listings-grid');
+            
+            // Filter listings
+            const filteredListings = listings.filter(listing => {
+                const rating = parseFloat(listing.dataset.rating);
+                const reviews = parseInt(listing.dataset.reviews);
+                return rating >= minRating && reviews >= minReviews;
+            });
+            
+            // Sort listings
+            filteredListings.sort((a, b) => {
+                if (sortBy === 'rating') {
+                    return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+                } else if (sortBy === 'reviews') {
+                    return parseInt(b.dataset.reviews) - parseInt(a.dataset.reviews);
+                } else if (sortBy === 'distance' && userLat && userLon) {
+                    return parseFloat(a.dataset.distance) - parseFloat(b.dataset.distance);
+                }
+                return 0;
+            });
+            
+            // Update display
+            container.innerHTML = '';
+            filteredListings.forEach(listing => container.appendChild(listing));
+            
+            // Update count
+            document.querySelector('.results-count').textContent = 
+                `${filteredListings.length} pedicure locations found`;
+        }
+
+        // Add event listeners
+        document.getElementById('sort-select').addEventListener('change', updateListings);
+        document.getElementById('rating-select').addEventListener('change', updateListings);
+        document.getElementById('reviews-select').addEventListener('change', updateListings);
+    </script>
+</body>
+</html>

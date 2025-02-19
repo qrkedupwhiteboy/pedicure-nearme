@@ -228,6 +228,35 @@ def map_view(zipcode):
     finally:
         session.close()
 
+@app.route('/pedicures-in/<city>')
+def city_listings(city):
+    """Display pedicure listings for a specific city"""
+    session = Session()
+    try:
+        # Parse city name to handle URL format (e.g., "new-york" -> "New York")
+        city_name = " ".join(word.capitalize() for word in city.split('-'))
+        
+        # Query listings for the city
+        listings = session.query(PedicureListing).filter(
+            func.lower(PedicureListing.city) == func.lower(city_name),
+            PedicureListing.coordinates.isnot(None)  # Ensure we have coordinates
+        ).order_by(
+            PedicureListing.rating.desc()
+        ).all()
+        
+        if not listings:
+            abort(404)
+            
+        # Get state from first listing
+        state = listings[0].state
+        
+        return render_template('city_listings.html',
+                             city=city_name,
+                             state=state,
+                             listings=listings)
+    finally:
+        session.close()
+
 @app.route('/listing/<int:listing_id>')
 def listing_page(listing_id):
     """Display a single pedicure listing"""
