@@ -14,6 +14,7 @@
     height: 20px;
     display: inline-flex;
     justify-content: flex-start;
+    align-items: center;
     gap: 8px;
   }
   
@@ -70,8 +71,8 @@
   
   .badge {
     display: flex;
-    padding: 2px 8px;
-    background: #3D7A81;
+    padding: 4px 16px;
+    background: #3d816a;
     border-radius: 4px;
     gap: 4px;
     align-items: center;
@@ -111,15 +112,7 @@
     font-weight: 400;
     line-height: 22px;
   }
-  
-  .map-button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #333D4C;
-    font-size: 14px;
-    border-radius: 4px;
-  }
+
   
   .rating-info {
     display: inline-flex;
@@ -158,6 +151,7 @@
     font-family: Inter;
     font-weight: 400;
     line-height: 22px;
+    text-wrap: nowrap;
   }
   
   /* Review Styles */
@@ -296,62 +290,6 @@
     text-align: center;
 }
 
-/* Inputs container */
-.inputs-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-/* Common input styles */
-.input-field {
-    width: 100%;
-    padding: 10px 16px;
-    background: white;
-    border: 1px solid #CAD0D9;
-    border-radius: 8px;
-    color: #9CA3AF;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
-}
-
-/* Message input specific styles */
-.message-input {
-    height: 92px;
-    resize: none;
-}
-
-/* Button styles */
-.primary-button {
-    width: 100%;
-    padding: 12px 24px;
-    background: #D85151;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.primary-button:hover {
-    background: #C24444;
-}
-
-.button-label {
-    color: white;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-}
-  
-  .label {
-      color: #111827;
-      font-size: 12px;
-      font-family: Inter, sans-serif;
-      font-weight: 500;
-      line-height: 16px;
-      word-wrap: break-word;
-  }
 
   .pedicures-near-container {
     position: sticky;
@@ -447,7 +385,6 @@
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
-      gap: 24px;
   }
 
   .general-info {
@@ -511,7 +448,6 @@
       flex-direction: column;
       justify-content: center;
       align-items: flex-start;
-      gap: 16px;
   }
   
   .hours-title {
@@ -666,27 +602,6 @@
     height: 240px;
     background: rgba(0, 0, 0, 0.20);
     border-radius: 8px;
-}
-
-.SecondaryButton {
-    align-self: stretch;
-    padding: 12px 24px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #E0E5EB;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    display: inline-flex;
-}
-
-.Label {
-    color: #333D4C;
-    font-size: 16px;
-    font-family: Inter;
-    font-weight: 500;
-    line-height: 24px;
-    word-wrap: break-word;
 }
   
 /* Base styles */

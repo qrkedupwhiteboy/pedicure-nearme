@@ -1,0 +1,307 @@
+/* Inputs container */
+.inputs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Common input styles */
+.input-field {
+    width: 100%;
+    padding: 10px 16px;
+    background: white;
+    border: 1px solid #CAD0D9;
+    border-radius: 8px;
+    color: #9CA3AF;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.input-field:active {
+    width: 100%;
+    padding: 10px 16px;
+    background: white;
+    border: 1px solid #CAD0D9;
+    border-radius: 8px;;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+/* Message input specific styles */
+.message-input {
+    height: 92px;
+    resize: none;
+}
+
+/* Button styles */
+.primary-button {
+    width: 100%;
+    padding: 12px 24px;
+    background: #1c79ca;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.primary-button:hover {
+    background: #0e5796;
+}
+
+.SecondaryButton {
+    align-self: stretch;
+    padding: 12px 24px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #E0E5EB;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    display: inline-flex;
+}
+
+.button-label {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+}
+
+
+
+/* Display Styles */                                                                                                                    
+.d1 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 72px;                                                                                                                    
+    font-size: 56px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .d2 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 60px;                                                                                                                    
+    font-size: 48px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .d3 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 52px;                                                                                                                    
+    font-size: 40px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .d4 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 44px;                                                                                                                    
+    font-size: 36px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .d5 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 40px;                                                                                                                    
+    font-size: 32px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .d6 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 32px;                                                                                                                    
+    font-size: 24px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  /* Heading Styles */                                                                                                                    
+  .h1 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 700;                                                                                                                     
+    line-height: 36px;                                                                                                                    
+    font-size: 28px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .h2 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 32px;                                                                                                                    
+    font-size: 24px;
+    margin-bottom: .5rem;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .h3 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 500;                                                                                                                     
+    line-height: 28px;                                                                                                                    
+    font-size: 20px;    
+    margin-bottom: 1rem;                                                                                                                  
+  }                                                                                                                                       
+                                                                                                                                          
+  .h4 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 24px;                                                                                                                    
+    font-size: 16px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .h5 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 20px;                                                                                                                    
+    font-size: 14px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .h6 {                                                                                                                                   
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 18px;                                                                                                                    
+    font-size: 12px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  /* Body Styles */                                                                                                                       
+  .body-xl {                                                                                                                              
+    font-family: Inter;                                                                                                                   
+    font-weight: 400;                                                                                                                     
+    line-height: 28px;                                                                                                                    
+    font-size: 18px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .body-lg {                                                                                                                              
+    font-family: Inter;                                                                                                                   
+    font-weight: 400;                                                                                                                     
+    line-height: 24px;                                                                                                                    
+    font-size: 16px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .body-md {                                                                                                                              
+    font-family: Inter;                                                                                                                   
+    font-weight: 400;                                                                                                                     
+    line-height: 22px;                                                                                                                    
+    font-size: 14px;                                                                                                                      
+  }      
+  
+  .body-md-semibold {                                                                                                                              
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 22px;                                                                                                                    
+    font-size: 14px;                                                                                                                      
+  }    
+                                                                                                                                          
+  .body-sm-semibold {                                                                                                                     
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 20px;                                                                                                                    
+    font-size: 12px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .body-sm {                                                                                                                              
+    font-family: Inter;                                                                                                                   
+    font-weight: 400;                                                                                                                     
+    line-height: 20px;                                                                                                                    
+    font-size: 12px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  .body-xs {                                                                                                                              
+    font-family: Inter;                                                                                                                   
+    font-weight: 400;                                                                                                                     
+    line-height: 16px;                                                                                                                    
+    font-size: 10px;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  /* Navigation Styles */                                                                                                                 
+  .nav-regular {    
+    gap: 4px;    
+    display: flex;
+    align-items: center;                                                                                                                  
+    font-family: Inter;                                                                                                                   
+    font-weight: 500;                                                                                                                     
+    line-height: 22px;                                                                                                                    
+    font-size: 14px;
+    color: #1c79ca;
+    text-decoration: none;
+    text-wrap: nowrap;                                                                                                               
+  }                
+  
+  .nav-regular:hover {                                                                                                                          
+    font-family: Inter;                                                                                                                   
+    font-weight: 500;                                                                                                                     
+    line-height: 22px;                                                                                                                    
+    font-size: 14px;
+    color:#0e5796;
+    text-wrap: nowrap;  
+    text-decoration: underline;
+    transition: 2s;
+        transition-behavior: normal;
+        transition-duration: 0.2s;  
+        transition-property: color;
+        transition-timing-function: ease;                                                                                                                  
+  }        
+                                                                                                                                          
+  .nav-small {                                                                                                                            
+    font-family: Inter;                                                                                                                   
+    font-weight: 500;                                                                                                                     
+    line-height: 20px;                                                                                                                    
+    font-size: 12px;   
+    text-wrap: nowrap;                                                                                                                     
+  }                                                                                                                                       
+                                                                                                                                          
+  .nav-xs {                                                                                                                               
+    font-family: Inter;                                                                                                                   
+    font-weight: 500;                                                                                                                     
+    line-height: 16px;                                                                                                                    
+    font-size: 10px;  
+    text-wrap: nowrap;                                                                                                                      
+  }                                                                                                                                       
+                                                                                                                                          
+  @media screen and (max-width: 768px) {                                                                                                  
+    .d1 {                                                                                                                                 
+      line-height: 52px;                                                                                                                  
+      font-size: 40px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .d2 {                                                                                                                                 
+      line-height: 44px;                                                                                                                  
+      font-size: 36px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .d3 {                                                                                                                                 
+      line-height: 40px;                                                                                                                  
+      font-size: 32px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .d4 {                                                                                                                                 
+      line-height: 36px;                                                                                                                  
+      font-size: 28px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .d5 {                                                                                                                                 
+      line-height: 32px;                                                                                                                  
+      font-size: 24px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .d6 {                                                                                                                                 
+      line-height: 28px;                                                                                                                  
+      font-size: 20px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .h1 {                                                                                                                                 
+      line-height: 28px;                                                                                                                  
+      font-size: 20px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .h2 {                                                                                                                                 
+      line-height: 24px;                                                                                                                  
+      font-size: 18px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .h3 {                                                                                                                                 
+      line-height: 22px;                                                                                                                  
+      font-size: 16px;                                                                                                                    
+    }                                                                                                                                     
+                                                                                                                                          
+    .h4 {                                                                                                                                 
+      line-height: 20px;                                                                                                                  
+      font-size: 14px;                                                                                                                    
+    }                                                                                                                                     
+  }       

@@ -6,6 +6,9 @@
     <title>{{ listing.name }} - Pedicure Directory</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+
 </head>
 <body>
     <header class="main-header">
@@ -26,18 +29,10 @@
     <main>
         <div class="listing-top-wrapper">
         <div class="breadcrumb">
-            <div class="breadcrumb-link">Homepage</div>
-            <div class="icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.88876 3.139C5.08809 2.93967 5.41126 2.93967 5.61059 3.139L9.11059 6.639C9.30992 6.83833 9.30992 7.16151 9.11059 7.36084L5.61059 10.8608C5.41126 11.0602 5.08809 11.0602 4.88876 10.8608C4.68943 10.6615 4.68943 10.3383 4.88876 10.139L8.02784 6.99992L4.88876 3.86084C4.68943 3.66151 4.68943 3.33833 4.88876 3.139Z" fill="#333D4C"/>
-              </svg>
-            </div>
-            <div class="breadcrumb-link">Contractors</div>
-            <div class="icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.88876 3.139C5.08809 2.93967 5.41126 2.93967 5.61059 3.139L9.11059 6.639C9.30992 6.83833 9.30992 7.16151 9.11059 7.36084L5.61059 10.8608C5.41126 11.0602 5.08809 11.0602 4.88876 10.8608C4.68943 10.6615 4.68943 10.3383 4.88876 10.139L8.02784 6.99992L4.88876 3.86084C4.68943 3.66151 4.68943 3.33833 4.88876 3.139Z" fill="#333D4C"/>
-              </svg>
-            </div>
+            <a href=# class="nav-regular">Homepage</a>
+            <i class="iconoir-nav-arrow-right"></i>
+            <a href=# class="nav-regular">Contractors</a>
+            <i class="iconoir-nav-arrow-right"></i>
             <div class="breadcrumb-link inactive">Mike Gardner</div>
           </div>
 
@@ -46,56 +41,41 @@
               <div class="listing-header-content">
                 <!-- Name and Badge Section -->
                 <div class="name-badge">
-                  <h2 class="pedicure-name">Example Pedicure</h2>
+                  <h1 class="h1">Example Pedicure</h1>
                   <div class="badge">
                     <span class="label">Verified</span>
-                    <svg class="icon" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M5.84638 0.590356C5.94543 0.553215 6.05457 0.553215 6.15362 0.590356L10.1536 2.09036C10.3244 2.15439 10.4375 2.31763 10.4375 2.5V6C10.4375 7.69532 9.31424 9.05638 8.2881 9.95425C7.76583 10.4112 7.24564 10.7686 6.85687 11.0116C6.66204 11.1334 6.49905 11.2272 6.38376 11.291C6.32609 11.3229 6.28028 11.3474 6.24829 11.3642C6.23229 11.3726 6.21974 11.379 6.21089 11.3836L6.20041 11.3889L6.19731 11.3905L6.1963 11.391L6.19566 11.3913L6 11C5.80434 11.3913 5.80421 11.3912 5.80407 11.3912L5.80269 11.3905L5.79959 11.3889L5.78911 11.3836C5.78026 11.379 5.76771 11.3726 5.75171 11.3642C5.71972 11.3474 5.67391 11.3229 5.61624 11.291C5.50095 11.2272 5.33796 11.1334 5.14313 11.0116C4.75436 10.7686 4.23417 10.4112 3.7119 9.95425C2.68576 9.05638 1.5625 7.69532 1.5625 6V2.5C1.5625 2.31763 1.67563 2.15439 1.84638 2.09036L5.84638 0.590356Z" fill="white"/>
-                    </svg>
-                  </div>
+                <i class="iconoir-shield-check" style="color: white;"></i>                  </div>
                 </div>
           
                 <!-- Address Section -->
                 <div class="address">
-                  <p>123 Address Lane, Richmond, VA 23220</p>
+                  <p class="body-md">123 Address Lane, Richmond, VA 23220</p>
                 </div>
           
                 <!-- Distance and Map Section -->
                 <div class="distance-map">
                   <div class="distance">
-                    <svg class="map-pin" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <!-- Map pin SVG path -->
-                    </svg>
+                    <i class="iconoir-map-pin" style="color: #4e5562;"></i> 
                     <span>1.4 mi</span>
                   </div>
-                  <button class="map-button">
-                    <svg class="icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <!-- Map icon SVG path -->
-                    </svg>
-                    <span>Show on map</span>
-                  </button>
+                  <a href="#" class="nav-regular">
+                    <p>Show on map</p> 
+                  </a>
                 </div>
           
                 <!-- Rating and Contact Info -->
                 <div class="rating-info">
                   <div class="rating">
-                    <svg class="star" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <!-- Star SVG path -->
-                    </svg>
+                    <i class="iconoir-star-solid" style="color: #FC9231;"></i>
                     <span class="score">4.5</span>
                     <span class="count">(76)</span>
                   </div>
-                  <div class="phone">
-                    <svg class="icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <!-- Phone icon SVG path -->
-                    </svg>
-                    <span>+1 (804)-221-9491</span>
-                  </div>
+                  <a href="#" class="nav-regular">
+                    <i class="iconoir-phone" style="color: #1f1f1f;"></i> <span>+1 (804)-221-9491</span>
+                </a>
                   <div class="website">
-                    <svg class="icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <!-- Website icon SVG path -->
-                    </svg>
-                    <span>https://nestsalon.com/</span>
+                    <i class="iconoir-internet" style="color: #1f1f1f;"></i> 
+                    <a href="https://nestsalon.com" class="nav-regular"> <span>https://nestsalon.com</span> </a>
                   </div>
                 </div>
               </div>
@@ -107,10 +87,15 @@
                   <span class="date">November 19, 2024</span>
                 </div>
                 <div class="rating">
-                  <!-- 5-star rating SVG -->
+                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
+                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
+                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
+                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
+                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
+
                 </div>
                 <div class="body">
-                  <p>Dr. Michael Johnston is truly a life-saver. His expertise and attention to detail are unmatched. He took the time to explain everything clearly and made sure I felt comfortable every step of the way. Thanks to him, my heart health is now better than ever. I highly recommend him!</p>
+                  <p>"Dr. Michael Johnston is truly a life-saver. His expertise and attention to detail are unmatched. He took the time to explain everything clearly and made sure I felt comfortable every step of the way. Thanks to him, my heart health is now better than ever. I highly recommend him!"</p>
                   
                 </div>
               </div>
@@ -125,19 +110,19 @@
                 </div>
 
         <div class="about">
-            <div class="heading">About</div>
+            <h2 class="h2">About</h2>
             <div class="text">I'm a skilled handyperson adept at various maintenance, repair, and installation tasks. With a keen eye for detail and a wide range of skills, I tackle diverse projects, from fixing leaky faucets and repairing electrical issues to assembling furniture and conducting minor renovations. I bring expertise and efficiency to every job, ensuring homes and spaces remain functional, safe, and aesthetically pleasing.</div>
             <div class="hours-container">
-                <div class="hours-title">Hours of Operation</div>
+                <h2 class="h2">Hours of Operation</h2>
                 <div class="days-hours">
                     <div class="day-column">
-                        <div class="day">Monday</div>
-                        <div class="day">Tuesday</div>
-                        <div class="day">Wednesday</div>
-                        <div class="day">Thursday</div>
-                        <div class="day">Friday</div>
-                        <div class="day">Saturday</div>
-                        <div class="day">Sunday</div>
+                        <p class="body-md-semibold">Monday</p>
+                        <p class="body-md-semibold">Tuesday</p>
+                        <p class="body-md-semibold">Wednesday</p>
+                        <p class="body-md-semibold">Thursday</p>
+                        <p class="body-md-semibold">Friday</p>
+                        <p class="body-md-semibold">Saturday</p>
+                        <p class="body-md-semibold">Sunday</p>
                     </div>
                     <div class="day-column">
                         <div class="time">8:00 AM - 6:00 PM</div>
@@ -154,12 +139,12 @@
 
         <div class="general-info">
             <section class="listing-info-section">
-                <h1 class="heading-primary">About Pedicure Services</h1>
+                <h2 class="h2">About Pedicure Services</h2>
                 <ul class="text">Before booking a pedicure at any salon, here's what you should know to ensure the best experience.</ul>
             </section>
     
             <section class="listing-info-section">
-                <h2 class="heading-secondary">Common Service Types</h2>
+                <h3 class="h3">Common Service Types</h3>
                 <p class="text">Most salons offer these basic pedicure categories:</p>
                 <p class="text">
                     Standard Pedicure: Includes nail trimming, shaping, cuticle care, light foot massage, and polish<br>
@@ -169,7 +154,7 @@
             </section>
     
             <section class="listing-info-section">
-                <h2 class="heading-secondary">What to Ask Before Booking</h2>
+                <h3 class="h3">What to Ask Before Booking</h3>
                 <p class="text">
                     Available appointment times and walk-in policies<br>
                     Price range for different service levels<br>
@@ -182,7 +167,7 @@
             </section>
     
             <section class="listing-info-section">
-                <h2 class="heading-secondary">General Requirements</h2>
+                <h3 class="h3">General Requirements</h3>
                 <p class="text">Most pedicures & salons expect clients to:</p>
                 <p class="text">
                     Be on time for appointments<br>
@@ -195,7 +180,7 @@
             </section>
     
             <section class="listing-info-section">
-                <h2 class="heading-secondary">Standard Preparation Guidelines</h2>
+                <h3 class="h3">Standard Preparation Guidelines</h3>
                 <p class="text">For optimal service results:</p>
                 <p class="text">
                     Arrive with clean feet<br>
@@ -208,7 +193,7 @@
             </section>
     
             <section class="listing-info-section">
-                <h2 class="heading-secondary">Typical Service Duration</h2>
+                <h3 class="h3">Typical Service Duration</h3>
                 <p class="text">
                     Basic pedicures: 30-45 minutes<br>
                     Spa pedicures: 45-60 minutes<br>
@@ -218,7 +203,7 @@
             </section>
     
             <section class="listing-info-section">
-                <h2 class="heading-secondary">Common Payment Information</h2>
+                <h3 class="h3">Common Payment Information</h3>
                 <p class="text">
                     Verify accepted payment methods before appointment<br>
                     Ask about gratuity policies<br>
@@ -229,7 +214,7 @@
             </section>
     
             <section class="listing-info-section">
-                <h2 class="heading-secondary">Additional Considerations</h2>
+                <h3 class="h3">Additional Considerations</h3>
                 <p class="text">
                     Some salons offer seasonal services<br>
                     Premium services may require advance booking<br>
@@ -242,9 +227,9 @@
         </div>
 
         <div class="services" data-layer="services">
-            <div class="heading" data-layer="heading">
+            <h2 class="h2" data-layer="heading">
               Services Mentioned in Reviews
-            </div>
+            </h2>
             
             <div class="grid" data-layer="grid">
               <!-- Column 1 -->
@@ -287,7 +272,7 @@
           </div>
 
           <div data-layer="photos-section" class="photos-section">
-            <div data-layer="heading" class="Heading">8 Photos</div>
+            <h2 data-layer="h2" class="h2">8 Photos</h2>
             
             <div data-layer="row" class="Row">
                 <div data-layer="photos-container" class="photos-container">
@@ -337,24 +322,24 @@
 
             <!-- State Cities Section -->
             <div class="state-cities">
-                <h3 class="state-cities-heading">Explore pedicures in other Virginia cities</h3>
+                <h3 class="state-cities-heading">Explore Pedicures in Other Virginia Cities</h3>
                 <div class="cities-grid">
-                    <a href="#" class="city-link">Alexandria</a>
-                    <a href="#" class="city-link">Arlington</a>
-                    <a href="#" class="city-link">Chesapeake</a>
-                    <a href="#" class="city-link">Norfolk</a>
-                    <a href="#" class="city-link">Virginia Beach</a>
-                    <a href="#" class="city-link">Newport News</a>
-                    <a href="#" class="city-link">Hampton</a>
-                    <a href="#" class="city-link">Roanoke</a>
+                    <a href="#" class="nav-regular">Alexandria</a>
+                    <a href="#" class="nav-regular">Arlington</a>
+                    <a href="#" class="nav-regular">Chesapeake</a>
+                    <a href="#" class="nav-regular">Norfolk</a>
+                    <a href="#" class="nav-regular">Virginia Beach</a>
+                    <a href="#" class="nav-regular">Newport News</a>
+                    <a href="#" class="nav-regular">Hampton</a>
+                    <a href="#" class="nav-regular">Roanoke</a>
                 </div>
             </div>
         </div>
         <div class="sidebar-contact-form-container">
           <div class="sidebar-contact-form">
             <div class="text-container">
-                <h2 class="form-heading">Contact Pedicure</h2>
-                <p class="form-subheading">Please fill out the form to contact a specialist</p>
+                <h3 class="form-heading">Contact Pedicure</h3>
+                <p class="form-subheading">Send a message to this listing below</p>
             </div>
             
             <div class="inputs-container">
