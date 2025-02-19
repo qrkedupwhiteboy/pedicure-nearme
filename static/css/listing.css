@@ -1,5 +1,15 @@
+.listing-top-wrapper{
+    padding-left: 64px;
+    padding-right: 64px;
+    padding-top: 24px;
+    padding-bottom: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100vw;
+}
+
 .breadcrumb {
-    padding:32px;
     width: 100%;
     height: 20px;
     display: inline-flex;
@@ -21,8 +31,7 @@
   }
 
   .listing-info-wrapper {
-    padding: 32px;
-    width: 100vw;
+    width: 100%;
     height: auto;
     display: inline-flex;
     justify-content: flex-start;
@@ -204,7 +213,8 @@
   }
 
   .main-wrapper {
-    padding: 32px;
+    padding-right: 64px;
+    padding-left: 64px;
     display: flex;
     width: 100vw;
     gap: 32px
@@ -236,10 +246,20 @@
       border-radius: 8px;
   }
 
+  .sidebar-wrapper{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .sidebar-contact-form-container{
+    height: 100%;
+  }
+
   /* Contact form container */
 .sidebar-contact-form {
     width: 100%;
-    height: 100%;
+    height: auto;
     padding: 32px;
     background: #F5F7FA;
     border-radius: 8px;
@@ -329,6 +349,11 @@
       font-weight: 500;
       line-height: 16px;
       word-wrap: break-word;
+  }
+
+  .pedicures-near-container{
+    width: 100%;
+    height: 100%;
   }
   
   .about {
