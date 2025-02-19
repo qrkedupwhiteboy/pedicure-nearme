@@ -247,7 +247,9 @@
   }
 
   .sidebar-wrapper{
+    align-items: start;
     display: flex;
+    gap: 4rem;
     flex-direction: column;
     width: 100%;
   }
@@ -352,16 +354,17 @@
   }
 
   .pedicures-near-container {
+    position: sticky;
     width: 100%;
-    height: 100%;
+    height: auto;
     padding: 32px;
     background: #F5F7FA;
     border-radius: 8px;
-    margin-top: 24px;
   }
 
   .nearby-section {
     margin-bottom: 32px;
+    height: auto;
   }
 
   .nearby-heading {
@@ -395,6 +398,12 @@
   .nearby-card-address {
     color: #4E5562;
     font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .nearby-card-rating {
+    color: #6C727F;
+    font-size: 12px;
     margin-bottom: 8px;
   }
 
