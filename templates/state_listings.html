@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedicures in {{ state_name }} | Best Nail Salons</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/logo-placeholder.png') }}" alt="Pedicure Near Me Directory">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/search">Find Pedicures</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="listings-container">
+            <div class="filters-sidebar">
+                <h2>Filters</h2>
+                <div class="filter-section">
+                    <h3>Sort By</h3>
+                    <select id="sort-select">
+                        <option value="city">City (A-Z)</option>
+                        <option value="listings">Most Listings</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="listings-content">
+                <div class="state-listings-header">
+                    <h1 class="h1">Pedicures in {{ state_name }}</h1>
+                    <p class="results-count">{{ cities|length }} cities with pedicure services</p>
+                </div> 
+                
+                <div id="cities-grid">
+                    {% for city in cities %}
+                    <div class="city-card" 
+                         data-city="{{ city.city }}"
+                         data-listings="{{ city.listing_count }}">
+                        <div class="city-info">
+                            <h2><a href="{{ url_for('city_listings', city=city.city|lower|replace(' ', '-')) }}" class="nav-large">{{ city.city }}</a></h2>
+                            <p class="listing-count">{{ city.listing_count }} pedicure locations</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function updateListings() {
+            const sortBy = document.getElementById('sort-select').value;
+            const cities = Array.from(document.querySelectorAll('.city-card'));
+            const container = document.getElementById('cities-grid');
+            
+            cities.sort((a, b) => {
+                if (sortBy === 'city') {
+                    return a.dataset.city.localeCompare(b.dataset.city);
+                } else if (sortBy === 'listings') {
+                    return parseInt(b.dataset.listings) - parseInt(a.dataset.listings);
+                }
+                return 0;
+            });
+            
+            container.innerHTML = '';
+            cities.forEach(city => container.appendChild(city));
+        }
+
+        document.getElementById('sort-select').addEventListener('change', updateListings);
+    </script>
+</body>
+</html>

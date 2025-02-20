@@ -228,6 +228,45 @@ def map_view(zipcode):
     finally:
         session.close()
 
+@app.route('/state/<state>')
+def state_listings(state):
+    """Display pedicure listings for a specific state"""
+    session = Session()
+    try:
+        # Get state name from code
+        state_name = STATE_NAMES.get(state.upper())
+        if not state_name:
+            abort(404)
+            
+        # Query cities and their listing counts for the state
+        cities = session.query(
+            PedicureListing.city,
+            func.count(PedicureListing.id).label('listing_count')
+        ).filter(
+            func.upper(PedicureListing.state) == state.upper(),
+            PedicureListing.city.isnot(None)
+        ).group_by(
+            PedicureListing.city
+        ).order_by(
+            PedicureListing.city
+        ).all()
+        
+        if not cities:
+            abort(404)
+            
+        # Format city data
+        city_data = [
+            {'city': city[0], 'listing_count': city[1]}
+            for city in cities
+        ]
+        
+        return render_template('state_listings.html',
+                             state_code=state.upper(),
+                             state_name=state_name,
+                             cities=city_data)
+    finally:
+        session.close()
+
 @app.route('/pedicures-in/<city>')
 def city_listings(city):
     """Display pedicure listings for a specific city"""

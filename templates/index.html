@@ -220,7 +220,7 @@
                             {% for city in data.top_cities %}
                             <a href="{{ url_for('city_listings', city=city|lower|replace(' ', '-')) }}" class="city-link">Pedicures in <span class="city-highlight">{{ city }}</span></a>                            {% endfor %}
                             {% if data.total_cities > 5 %}
-                            <a href="/search?state={{ state|lower }}" class="city-link see-all">See all {{ data.total_cities }} cities in {{ state }} →</a>
+                            <a href="{{ url_for('state_listings', state=state|lower) }}" class="city-link see-all">See all {{ data.total_cities }} cities in {{ state }} →</a>
                             {% endif %}
                         </div>
                     </div>
