@@ -596,6 +596,7 @@ body {
     padding-top: .75rem;
     padding-bottom: .75rem;
     border-bottom: 1px solid #EAEAEA;
+    cursor:pointer
   }
   
   .collapse-title {
