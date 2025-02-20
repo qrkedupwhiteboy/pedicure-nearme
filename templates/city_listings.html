@@ -6,6 +6,7 @@
     <title>Pedicures in {{ city }}, {{ state }} | Best Nail Salons</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
 </head>
 <body>
     <header class="main-header">
@@ -59,8 +60,10 @@
             </div>
 
             <div class="listings-content">
-                <h1>Pedicures in {{ city }}, {{ state }}</h1>
-                <p class="results-count">{{ listings|length }} pedicure locations found</p>
+                <div class="city-listings-header">
+                    <h1 class="h1">Pedicures in {{ city }}, {{ state }}</h1>
+                    <p class="results-count">{{ listings|length }} pedicure locations found</p>
+                </div> 
                 
                 <div id="listings-grid">
                     {% for listing in listings %}
@@ -76,13 +79,16 @@
                             <div class="placeholder-image">No Image Available</div>
                             {% endif %}
                         </div>
-                        <div class="listing-info">
-                            <h2><a href="/listing/{{ listing.id }}">{{ listing.name }}</a></h2>
-                            <div class="rating-reviews">
-                                <span class="rating">{{ listing.rating }}/5</span>
-                                <span class="reviews">({{ listing.reviews }} reviews)</span>
+                        <div class="city-listing-info">
+                            <div class="city-listing-header">
+                                <h2><a href="/listing/{{ listing.id }}" class="nav-large">{{ listing.name }}</a></h2>
+                                <p class="address">{{ listing.address }}</p>
                             </div>
-                            <p class="address">{{ listing.address }}</p>
+
+                            <div class="rating-reviews">
+                                <span class="body-md">{{ listing.rating }}/5</span>
+                                <span class="body-md">({{ listing.reviews }} reviews)</span>
+                            </div>
                             {% if listing.phone %}
                             <p class="phone">{{ listing.phone }}</p>
                             {% endif %}

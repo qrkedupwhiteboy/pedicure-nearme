@@ -207,9 +207,38 @@
     font-weight: 400;                                                                                                                     
     line-height: 16px;                                                                                                                    
     font-size: 10px;                                                                                                                      
-  }                                                                                                                                       
-                                                                                                                                          
-  /* Navigation Styles */                                                                                                                 
+  }       
+
+    /* Navigation Styles */  
+                                                                                                                
+  .nav-large {    
+    gap: 4px;    
+    display: flex;
+    align-items: center;                                                                                                                  
+    font-family: Inter;                                                                                                                   
+    font-weight: 500;                                                                                                                     
+    line-height: 32px;                                                                                                                    
+    font-size: 20px;
+    color: #1c79ca;
+    text-decoration: none;
+    text-wrap: pretty;                                                                                                               
+  }                
+  
+  .nav-large:hover {                                                                                                                          
+    font-family: Inter;                                                                                                                   
+    font-weight: 500;                                                                                                                     
+    line-height: 32px;                                                                                                                    
+    font-size: 20px;
+    color:#0e5796;
+    text-wrap: pretty;  
+    text-decoration: underline;
+    transition: 2s;
+        transition-behavior: normal;
+        transition-duration: 0.2s;  
+        transition-property: color;
+        transition-timing-function: ease;                                                                                                                  
+  }        
+                                                                                                                                                                                                                                                         
   .nav-regular {    
     gap: 4px;    
     display: flex;
@@ -220,7 +249,7 @@
     font-size: 14px;
     color: #1c79ca;
     text-decoration: none;
-    text-wrap: nowrap;                                                                                                               
+    text-wrap: pretty;                                                                                                               
   }                
   
   .nav-regular:hover {                                                                                                                          
@@ -229,7 +258,7 @@
     line-height: 22px;                                                                                                                    
     font-size: 14px;
     color:#0e5796;
-    text-wrap: nowrap;  
+    text-wrap: pretty;  
     text-decoration: underline;
     transition: 2s;
         transition-behavior: normal;

@@ -33,7 +33,7 @@
             <i class="iconoir-nav-arrow-right"></i>
             <a href=# class="nav-regular">Contractors</a>
             <i class="iconoir-nav-arrow-right"></i>
-            <div class="breadcrumb-link inactive">Mike Gardner</div>
+            <div class="breadcrumb-link inactive">{{listing.name}}</div>
           </div>
 
         <div class="listing-info-wrapper">
@@ -41,7 +41,7 @@
               <div class="listing-header-content">
                 <!-- Name and Badge Section -->
                 <div class="name-badge">
-                  <h1 class="h1">Example Pedicure</h1>
+                  <h1 class="h1">{{listing.name}}</h1>
                   <div class="badge">
                     <span class="label">Verified</span>
                 <i class="iconoir-shield-check" style="color: white;"></i>                  </div>
@@ -49,7 +49,7 @@
           
                 <!-- Address Section -->
                 <div class="address">
-                  <p class="body-md">123 Address Lane, Richmond, VA 23220</p>
+                  <p class="body-md">{{listing.address}}</p>
                 </div>
           
                 <!-- Distance and Map Section -->
@@ -67,15 +67,15 @@
                 <div class="rating-info">
                   <div class="rating">
                     <i class="iconoir-star-solid" style="color: #FC9231;"></i>
-                    <span class="score">4.5</span>
-                    <span class="count">(76)</span>
+                    <span class="score">{{listing.rating}}</span>
+                    <span class="count">({{listing.reviews}})</span>
                   </div>
                   <a href="#" class="nav-regular">
-                    <i class="iconoir-phone" style="color: #1f1f1f;"></i> <span>+1 (804)-221-9491</span>
+                    <i class="iconoir-phone" style="color: #1f1f1f;"></i> <span>{{listing.phone}}</span>
                 </a>
                   <div class="website">
                     <i class="iconoir-internet" style="color: #1f1f1f;"></i> 
-                    <a href="https://nestsalon.com" class="nav-regular"> <span>https://nestsalon.com</span> </a>
+                    <a href="{{listing.website}}" class="nav-regular"> <span> View Website</span> </a>
                   </div>
                 </div>
               </div>
@@ -106,12 +106,12 @@
     <div class="main-wrapper">
         <div class="listing-content">
           <div class="gallery">
-            <div class="main-image"></div>
+            <img src="{{listing.featured_image}}"  class="main-image"></img>
                 </div>
 
         <div class="about">
             <h2 class="h2">About</h2>
-            <div class="text">I'm a skilled handyperson adept at various maintenance, repair, and installation tasks. With a keen eye for detail and a wide range of skills, I tackle diverse projects, from fixing leaky faucets and repairing electrical issues to assembling furniture and conducting minor renovations. I bring expertise and efficiency to every job, ensuring homes and spaces remain functional, safe, and aesthetically pleasing.</div>
+            <div class="text">"{{listing.description}}"</div>
             <div class="hours-container">
                 <h2 class="h2">Hours of Operation</h2>
                 <div class="days-hours">
