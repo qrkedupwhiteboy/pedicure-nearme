@@ -324,7 +324,7 @@
 
             <!-- State Cities Section -->
             <div class="state-cities">
-                <h3 class="state-cities-heading">Explore Pedicures in Other Virginia Cities</h3>
+                <h3 class="state-cities-heading">Explore Pedicures in Other {{listing.state}} Cities</h3>
                 <div class="cities-grid">
                     {% for city in cities_in_state %}
                         <a href="{{ url_for('city_listings', city=city.lower().replace(' ', '-')) }}" 

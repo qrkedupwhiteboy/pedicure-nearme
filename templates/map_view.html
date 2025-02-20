@@ -174,7 +174,7 @@
                 <div class="listings">
                     {% for listing in listings %}
                     <div class="listing-card" data-lat="{{ listing.coordinates.latitude }}" data-lon="{{ listing.coordinates.longitude }}">
-                        <h3>{{ listing.name }}</h3>
+                        <a class="nav-regular" href="/listing/{{listing.id}}">{{ listing.name }} </h3> </a>
                         <p>{{ listing.address }}</p>
                         <p class="rating">Rating: {{ listing.rating }}/5 ({{ listing.reviews }} reviews)</p>
                         <p>{{ listing.phone }}</p>
