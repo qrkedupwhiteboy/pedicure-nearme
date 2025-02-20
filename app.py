@@ -262,10 +262,38 @@ def listing_page(listing_id):
     """Display a single pedicure listing"""
     session = Session()
     try:
+        # Get the main listing
         listing = session.query(PedicureListing).get(listing_id)
         if not listing:
             abort(404)
-        return render_template('listing.html', listing=listing)
+            
+        # Get nearby listings in same zipcode, ordered by rating
+        nearby_listings = session.query(PedicureListing).filter(
+            PedicureListing.zip_code == listing.zip_code,
+            PedicureListing.id != listing_id,
+            PedicureListing.coordinates.isnot(None)
+        ).order_by(
+            PedicureListing.rating.desc()
+        ).limit(2).all()
+        
+        # Get cities in the same state that have listings
+        cities_in_state = session.query(
+            PedicureListing.city
+        ).filter(
+            PedicureListing.state == listing.state,
+            PedicureListing.city.isnot(None)
+        ).group_by(
+            PedicureListing.city
+        ).order_by(
+            PedicureListing.city
+        ).all()
+        
+        cities_in_state = [city[0] for city in cities_in_state]  # Unpack from tuples
+        
+        return render_template('listing.html', 
+                             listing=listing,
+                             nearby_listings=nearby_listings,
+                             cities_in_state=cities_in_state)
     finally:
         session.close()
 

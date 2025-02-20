@@ -327,14 +327,10 @@
             <div class="state-cities">
                 <h3 class="state-cities-heading">Explore Pedicures in Other Virginia Cities</h3>
                 <div class="cities-grid">
-                    <a href="#" class="nav-regular">Alexandria</a>
-                    <a href="#" class="nav-regular">Arlington</a>
-                    <a href="#" class="nav-regular">Chesapeake</a>
-                    <a href="#" class="nav-regular">Norfolk</a>
-                    <a href="#" class="nav-regular">Virginia Beach</a>
-                    <a href="#" class="nav-regular">Newport News</a>
-                    <a href="#" class="nav-regular">Hampton</a>
-                    <a href="#" class="nav-regular">Roanoke</a>
+                    {% for city in cities_in_state %}
+                        <a href="{{ url_for('city_listings', city=city.lower().replace(' ', '-')) }}" 
+                           class="nav-regular">{{ city }}</a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -400,6 +396,22 @@
             const distance = R * c;
             
             distanceSpan.textContent = `${distance.toFixed(1)} mi`;
+            
+            // Calculate distances for nearby listings
+            document.querySelectorAll('.nearby-card-distance').forEach(span => {
+                const nearbyLat = parseFloat(span.dataset.lat);
+                const nearbyLon = parseFloat(span.dataset.lon);
+                
+                const dLat = (nearbyLat - userLat) * Math.PI / 180;
+                const dLon = (nearbyLon - userLon) * Math.PI / 180;
+                const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                          Math.cos(userLat * Math.PI / 180) * Math.cos(nearbyLat * Math.PI / 180) *
+                          Math.sin(dLon/2) * Math.sin(dLon/2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                const distance = R * c;
+                
+                span.textContent = `${distance.toFixed(1)} miles away`;
+            });
         }
     </script>
 </body>
