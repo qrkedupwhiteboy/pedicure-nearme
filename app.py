@@ -228,7 +228,7 @@ def map_view(zipcode):
     finally:
         session.close()
 
-@app.route('/state/<state>')
+@app.route('/cities-with-pedicures-in/<state>')
 def state_listings(state):
     """Display pedicure listings for a specific state"""
     session = Session()
