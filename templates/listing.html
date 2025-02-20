@@ -308,18 +308,17 @@
             <div class="nearby-section">
                 <h3 class="nearby-heading">Other Pedicures Near You</h3>
                 <div class="nearby-cards">
+                    {% for nearby in nearby_listings %}
                     <div class="nearby-card">
-                        <h4 class="nearby-card-title">Luxury Nail Spa</h4>
-                        <p class="nearby-card-address">456 Oak Street, Richmond, VA 23220</p>
-                        <p class="nearby-card-rating"> 4.5 Stars (76 Reviews)</p>
-                        <p class="nearby-card-distance">1.8 miles away</p>
+                        <h4 class="nearby-card-title">{{ nearby.name }}</h4>
+                        <p class="nearby-card-address">{{ nearby.address }}</p>
+                        <p class="nearby-card-rating">{{ nearby.rating }} Stars ({{ nearby.reviews }} Reviews)</p>
+                        <span class="nearby-card-distance" 
+                              data-lat="{{ nearby.coordinates.latitude }}"
+                              data-lon="{{ nearby.coordinates.longitude }}">
+                        </span>
                     </div>
-                    <div class="nearby-card">
-                        <h4 class="nearby-card-title">Elite Nails & Spa</h4>
-                        <p class="nearby-card-address">789 Pine Avenue, Richmond, VA 23220</p>
-                        <p class="nearby-card-rating"> 4.5 Stars (76 Reviews)</p>
-                        <p class="nearby-card-distance">2.3 miles away</p>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
