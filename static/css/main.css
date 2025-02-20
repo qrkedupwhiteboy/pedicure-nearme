@@ -493,7 +493,7 @@ body {
 
 /* Featured Locations */
 .featured-locations {
-    padding: 4rem 0;
+    padding: 2rem;
     background: white;
 }
 
@@ -513,7 +513,6 @@ body {
     background: #fff;
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .state-name {
@@ -562,28 +561,25 @@ body {
     padding: 4rem;
 }
 
+.faq-section h2 {
+    font-size: 32px;
+}
+
 .faqs-container {
     width: 100%;
-    height: 862px;
+    height: auto;
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    gap: 3rem;
+    align-items: start;
+    gap: 1.5rem;
   }
   
-  .faqs-title {
-    color: #171717;
-    font-size: 48.20px;
-    font-family: Inter, sans-serif;
-    font-weight: 700;
-    line-height: 56px;
-  }
   
   .collapse-group {
     align-self: stretch;
     flex: 1;
-    padding-top: 1px;
+    box-sizing: border-box;
     border-top: 1px solid #EAEAEA;
     display: inline-flex;
     flex-direction: column;
@@ -605,17 +601,14 @@ body {
     align-items: center;
     padding: .5rem 0;
   }
-  
-  .title-text {
-    color: black;
-    font-size: 15.90px;
-    font-family: Inter, sans-serif;
+
+  .collapse-title h3{
     font-weight: 500;
-    line-height: 24px;
   }
   
+  
   .collapse-content {
-    padding: 20px 16px 17px 0;
+    padding: .75rem .75rem .75rem 0;
   }
   
   .text-wrapper {
