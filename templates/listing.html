@@ -56,7 +56,10 @@
                 <div class="distance-map">
                   <div class="distance">
                     <i class="iconoir-map-pin" style="color: #4e5562;"></i> 
-                    <span>1.4 mi</span>
+                    <span class="distance-value" 
+                          data-lat="{{ listing.coordinates.latitude }}"
+                          data-lon="{{ listing.coordinates.longitude }}">
+                    </span>
                   </div>
                   <a href="#" class="nav-regular">
                     <p>Show on map</p> 
@@ -375,5 +378,29 @@
                 
         </div>
     </main>
+    <script>
+        // Get stored user location
+        const userLat = localStorage.getItem('userLat');
+        const userLon = localStorage.getItem('userLon');
+
+        // Calculate distance if user location is available
+        if (userLat && userLon) {
+            const distanceSpan = document.querySelector('.distance-value');
+            const listingLat = parseFloat(distanceSpan.dataset.lat);
+            const listingLon = parseFloat(distanceSpan.dataset.lon);
+            
+            // Calculate distance using Haversine formula
+            const R = 3963.1; // Earth's radius in miles
+            const dLat = (listingLat - userLat) * Math.PI / 180;
+            const dLon = (listingLon - userLon) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(userLat * Math.PI / 180) * Math.cos(listingLat * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+            
+            distanceSpan.textContent = `${distance.toFixed(1)} mi`;
+        }
+    </script>
 </body>
 </html>
