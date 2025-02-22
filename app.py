@@ -312,7 +312,15 @@ def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
         }
     
     try:
-        hours_dict = json.loads(hours_text)
+        hours_array = json.loads(hours_text)
+        # Convert array of day objects to dictionary
+        hours_dict = {}
+        for day_obj in hours_array:
+            day = day_obj['day']
+            times = day_obj['times']
+            # Join multiple times with commas if present
+            hours_dict[day] = ', '.join(times)
+            
         # Ensure all days are present
         default_hours = {
             'Monday': 'CLOSED',
@@ -325,8 +333,8 @@ def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
         }
         default_hours.update(hours_dict)
         return default_hours
-    except json.JSONDecodeError:
-        # Return default hours if JSON parsing fails
+    except (json.JSONDecodeError, KeyError, TypeError):
+        # Return default hours if JSON parsing fails or required fields missing
         return {
             'Monday': 'Error parsing hours',
             'Tuesday': 'Error parsing hours',
