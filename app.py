@@ -4,7 +4,7 @@ from sqlalchemy import text, func
 import os
 from dotenv import load_dotenv
 import json
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import folium
@@ -298,6 +298,16 @@ def city_listings(city):
     finally:
         session.close()
 
+def parse_categories(categories_text: Optional[str]) -> List[str]:
+    """Parse categories from JSON text into a list of category names"""
+    if not categories_text:
+        return []
+    
+    try:
+        return json.loads(categories_text)
+    except json.JSONDecodeError:
+        return []
+
 def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
     """Parse hours from JSON text into a dictionary of day -> hours string"""
     if not hours_text:
@@ -382,7 +392,8 @@ def listing_page(listing_id):
                              listing=listing,
                              nearby_listings=nearby_listings,
                              cities_in_state=cities_in_state,
-                             parse_hours=parse_hours)
+                             parse_hours=parse_hours,
+                             parse_categories=parse_categories)
     finally:
         session.close()
 

@@ -236,42 +236,22 @@
             </h2>
             
             <div class="grid" data-layer="grid">
-              <!-- Column 1 -->
+              {% set categories = parse_categories(listing.categories) %}
+              {% set columns = (categories|length / 3)|round(method='ceil')|int %}
+              {% for i in range(0, categories|length, columns) %}
               <div class="column" data-layer="column">
+                {% for category in categories[i:i+columns] %}
                 <div class="item" data-layer="item">
                   <div class="icon" data-layer="Icon" data-svg-wrapper>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path fill-rule="evenodd" clip-rule="evenodd" d="M8.8033 1.25906C9.16714 1.04936 9.57971 0.938965 9.99967 0.938965C10.4197 0.938965 10.8322 1.04936 11.1961 1.25908L11.1976 1.25995L17.0309 4.59327C17.3291 4.76544 17.5859 4.99939 17.7846 5.27844C17.8309 5.32374 17.8719 5.37602 17.9059 5.43481C17.9354 5.48583 17.958 5.53893 17.9741 5.59305C18.1409 5.92535 18.2285 6.29255 18.2288 6.66567V13.3331C18.2284 13.7532 18.1175 14.1666 17.9072 14.5304C17.697 14.8941 17.3948 15.1962 17.0309 15.4062L17.0281 15.4078L11.1976 18.7396L11.1962 18.7404C10.9376 18.8894 10.6544 18.9883 10.3614 19.0331C10.2548 19.0941 10.1313 19.129 9.99967 19.129C9.86802 19.129 9.74453 19.0941 9.63792 19.0331C9.34495 18.9883 9.06175 18.8894 8.80317 18.7404L8.80176 18.7396L2.97124 15.4078L2.96842 15.4062C2.60457 15.1962 2.30236 14.8941 2.0921 14.5304C1.88185 14.1666 1.77094 13.754 1.77051 13.3338V6.66642C1.77089 6.29319 1.85846 5.92528 2.02541 5.59277C2.04147 5.53875 2.06408 5.48574 2.09354 5.43481C2.1275 5.37611 2.16838 5.32392 2.21457 5.27867C2.4133 4.99952 2.67015 4.76549 2.96842 4.59328L2.97124 4.59166L8.8033 1.25906Z"/>
                     </svg>
                   </div>
-                  <div class="text" data-layer="text">3D rendering</div>
+                  <div class="text" data-layer="text">{{ category }}</div>
                 </div>
-                
-                <!-- Add other items for Column 1 -->
-                <div class="item" data-layer="item">
-                  <div class="icon" data-svg-wrapper data-layer="Icon">
-                    <!-- Bathroom design icon SVG -->
-                  </div>
-                  <div class="text" data-layer="text">Bathroom design</div>
-                </div>
-                
-                <div class="item" data-layer="item">
-                  <div class="icon" data-svg-wrapper data-layer="Icon">
-                    <!-- Kids bedroom design icon SVG -->
-                  </div>
-                  <div class="text" data-layer="text">Kids bedroom design</div>
-                </div>
+                {% endfor %}
               </div>
-          
-              <!-- Column 2 -->
-              <div class="column" data-layer="column">
-                <!-- Similar structure for bedroom design, closet design, interior design -->
-              </div>
-          
-              <!-- Column 3 -->
-              <div class="column" data-layer="column">
-                <!-- Similar structure for kitchen design, laundry room design, color consulting -->
-              </div>
+              {% endfor %}
             </div>
           </div>
 
