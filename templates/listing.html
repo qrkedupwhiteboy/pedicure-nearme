@@ -29,9 +29,11 @@
     <main>
         <div class="listing-top-wrapper">
         <div class="breadcrumb">
-            <a href=# class="nav-regular">Homepage</a>
+            <a href="/" class="nav-regular">Local Pedicures</a>
             <i class="iconoir-nav-arrow-right"></i>
-            <a href=# class="nav-regular">Contractors</a>
+            <a href="{{ url_for('state_listings', state=listing.state.lower()) }}" class="nav-regular">{{listing.state}} Cities with Pedicures</a>
+            <i class="iconoir-nav-arrow-right"></i>
+            <a href="{{ url_for('city_listings', city=listing.city.lower().replace(' ', '-')) }}" class="nav-regular">Pedicures in {{listing.city}}</a>
             <i class="iconoir-nav-arrow-right"></i>
             <div class="breadcrumb-link inactive">{{listing.name}}</div>
           </div>
