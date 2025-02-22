@@ -306,6 +306,25 @@ def about_page():
 def contact_page():
     return render_template('contact.html')
 
+@app.route('/submit_contact', methods=['POST'])
+def submit_contact():
+    """Handle contact form submission"""
+    try:
+        # Get form data
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        
+        # Here you would typically:
+        # 1. Validate the data
+        # 2. Send an email or store in database
+        # 3. Send confirmation email to user
+        
+        return jsonify({'success': True, 'message': 'Thank you for your message. We will respond shortly.'})
+    except Exception as e:
+        app.logger.error(f"Contact form error: {str(e)}")
+        return jsonify({'error': 'Failed to send message'}), 500
+
 def parse_categories(categories: Optional[List[str]]) -> List[str]:
     """Convert categories list into list of strings"""
     if not categories:

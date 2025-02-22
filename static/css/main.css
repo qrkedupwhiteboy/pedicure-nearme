@@ -609,12 +609,72 @@ body {
     justify-content: center;
   }
 
+/* About page styles */
+.about-page {
+    padding: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.about-intro,
+.about-mission,
+.about-experience,
+.about-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.about-cta {
+    text-align: center;
+    padding: 2rem;
+    background: #f5f7fa;
+    border-radius: 8px;
+}
+
+/* Contact page styles */
+.contact-page {
+    padding: 4rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.contact-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.contact-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
 /* Footer */
 .main-footer {
     background: #333;
     color: white;
     padding: 1rem 0;
     text-align: center;
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+    .about-page,
+    .contact-page {
+        padding: 2rem 1rem;
+    }
+    
+    .about-container,
+    .contact-container {
+        gap: 2rem;
+    }
 }
 
 

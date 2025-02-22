@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Find Your Perfect Pedicure</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+</head>
+<body>
+    <main class="contact-page">
+        <div class="contact-container">
+            <section class="contact-intro">
+                <h1 class="h1">Contact Us</h1>
+                <p class="body-lg">Have questions about our platform? Want to list your salon? We're here to help.</p>
+            </section>
+
+            <section class="contact-form">
+                <form class="sidebar-contact-form">
+                    <div class="text-container">
+                        <h2 class="form-heading">Send Us a Message</h2>
+                        <p class="form-subheading">We'll get back to you as soon as possible.</p>
+                    </div>
+                    
+                    <div class="inputs-container">
+                        <input type="text" class="input-field" placeholder="Your Name">
+                        <input type="email" class="input-field" placeholder="Email Address">
+                        <textarea class="input-field message-input" placeholder="Your Message"></textarea>
+                        <button class="primary-button">
+                            <span class="button-label">Send Message</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
