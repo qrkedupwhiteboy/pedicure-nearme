@@ -304,7 +304,12 @@ def parse_categories(categories_text: Optional[str]) -> List[str]:
         return []
     
     try:
-        return json.loads(categories_text)
+        # The categories_text is already a JSON string, so we can parse it directly
+        categories = json.loads(categories_text)
+        # Ensure we have a list of strings
+        if isinstance(categories, list):
+            return [str(cat) for cat in categories]
+        return []
     except json.JSONDecodeError:
         return []
 
