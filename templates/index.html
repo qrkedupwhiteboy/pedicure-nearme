@@ -6,18 +6,21 @@
     <title>Find Pedicures Near You | Best Local Pedicures & Manicures</title>
     <meta name="description" content="Discover the best pedicure services near you. Browse services, ratings, and book your perfect pedicure today.">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+
 </head>
 <body>
     <header class="main-header">
         <div class="container">
             <div class="logo">
                 <a href="/">
-                    <img src="{{ url_for('static', filename='images/logo-placeholder.png') }}" alt="Pedicure Near Me Directory" width="180" height="60">
+                    <i class="iconoir-asterisk" alt="Pedicure Near Me Directory"></i>
                 </a>
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="/">Home</a></li>
+                    <li c;as><a href="/">Home</a></li>
                     <li><a href="/search">Find Pedicures</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/contact">Contact</a></li>
@@ -31,8 +34,8 @@
         <section class="hero">
             <div class="hero-flex">
                 <div class="hero-container">
-                    <h1>Find the Best Pedicure Near You</h1>
-                    <p class="hero-description">
+                    <h1 class="d2">Find the Best Pedicure Near You</h1>
+                    <p class="hero-description body-xl" style="text-wrap: pretty; color:white">
                         Looking for the perfect pedicure near you? Whether you need a relaxing spa day, a medical pedicure, or the best-rated nail salon in town, our directory helps you find the top pedicure services in your area. Compare ratings, hours, and book your appointment instantly.
                     </p>
                     <div class="location-search">
@@ -42,7 +45,6 @@
                                 <span class="icon">Search</span>
                             </button>
                             <div id="current-zipcode" class="current-zipcode">
-                                <button id="use-current-location">Search my current location</button>
                             </div>
                         </div>
                     </div>
@@ -67,45 +69,41 @@
                 <div class="how-it-works-headings">
                 <div class="section-header">
                     <div class="section-title-container">
-                        <h2>How It Works</h2>
-                        <p class="section-description">Finding the perfect pedicure near you shouldn't be complicated.</p>
+                        <h2 class="h2">How It Works</h2>
+                        <p class="body-xl" style="color: #666;">Finding the perfect pedicure near you shouldn't be complicated.</p>
                     </div>
                 </div>
             </div>
                 <div class="steps-container">
                     <div class="step-block">
                         <div class="step-content">
-                            <div class="step-icon">🔍</div>
                             <div class="step-text">
                                 <h3>Discover</h3>
-                                <p>Enter your location or use GPS to find pedicure services near you. Our directory includes verified salons and spas in your area, making it easy to find the perfect spot for your next pedicure.</p>
+                                <p class="body-xl">Enter your location or use GPS to find pedicure services near you. Our directory includes verified salons and spas in your area, making it easy to find the perfect spot for your next pedicure.</p>
                             </div>
                         </div>
                     </div>
                     <div class="step-block">
                         <div class="step-content">
-                            <div class="step-icon">⭐</div>
                             <div class="step-text">
                                 <h3>Compare</h3>
-                                <p>Browse through detailed profiles, authentic reviews, and current pricing. Compare different services, specialties, and amenities to make an informed decision about where to get your pedicure.</p>
+                                <p class="body-xl">Browse through detailed profiles, authentic reviews, and current pricing. Compare different services, specialties, and amenities to make an informed decision about where to get your pedicure.</p>
                             </div>
                         </div>
                     </div>
                     <div class="step-block">
                         <div class="step-content">
-                            <div class="step-icon">📅</div>
                             <div class="step-text">
                                 <h3>Book</h3>
-                                <p>Once you've found your perfect match, booking is simple. Choose your preferred time slot and service type, then confirm your appointment with just a few clicks. Many locations offer instant confirmation.</p>
+                                <p class="body-xl">Once you've found your perfect match, booking is simple. Choose your preferred time slot and service type, then confirm your appointment with just a few clicks. Many locations offer instant confirmation.</p>
                             </div>
                         </div>
                     </div>
                     <div class="step-block">
                         <div class="step-content">
-                            <div class="step-icon">💅</div>
                             <div class="step-text">
                                 <h3>Enjoy</h3>
-                                <p>Relax and enjoy your professional pedicure experience. After your visit, you can share your experience by leaving a review to help others in their search for the perfect pedicure.</p>
+                                <p class="body-xl">Relax and enjoy your professional pedicure experience. After your visit, you can share your experience by leaving a review to help others in their search for the perfect pedicure.</p>
                             </div>
                         </div>
                     </div>
@@ -120,25 +118,25 @@
                     <!-- Types & Benefits -->
                     <div class="info-section">
                         <div class="section-title-container">
-                        <h2>Pedicure Types &amp; Benefits</h2>
-                        <p class="section-description">Understanding different pedicure types helps you choose the service that best matches your needs. Whether you're seeking relief from foot problems, professional nail care, or pure relaxation, knowing the various pedicure options ensures you get the most value from your salon visit. Below, we break down the most popular types and their specific benefits.</p>
+                        <h2 class="h2">Pedicure Types &amp; Benefits</h2>
+                        <p class="body-xl" style="color: #666;">Understanding different pedicure types helps you choose the service that best matches your needs. Whether you're seeking relief from foot problems, professional nail care, or pure relaxation, knowing the various pedicure options ensures you get the most value from your salon visit. Below, we break down the most popular types and their specific benefits.</p>
                        </div>
                         <div class="pedicure-types">
                             <div class="type-card">
-                                <h3>Spa Pedicure</h3>
-                                <p>Luxurious treatment including massage, scrubs, and moisturizing. Perfect for relaxation and stress relief.</p>
+                                <h3 cla>Spa Pedicure</h3>
+                                <p class="body-xl">Luxurious treatment including massage, scrubs, and moisturizing. Perfect for relaxation and stress relief.</p>
                             </div>
                             <div class="type-card">
                                 <h3>Gel Pedicure</h3>
-                                <p>Long-lasting polish that stays chip-free for weeks. Ideal for those seeking durable, glossy results.</p>
+                                <p class="body-xl">Long-lasting polish that stays chip-free for weeks. Ideal for those seeking durable, glossy results.</p>
                             </div>
                             <div class="type-card">
                                 <h3>Medical Pedicure</h3>
-                                <p>Clinical foot care focusing on health issues. Recommended for diabetics and those with foot conditions.</p>
+                                <p class="body-xl">Clinical foot care focusing on health issues. Recommended for diabetics and those with foot conditions.</p>
                             </div>
                             <div class="type-card">
                                 <h3>Luxury Pedicure</h3>
-                                <p>Premium experience with high-end products and extended massage. Ultimate pampering session.</p>
+                                <p class="body-xl">Premium experience with high-end products and extended massage. Ultimate pampering session.</p>
                             </div>
                         </div>
                     </div>
@@ -146,8 +144,8 @@
                     <!-- Pricing Guide -->
                     <div class="info-section">
                         <div class="section-title-container">
-                        <h2>Pricing Estimates</h2>
-                        <p class="section-description">Understanding pedicure prices near you helps make informed decisions about beautycare services. Costs can vary significantly based on location, service type, and salon quality. We've compiled average price ranges across different regions to help you budget appropriately. Keep in mind that specialized services like medical pedicures or Russian pedicures may command premium rates due to their advanced techniques and expertise.</p>
+                        <h2 class="h2">Pricing Estimates</h2>
+                        <p class="body-xl">Understanding pedicure prices near you helps make informed decisions about beautycare services. Costs can vary significantly based on location, service type, and salon quality. We've compiled average price ranges across different regions to help you budget appropriately. Keep in mind that specialized services like medical pedicures or Russian pedicures may command premium rates due to their advanced techniques and expertise.</p>
                     </div>
                         <div class="pricing-table">
                             <div class="price-row">
@@ -177,7 +175,7 @@
                     <!-- Safety Standards -->
                     <div class="info-section">
                         <div class="section-title-container">
-                        <h2>Hygiene &amp; Safety Standards</h2>
+                        <h2 class="h2">Hygiene &amp; Safety Standards</h2>
                         <p class="section-description">When searching for the best pedicure in your area, hygiene should be your top priority. Before you book your next appointment or walk into a pedicure place near you, it's crucial to understand what standards should be maintained and what red flags to watch for. Here's what every reputable salon should practice.</p>
                         </div>
                         <div class="safety-checklist">
@@ -200,7 +198,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
 
         <!-- Featured Locations Section -->
@@ -208,7 +205,7 @@
             <div class="container">
                 <div class="section-header">
                     <div class="section-title-container">
-                        <h2>Featured Locations</h2>
+                        <h2 class="h2">Featured Locations</h2>
                         <p class="section-description">Browse our curated selection of pedicure locations by state and city to find the perfect spot for your next foot care treatment.</p>
                     </div>
                 </div>
@@ -247,7 +244,7 @@
                         <div class="collapse-content">
                             <div class="content-wrapper">
                                 <div class="text-wrapper">
-                                    <p class="body-lg">Generally, it's recommended to get a pedicure every 4-6 weeks. However, this can vary based on how quickly your nails grow and your lifestyle.</p>
+                                    <p class="body-xl">Generally, it's recommended to get a pedicure every 4-6 weeks. However, this can vary based on how quickly your nails grow and your lifestyle.</p>
                                 </div>
                             </div>
                         </div>
