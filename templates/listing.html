@@ -128,13 +128,14 @@
                         <p class="body-md-semibold">Sunday</p>
                     </div>
                     <div class="day-column">
-                        <div class="time">8:00 AM - 6:00 PM</div>
-                        <div class="time">8:00 AM - 6:00 PM</div>
-                        <div class="time">8:00 AM - 6:00 PM</div>
-                        <div class="time">8:00 AM - 6:00 PM</div>
-                        <div class="time">8:00 AM - 6:00 PM</div>
-                        <div class="time">8:00 AM - 6:00 PM</div>
-                        <div class="time">CLOSED</div>
+                        {% set hours = parse_hours(listing.hours) %}
+                        <div class="time">{{ hours['Monday'] }}</div>
+                        <div class="time">{{ hours['Tuesday'] }}</div>
+                        <div class="time">{{ hours['Wednesday'] }}</div>
+                        <div class="time">{{ hours['Thursday'] }}</div>
+                        <div class="time">{{ hours['Friday'] }}</div>
+                        <div class="time">{{ hours['Saturday'] }}</div>
+                        <div class="time">{{ hours['Sunday'] }}</div>
                     </div>
                 </div>
             </div>

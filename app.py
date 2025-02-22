@@ -3,6 +3,8 @@ from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
 from dotenv import load_dotenv
+import json
+from typing import Dict, Optional
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import folium
@@ -297,6 +299,45 @@ def city_listings(city):
         session.close()
 
 @app.route('/listing/<int:listing_id>')
+def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
+    """Parse hours from JSON text into a dictionary of day -> hours string"""
+    if not hours_text:
+        return {
+            'Monday': 'Not specified',
+            'Tuesday': 'Not specified', 
+            'Wednesday': 'Not specified',
+            'Thursday': 'Not specified',
+            'Friday': 'Not specified',
+            'Saturday': 'Not specified',
+            'Sunday': 'Not specified'
+        }
+    
+    try:
+        hours_dict = json.loads(hours_text)
+        # Ensure all days are present
+        default_hours = {
+            'Monday': 'CLOSED',
+            'Tuesday': 'CLOSED',
+            'Wednesday': 'CLOSED', 
+            'Thursday': 'CLOSED',
+            'Friday': 'CLOSED',
+            'Saturday': 'CLOSED',
+            'Sunday': 'CLOSED'
+        }
+        default_hours.update(hours_dict)
+        return default_hours
+    except json.JSONDecodeError:
+        # Return default hours if JSON parsing fails
+        return {
+            'Monday': 'Error parsing hours',
+            'Tuesday': 'Error parsing hours',
+            'Wednesday': 'Error parsing hours',
+            'Thursday': 'Error parsing hours', 
+            'Friday': 'Error parsing hours',
+            'Saturday': 'Error parsing hours',
+            'Sunday': 'Error parsing hours'
+        }
+
 def listing_page(listing_id):
     """Display a single pedicure listing"""
     session = Session()
@@ -332,7 +373,8 @@ def listing_page(listing_id):
         return render_template('listing.html', 
                              listing=listing,
                              nearby_listings=nearby_listings,
-                             cities_in_state=cities_in_state)
+                             cities_in_state=cities_in_state,
+                             parse_hours=parse_hours)
     finally:
         session.close()
 
