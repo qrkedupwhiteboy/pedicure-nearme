@@ -298,7 +298,6 @@ def city_listings(city):
     finally:
         session.close()
 
-@app.route('/listing/<int:listing_id>')
 def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
     """Parse hours from JSON text into a dictionary of day -> hours string"""
     if not hours_text:
@@ -338,6 +337,7 @@ def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
             'Sunday': 'Error parsing hours'
         }
 
+@app.route('/listing/<int:listing_id>')
 def listing_page(listing_id):
     """Display a single pedicure listing"""
     session = Session()
