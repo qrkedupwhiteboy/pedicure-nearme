@@ -130,6 +130,8 @@
 }
 
 .breadcrumb {
+  padding:4rem;
+  padding-bottom: 1rem;
     width: 100%;
     height: 20px;
     display: inline-flex;
@@ -538,7 +540,7 @@
     font-size: 16px;
     font-weight: 400;
     line-height: 24px;
-    margin: 0 0 24px 0;
+    margin: 0 0 0;
 }
 
 .text:last-child {
@@ -882,4 +884,82 @@
 .star-icon {
     width: 14px;
     height: 14px;
+}
+
+
+@media (max-width: 480px){
+  .listings-container{
+    max-width: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .breadcrumb {
+    padding: 1rem;
+    margin-bottom: 1rem;
+      width: 100%;
+      height: 20px;
+      display: inline-flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .listing-top-wrapper{
+      padding: 1rem;
+    }
+
+    .listing-info{
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-wrapper{
+      padding:1rem;
+      display: flex;
+      flex-direction: column;
+      gap:2rem;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+    }
+
+    .about {
+      width: 100%;
+      height: auto;
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+  }
+
+    .general-info {
+      align-items: start;
+      max-width: 100vw;
+    }
+
+    .services {
+      width: 100vw;
+      gap: .75rem
+    }
+
+.sidebar-contact-form-container {
+  width: 100%;
+}
+
+.sidebar-contact-form {
+  width: 100%;
+  height: auto;
+  padding: 32px;
+  background: #F5F7FA;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 24px;
+}
 }

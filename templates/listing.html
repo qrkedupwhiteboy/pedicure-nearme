@@ -27,8 +27,7 @@
     </header>
 
     <main>
-        <div class="listing-top-wrapper">
-        <div class="breadcrumb">
+      <div class="breadcrumb">
             <a href="/" class="nav-regular">Local Pedicures</a>
             <i class="iconoir-nav-arrow-right"></i>
             <a href="{{ url_for('state_listings', state=listing.state.lower()) }}" class="nav-regular">{{listing.state}} Cities with Pedicures</a>
@@ -38,6 +37,7 @@
             <a href="#" class="nav-regular breadcrumb-link inactive">{{listing.name}}</a>
           </div>
 
+        <div class="listing-top-wrapper">
         <div class="listing-info-wrapper">
             <div class="listing-info">
               <div class="listing-header-content">
@@ -82,26 +82,6 @@
                     <i class="iconoir-internet" style="color: #1f1f1f;"></i> 
                     <a href="{{listing.website}}" class="nav-regular"> <span> View Website</span> </a>
                   </div>
-                </div>
-              </div>
-          
-              <!-- Review Section -->
-              <div class="review">
-                <div class="header">
-                  <span class="author">Randy W.</span>
-                  <span class="date">November 19, 2024</span>
-                </div>
-                <div class="rating">
-                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
-                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
-                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
-                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
-                 <i class="iconoir-star-solid" style="color: #FC9231;"></i>
-
-                </div>
-                <div class="body">
-                  <p>"Dr. Michael Johnston is truly a life-saver. His expertise and attention to detail are unmatched. He took the time to explain everything clearly and made sure I felt comfortable every step of the way. Thanks to him, my heart health is now better than ever. I highly recommend him!"</p>
-                  
                 </div>
               </div>
             </div>

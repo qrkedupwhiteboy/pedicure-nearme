@@ -302,52 +302,64 @@
   }                                                                                                                                       
                                                                                                                                           
   @media screen and (max-width: 768px) {                                                                                                  
-    .d1 {                                                                                                                                 
+    .d1 {          
+      Font-family: Inter;                                                                                                                               
       line-height: 52px;                                                                                                                  
       font-size: 40px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .d2 {                                                                                                                                 
+    .d2 {                                                                                                         
+      Font-family: Inter;  
+
       line-height: 44px;                                                                                                                  
       font-size: 36px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .d3 {                                                                                                                                 
+    .d3 {                                                                                                     
+      Font-family: Inter;  
+                                  
       line-height: 40px;                                                                                                                  
       font-size: 32px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .d4 {                                                                                                                                 
+    .d4 {                                                                                               Font-family: Inter;  
+
       line-height: 36px;                                                                                                                  
       font-size: 28px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .d5 {                                                                                                                                 
+    .d5 {                                                                                                Font-family: Inter;  
+
       line-height: 32px;                                                                                                                  
       font-size: 24px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .d6 {                                                                                                                                 
+    .d6 {                                                                                                Font-family: Inter;
+
       line-height: 28px;                                                                                                                  
       font-size: 20px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .h1 {                                                                                                                                 
+    .h1 {                                                                                                Font-family: Inter;
+
       line-height: 28px;                                                                                                                  
       font-size: 20px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .h2 {                                                                                                                                 
+    .h2 {                                                                                                Font-family: Inter;
+                                       
       line-height: 2.5rem;                                                                                                                  
       font-size: 18px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .h3 {                                                                                                                                 
+    .h3 {                                                                                                Font-family: Inter;
+
       line-height: 22px;                                                                                                                  
       font-size: 16px;                                                                                                                    
     }                                                                                                                                     
                                                                                                                                           
-    .h4 {                                                                                                                                 
+    .h4 {                                                                                                Font-family: Inter;
+                                       
       line-height: 20px;                                                                                                                  
       font-size: 14px;                                                                                                                    
     }                                                                                                                                     

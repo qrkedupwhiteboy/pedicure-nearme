@@ -30,6 +30,11 @@
     </header>
 
     <main>
+        <div class="breadcrumb">
+                    <a href="/" class="nav-regular">Local Pedicures</a>
+                    <i class="iconoir-nav-arrow-right"></i>
+                    <a href="/cities-with-pedicures-in/{{state}}" class="nav-regular breadcrumb-link inactive">{{state_name}} Cities with Pedicures</a>
+                  </div>    
         <div class="listings-container">
             <div class="filters-sidebar">
                 <h2>Filters</h2>
@@ -43,11 +48,6 @@
             </div>
 
             <div class="listings-content">
-                <div class="breadcrumb">
-                    <a href="/" class="nav-regular">Local Pedicures</a>
-                    <i class="iconoir-nav-arrow-right"></i>
-                    <a href="/cities-with-pedicures-in/{{state}}" class="nav-regular breadcrumb-link inactive">{{state_name}} Cities with Pedicures</a>
-                  </div>    
                 <div class="state-listings-header">
                     <h1 class="h1">Pedicures in {{ state_name }}</h1>
                     <p class="results-count">{{ cities|length }} cities with pedicure services</p>

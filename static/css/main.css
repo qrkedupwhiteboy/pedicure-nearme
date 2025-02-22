@@ -462,15 +462,6 @@ body {
     margin-bottom: 0.5rem;
 }
 
-/* Featured Locations */
-.featured-locations {
-    padding: 4rem;
-    background: white;
-}
-
-.featured-locations h2 {
-    font-size: 2.5rem;
-}
 
 .states-grid {
     display: grid;
@@ -657,16 +648,16 @@ body {
         justify-content: space-between;
         align-items: center;
         margin: 0 auto;
-        padding: 0 2rem;
     }
     
     .main-nav ul {
         display: flex;
         list-style: none;
-        gap: 2rem;
+        gap: .75rem;
     }
     
     .main-nav a {
+        text-wrap: nowrap;
         text-decoration: none;
         color: #333;
         font-weight: 500;
@@ -722,6 +713,262 @@ body {
 .how-it-works h2 {
     text-align: left;
     font-size: 2.5rem;
+}
+
+/* Pedicure Information Section */
+.pedicure-info {
+    padding: 1rem 0;
+}
+
+.info-grid {
+    display: grid;
+    gap: 3rem;
+}
+
+.info-section {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.info-section h2 {
+    color: #333;
+    font-size: 2rem;
+    text-align: left;
+}
+
+/* Types & Benefits */
+.pedicure-types {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.type-card {
+    padding: 1.5rem;
+    background: #f1f7fe;
+    border-radius: 8px;
+    border-left: 4px solid #1c79ca;
+}
+
+.type-card h3 {
+    color: #1065b9;
+    margin-bottom: 0.5rem;
+}
+
+/* Pricing Table */
+.pricing-table {
+    margin: 0 0;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    padding-left: 0;
+    padding-right: 0;
+    border-bottom: 1px solid #eee;
+}
+
+.price-row:last-child {
+    border-bottom: none;
+}
+
+.service {
+    font-weight: 500;
+}
+
+.price-range {
+    color: #1c79ca;
+    font-weight: 600;
+}
+
+.price-note {
+    text-align: start;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 1rem;
+}
+
+/* Safety Standards */
+.safety-checklist {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.safety-item {
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.safety-item h3 {
+    color: #1065b9;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+
+.featured-locations h2 {
+    font-size: 2.5rem;
+}
+
+.states-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.state-section {
+    background: #fff;
+    border-radius: 8px;
+    padding-top: 1.5rem;
+}
+
+.state-name {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #1c79ca;
+    font-weight: 500;
+}
+
+.city-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.city-link {
+    color: #666;
+    text-decoration: none;
+    padding: 0.3rem 0;
+    transition: color 0.2s;
+}
+
+.city-link .city-highlight {
+    color: #1c79ca;
+    font-weight: 500;
+}
+
+.city-link:hover {
+    color: #1c79ca;
+}
+
+.city-link.see-all {
+    margin-top: 0.5rem;
+    color: #1c79ca;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.city-link.see-all:hover {
+    text-decoration: underline;
+}
+
+/* FAQ Section */
+.faq-section {
+    padding: 1rem;
+}
+
+.faq-section h2 {
+    font-size: 32px;
+}
+
+.faqs-container {
+    width: 100%;
+    height: auto;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 1.5rem;
+  }
+  
+  
+  .collapse-group {
+    align-self: stretch;
+    flex: 1;
+    box-sizing: border-box;
+    border-top: 1px solid #EAEAEA;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  
+  .collapse-item {
+    width: 100%;
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    border-bottom: 1px solid #EAEAEA;
+    cursor:pointer
+  }
+  
+  .collapse-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem 0;
+  }
+
+  .collapse-title h3{
+    font-weight: 500;
+  }
+  
+  
+  .collapse-content {
+    padding: .75rem .75rem .75rem 0;
+  }
+  
+  .text-wrapper {
+    color: #171717;
+    font-size: 15.60px;
+    font-family: Inter, sans-serif;
+    font-weight: 400;
+    line-height: 24px;
+  }
+  
+  .contact-link {
+    color: #0070F3;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Expanded state styles */
+  .collapse-item.expanded .icon svg {
+    transform: rotate(180deg);
+  }
+  
+  /* Hide content by default */
+  .collapse-content {
+    display: none;
+  }
+  
+  .collapse-item.expanded .collapse-content {
+    display: block;
+  }
+  
+  /* Icon alignment */
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+/* Footer */
+.main-footer {
+    background: #333;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
 }
 
 
