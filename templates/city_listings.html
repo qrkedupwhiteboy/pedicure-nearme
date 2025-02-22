@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedicures in {{ city }}, {{ state }} | Best Nail Salons</title>
+    <title>Pedicures in {{ city }}, {{ state_name }} | Best Pedicures & Manicures</title>
+    <meta name="description" content="Find top-rated pedicure services in {{city}}, {{state}}. Compare prices, read reviews, and book appointments with local nail salons and spas."/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
 </head>
 <body>
     <header class="main-header">
@@ -30,9 +32,9 @@
     <main>
         <div class="listings-container">
             <div class="filters-sidebar">
-                <h2>Filters</h2>
+                <p class="body-xl">Filters</p>
                 <div class="filter-section">
-                    <h3>Sort By</h3>
+                    <p class="body-md">Sort By</p>
                     <select id="sort-select">
                         <option value="rating">Rating (High to Low)</option>
                         <option value="reviews">Most Reviews</option>
@@ -40,7 +42,7 @@
                     </select>
                 </div>
                 <div class="filter-section">
-                    <h3>Minimum Rating</h3>
+                    <p class="body-md">Minimum Rating</p>
                     <select id="rating-select">
                         <option value="0">All Ratings</option>
                         <option value="4.5">4.5+ Stars</option>
@@ -49,7 +51,7 @@
                     </select>
                 </div>
                 <div class="filter-section">
-                    <h3>Minimum Reviews</h3>
+                    <p class="body-md">Minimum Reviews</p>
                     <select id="reviews-select">
                         <option value="0">All Reviews</option>
                         <option value="100">100+ Reviews</option>
@@ -60,6 +62,13 @@
             </div>
 
             <div class="listings-content">
+                <div class="breadcrumb">
+                    <a href="/" class="nav-regular">Local Pedicures</a>
+                    <i class="iconoir-nav-arrow-right"></i>
+                    <a href="/cities-with-pedicures-in/{{state}}" class="nav-regular">{{state}} Cities with Pedicures</a>
+                    <i class="iconoir-nav-arrow-right"></i>
+                    <a href="#" class="nav-regular breadcrumb-link inactive">Pedicures in {{city}}</a>
+                  </div>    
                 <div class="city-listings-header">
                     <h1 class="h1">Pedicures in {{ city }}, {{ state }}</h1>
                     <p class="results-count">{{ listings|length }} pedicure locations found</p>

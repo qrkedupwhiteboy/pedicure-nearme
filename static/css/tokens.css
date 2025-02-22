@@ -165,14 +165,28 @@
     font-weight: 400;                                                                                                                     
     line-height: 28px;                                                                                                                    
     font-size: 18px;                                                                                                                      
-  }                                                                                                                                       
+  }           
+  
+  .body-xl {                                                                                                                              
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 28px;                                                                                                                    
+    font-size: 18px;                                                                                                                      
+  }           
                                                                                                                                           
   .body-lg {                                                                                                                              
     font-family: Inter;                                                                                                                   
     font-weight: 400;                                                                                                                     
     line-height: 24px;                                                                                                                    
     font-size: 16px;                                                                                                                      
-  }                                                                                                                                       
+  }        
+  
+  .body-lg-semibold{                                                                                                                              
+    font-family: Inter;                                                                                                                   
+    font-weight: 600;                                                                                                                     
+    line-height: 24px;                                                                                                                    
+    font-size: 16px;                                                                                                                      
+  }  
                                                                                                                                           
   .body-md {                                                                                                                              
     font-family: Inter;                                                                                                                   

@@ -35,7 +35,7 @@
             <i class="iconoir-nav-arrow-right"></i>
             <a href="{{ url_for('city_listings', city=listing.city.lower().replace(' ', '-')) }}" class="nav-regular">Pedicures in {{listing.city}}</a>
             <i class="iconoir-nav-arrow-right"></i>
-            <div class="breadcrumb-link inactive">{{listing.name}}</div>
+            <a href="#" class="nav-regular breadcrumb-link inactive">{{listing.name}}</a>
           </div>
 
         <div class="listing-info-wrapper">

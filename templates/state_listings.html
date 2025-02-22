@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedicures in {{ state_name }} | Best Nail Salons</title>
+    <title>Find Locations With Pedicures in {{ state_name }} | Local Pedicures</title>
+    <meta name="description" content="Find the best pedicures in {{ state_name }}. Discover top-rated pedicure, manicure, & medical beauty services near you.">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
 </head>
 <body>
     <header class="main-header">
@@ -41,6 +43,11 @@
             </div>
 
             <div class="listings-content">
+                <div class="breadcrumb">
+                    <a href="/" class="nav-regular">Local Pedicures</a>
+                    <i class="iconoir-nav-arrow-right"></i>
+                    <a href="/cities-with-pedicures-in/{{state}}" class="nav-regular breadcrumb-link inactive">{{state_name}} Cities with Pedicures</a>
+                  </div>    
                 <div class="state-listings-header">
                     <h1 class="h1">Pedicures in {{ state_name }}</h1>
                     <p class="results-count">{{ cities|length }} cities with pedicure services</p>
