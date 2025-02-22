@@ -298,6 +298,14 @@ def city_listings(city):
     finally:
         session.close()
 
+@app.route('/about')
+def about_page():
+    return render_template('about.html')
+
+@app.route('/contact')
+def contact_page():
+    return render_template('contact.html')
+
 def parse_categories(categories: Optional[List[str]]) -> List[str]:
     """Convert categories list into list of strings"""
     if not categories:
