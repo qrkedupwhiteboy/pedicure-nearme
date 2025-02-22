@@ -298,19 +298,15 @@ def city_listings(city):
     finally:
         session.close()
 
-def parse_categories(categories_text: Optional[str]) -> List[str]:
-    """Parse categories from JSON text into a list of category names"""
-    if not categories_text:
+def parse_categories(categories: Optional[List[str]]) -> List[str]:
+    """Convert categories list into list of strings"""
+    if not categories:
         return []
     
     try:
-        # The categories_text is already a JSON string, so we can parse it directly
-        categories = json.loads(categories_text)
-        # Ensure we have a list of strings
-        if isinstance(categories, list):
-            return [str(cat) for cat in categories]
-        return []
-    except json.JSONDecodeError:
+        # Ensure each category is converted to string
+        return [str(cat) for cat in categories]
+    except (TypeError, ValueError):
         return []
 
 def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
