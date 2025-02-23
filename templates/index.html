@@ -11,22 +11,7 @@
 
 </head>
 <body>
-    <header class="main-header">
-        <div class="container">
-            <div class="logo">
-                <a href="/">
-                    LocalPedicures.com
-                </a>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="/#state-cities">Find Pedicures by State</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    {% include 'components/header_footer.html' %}
 
     <main>
         <!-- Hero Section -->
@@ -407,11 +392,7 @@
         </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2025 Pedicure Near Me Directory. All rights reserved.</p>
-        </div>
-    </footer>
+    {% include 'components/header_footer.html' %}
 
     <script src="{{ url_for('static', filename='js/geolocation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/faq.js') }}"></script>
