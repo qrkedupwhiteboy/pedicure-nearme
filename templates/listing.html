@@ -11,20 +11,7 @@
 
 </head>
 <body>
-    <header class="main-header">
-        <div class="container">
-            <div class="logo">
-                <a href="/">Pedicure Directory</a>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/search">Find Pedicures</a></li>
-                </ul>
-            </nav>
-        </div>
-
-    </header>
+    {% include 'components/header_footer.html' %}
 
     <main>
       <div class="breadcrumb">
@@ -308,5 +295,6 @@
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/distance-calculator.js') }}" defer></script>
+    {% include 'components/header_footer.html' %}
 </body>
 </html>

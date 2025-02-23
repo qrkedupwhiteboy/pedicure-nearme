@@ -11,23 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
 </head>
 <body>
-    <header class="main-header">
-        <div class="container">
-            <div class="logo">
-                <a href="/">
-                    <img src="{{ url_for('static', filename='images/logo-placeholder.png') }}" alt="Pedicure Near Me Directory">
-                </a>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/search">Find Pedicures</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    {% include 'components/header_footer.html' %}
 
     <main>
         <div class="breadcrumb">
@@ -90,5 +74,6 @@
 
         document.getElementById('sort-select').addEventListener('change', updateListings);
     </script>
+    {% include 'components/header_footer.html' %}
 </body>
 </html>
