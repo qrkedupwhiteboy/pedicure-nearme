@@ -282,7 +282,8 @@
         transition-behavior: normal;
         transition-duration: 0.2s;  
         transition-property: color;
-        transition-timing-function: ease;                                                                                                                  
+        transition-timing-function: ease;    
+        cursor: pointer;                                                                                                              
   }        
                                                                                                                                           
   .nav-small {                                                                                                                            

@@ -11,13 +11,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
 </head>
 <body>
-    {% include 'components/header_footer.html' %}
+    {% include 'components/header.html' %}
 
     <main>
         <div class="breadcrumb">
                     <a href="/" class="nav-regular">Local Pedicures</a>
                     <i class="iconoir-nav-arrow-right"></i>
-                    <a href="/cities-with-pedicures-in/{{state}}" class="nav-regular breadcrumb-link inactive">{{state_name}} Cities with Pedicures</a>
+                    <a href="#" class="nav-regular breadcrumb-link inactive">{{state_name}} Cities with Pedicures</a>
                   </div>    
         <div class="listings-container">
             <div class="filters-sidebar">
@@ -74,6 +74,6 @@
 
         document.getElementById('sort-select').addEventListener('change', updateListings);
     </script>
-    {% include 'components/header_footer.html' %}
+    {% include 'components/footer.html' %}
 </body>
 </html>

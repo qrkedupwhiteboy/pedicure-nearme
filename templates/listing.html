@@ -11,7 +11,8 @@
 
 </head>
 <body>
-    {% include 'components/header_footer.html' %}
+    {% include 'components/header.html' %}
+    
 
     <main>
       <div class="breadcrumb">
@@ -295,6 +296,6 @@
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/distance-calculator.js') }}" defer></script>
-    {% include 'components/header_footer.html' %}
+    {% include 'components/footer.html' %}
 </body>
 </html>

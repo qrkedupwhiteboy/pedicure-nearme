@@ -11,8 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
 </head>
 <body>
-    {% include 'components/header_footer.html' %}
-
+    {% include 'components/header.html' %}
     <main>
         <div class="breadcrumb">
             <a href="/" class="nav-regular">Local Pedicures</a>
@@ -162,6 +161,6 @@
         document.getElementById('rating-select').addEventListener('change', updateListings);
         document.getElementById('reviews-select').addEventListener('change', updateListings);
     </script>
-    {% include 'components/header_footer.html' %}
+    {% include 'components/footer.html' %}
 </body>
 </html>
