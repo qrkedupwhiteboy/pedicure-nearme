@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort, jsonify
+from flask import Flask, render_template, request, abort, jsonify, Response
 from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
@@ -312,6 +312,53 @@ def about_page():
 @app.route('/contact')
 def contact_page():
     return render_template('contact.html')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    """Generate sitemap.xml"""
+    session = Session()
+    try:
+        # Get all cities with listings
+        cities = session.query(
+            PedicureListing.city,
+            PedicureListing.state
+        ).filter(
+            PedicureListing.city.isnot(None),
+            PedicureListing.state.isnot(None)
+        ).distinct().all()
+
+        # Get all listings
+        listings = session.query(PedicureListing).all()
+
+        # Build sitemap XML
+        xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+        xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+        
+        # Add static pages
+        base_url = request.url_root.rstrip('/')
+        static_paths = ['', '/about', '/contact']
+        for path in static_paths:
+            xml.append(f'  <url><loc>{base_url}{path}</loc></url>')
+
+        # Add state pages
+        for state_code in STATE_NAMES.keys():
+            xml.append(f'  <url><loc>{base_url}/cities-with-pedicures-in/{state_code.lower()}</loc></url>')
+
+        # Add city pages
+        for city, state in cities:
+            if city and state:
+                city_url = city.lower().replace(' ', '-')
+                xml.append(f'  <url><loc>{base_url}/pedicures-in/{city_url}</loc></url>')
+
+        # Add individual listing pages
+        for listing in listings:
+            xml.append(f'  <url><loc>{base_url}/listing/{listing.id}</loc></url>')
+
+        xml.append('</urlset>')
+        
+        return Response('\n'.join(xml), mimetype='application/xml')
+    finally:
+        session.close()
 
 @app.route('/submit_contact', methods=['POST'])
 def submit_contact():
