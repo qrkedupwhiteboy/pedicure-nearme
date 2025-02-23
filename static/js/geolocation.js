@@ -20,7 +20,7 @@ locationInput.addEventListener('input', (e) => {
     // Wait for user to stop typing
     typingTimer = setTimeout(async () => {
         try {
-            const response = await fetch(`/search_zipcodes?q=${query}`);
+            const response = await fetch(`/search_locations?q=${query}`);
             if (!response.ok) throw new Error('Search failed');
             
             const results = await response.json();
@@ -48,22 +48,35 @@ locationInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         const zipcode = locationInput.value.trim();
         if (zipcode) {
-            window.location.href = `/map/${zipcode}`;
+            if (zipcode.match(/^\d{5}$/)) {
+                window.location.href = `/map/${zipcode}`;
+            } else {
+                window.location.href = `/pedicures-in/${zipcode.toLowerCase().replace(/\s+/g, '-')}`;
+            }
         }
     }
 });
 
 // Function to display nearby locations
 function showNearbyLocations(locations) {
-    suggestionsContainer.innerHTML = locations.map(loc => `
-        <div class="suggestion-item" data-value="${loc.zipcode}">
-            <div class="suggestion-main">
-                <span class="suggestion-city">${loc.city}</span>
-                <span class="suggestion-detail">${loc.state} ${loc.zipcode}</span>
+    suggestionsContainer.innerHTML = locations.map(loc => {
+        const isCity = loc.type === 'city';
+        const displayValue = isCity ? loc.city : loc.zipcode;
+        const searchValue = isCity ? loc.city : loc.zipcode;
+        
+        return `
+            <div class="suggestion-item" data-value="${searchValue}" data-type="${loc.type}">
+                <div class="suggestion-main">
+                    <span class="suggestion-city">${loc.city}</span>
+                    <span class="suggestion-detail">${loc.state} ${loc.zipcode}</span>
+                </div>
+                <div class="suggestion-meta">
+                    <span class="suggestion-type">${isCity ? 'City' : 'ZIP'}</span>
+                    <span class="listing-count">${loc.listing_count} listings</span>
+                </div>
             </div>
-            <span class="listing-count">${loc.listing_count} listings</span>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     // Add click handlers to suggestions
     document.querySelectorAll('.suggestion-item').forEach(item => {

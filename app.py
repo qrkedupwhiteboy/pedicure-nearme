@@ -425,9 +425,9 @@ def listing_page(listing_id):
     finally:
         session.close()
 
-@app.route('/search_zipcodes', methods=['GET'])
-def search_zipcodes():
-    """Search zipcodes based on input"""
+@app.route('/search_locations', methods=['GET'])
+def search_locations():
+    """Search locations (zipcodes or cities) based on input"""
     try:
         query = request.args.get('q', '')
         if not query or len(query) < 2:
@@ -435,27 +435,31 @@ def search_zipcodes():
             
         session = Session()
         try:
-            # Search for zipcodes starting with query
+            # Search for both zipcodes and cities
             results = session.query(
                 PedicureListing.zip_code,
                 PedicureListing.city,
                 PedicureListing.state,
                 func.count(PedicureListing.id).label('listing_count')
             ).filter(
-                PedicureListing.zip_code.ilike(f'{query}%')
+                or_(
+                    PedicureListing.zip_code.ilike(f'{query}%'),
+                    PedicureListing.city.ilike(f'{query}%')
+                )
             ).group_by(
                 PedicureListing.zip_code,
                 PedicureListing.city,
                 PedicureListing.state
             ).order_by(
                 func.count(PedicureListing.id).desc()
-            ).limit(5).all()
+            ).limit(8).all()
             
             return jsonify([{
                 'zipcode': r.zip_code,
                 'city': r.city,
                 'state': r.state,
-                'listing_count': r.listing_count
+                'listing_count': r.listing_count,
+                'type': 'zipcode' if query in str(r.zip_code) else 'city'
             } for r in results])
             
         finally:
