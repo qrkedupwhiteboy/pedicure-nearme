@@ -58,6 +58,13 @@ body {
     color: #333;
 }
 
+.hero {
+    padding: 4rem 4rem;
+    background: #245d97;
+    color: white;
+    width: 100vw;
+}
+
 .hero-text-container {
     max-width: 100vw;
     margin: 0 auto;
@@ -676,12 +683,10 @@ body {
 .footer-section {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
 }
 
 .footer-section h3 {
     color: white;
-    margin-bottom: 0.5rem;
 }
 
 .footer-links {
@@ -724,10 +729,6 @@ body {
     .footer-content {
         grid-template-columns: 1fr;
         gap: 2rem;
-    }
-    
-    .footer-section {
-        text-align: center;
     }
 }
 
@@ -1091,15 +1092,7 @@ body {
   }
 
 /* Footer */
-.main-footer {
-    background: #333;
-    color: white;
-    padding: 1rem 0;
-    text-align: center;
-}
 
-
-}
 
 @media screen and (min-width: 1200px) and (max-width: 1920px) {
 
@@ -1128,5 +1121,6 @@ body {
     color: white;
     text-align: left;
     justify-content: start;
+}
 }
 }
