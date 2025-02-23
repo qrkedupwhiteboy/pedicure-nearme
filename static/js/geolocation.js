@@ -48,11 +48,8 @@ locationInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         const zipcode = locationInput.value.trim();
         if (zipcode) {
-            if (zipcode.match(/^\d{5}$/)) {
-                window.location.href = `/map/${zipcode}`;
-            } else {
-                window.location.href = `/pedicures-in/${zipcode.toLowerCase().replace(/\s+/g, '-')}`;
-            }
+            const location = zipcode.toLowerCase().replace(/\s+/g, '-');
+            window.location.href = `/map/${location}`;
         }
     }
 });
@@ -84,7 +81,8 @@ function showNearbyLocations(locations) {
             const zipcode = item.dataset.value;
             locationInput.value = zipcode;
             suggestionsContainer.style.display = 'none';
-            window.open(`/map/${zipcode}`, '_blank');
+            const location = zipcode.toLowerCase().replace(/\s+/g, '-');
+            window.open(`/map/${location}`, '_blank');
         });
     });
     

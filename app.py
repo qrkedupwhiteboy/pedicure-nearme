@@ -164,9 +164,9 @@ def get_nearby_locations():
         app.logger.error(f"Nearby locations error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/map/<zipcode>')
-def map_view(zipcode):
-    """Display a map of pedicure listings for a given zipcode"""
+@app.route('/map/<location>')
+def map_view(location):
+    """Display a map of pedicure listings for a given location (zipcode or city)"""
     session = Session()
     try:
         # Get filter parameters
@@ -176,9 +176,16 @@ def map_view(zipcode):
         
         # Build base query
         query = session.query(PedicureListing).filter(
-            PedicureListing.zip_code == zipcode,
             PedicureListing.coordinates.isnot(None)
         )
+
+        # Check if location is a zipcode (5 digits) or city name
+        if location.isdigit() and len(location) == 5:
+            query = query.filter(PedicureListing.zip_code == location)
+        else:
+            # Convert URL format (e.g., "new-york") to proper city name ("New York")
+            city_name = " ".join(word.capitalize() for word in location.split('-'))
+            query = query.filter(func.lower(PedicureListing.city) == func.lower(city_name))
         
         # Apply filters
         if min_rating:
