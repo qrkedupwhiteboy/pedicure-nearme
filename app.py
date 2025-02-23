@@ -425,6 +425,46 @@ def listing_page(listing_id):
     finally:
         session.close()
 
+@app.route('/search_zipcodes', methods=['GET'])
+def search_zipcodes():
+    """Search zipcodes based on input"""
+    try:
+        query = request.args.get('q', '')
+        if not query or len(query) < 2:
+            return jsonify([])
+            
+        session = Session()
+        try:
+            # Search for zipcodes starting with query
+            results = session.query(
+                PedicureListing.zip_code,
+                PedicureListing.city,
+                PedicureListing.state,
+                func.count(PedicureListing.id).label('listing_count')
+            ).filter(
+                PedicureListing.zip_code.ilike(f'{query}%')
+            ).group_by(
+                PedicureListing.zip_code,
+                PedicureListing.city,
+                PedicureListing.state
+            ).order_by(
+                func.count(PedicureListing.id).desc()
+            ).limit(5).all()
+            
+            return jsonify([{
+                'zipcode': r.zip_code,
+                'city': r.city,
+                'state': r.state,
+                'listing_count': r.listing_count
+            } for r in results])
+            
+        finally:
+            session.close()
+            
+    except Exception as e:
+        app.logger.error(f"Zipcode search error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/get_zipcode', methods=['GET'])
 def get_zipcode():
     """Get zipcode from latitude and longitude"""

@@ -1,8 +1,57 @@
-// Get location input element
+// Get location input element and search button
 const locationInput = document.getElementById('location-input');
+const searchButton = document.querySelector('.search-btn');
 const suggestionsContainer = document.createElement('div');
 suggestionsContainer.className = 'location-suggestions';
 locationInput.parentNode.appendChild(suggestionsContainer);
+
+// Add input handler for autocomplete
+let typingTimer;
+locationInput.addEventListener('input', (e) => {
+    clearTimeout(typingTimer);
+    const query = e.target.value.trim();
+    
+    // Clear suggestions if input is empty
+    if (!query) {
+        suggestionsContainer.style.display = 'none';
+        return;
+    }
+    
+    // Wait for user to stop typing
+    typingTimer = setTimeout(async () => {
+        try {
+            const response = await fetch(`/search_zipcodes?q=${query}`);
+            if (!response.ok) throw new Error('Search failed');
+            
+            const results = await response.json();
+            if (results.length > 0) {
+                showNearbyLocations(results);
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Zipcode search error:', error);
+        }
+    }, 300);
+});
+
+// Add click handler for search button
+searchButton.addEventListener('click', () => {
+    const zipcode = locationInput.value.trim();
+    if (zipcode) {
+        window.location.href = `/map/${zipcode}`;
+    }
+});
+
+// Add enter key handler for search
+locationInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        const zipcode = locationInput.value.trim();
+        if (zipcode) {
+            window.location.href = `/map/${zipcode}`;
+        }
+    }
+});
 
 // Function to display nearby locations
 function showNearbyLocations(locations) {
