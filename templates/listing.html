@@ -427,15 +427,14 @@
                 <div class="nearby-cards">
                     {% for nearby in nearby_listings %}
                     <div class="nearby-card">
-                        <a href="{{ url_for('listing_page', listing_id=nearby.id) }}" class="nearby-card-link">
-                            <h4 class="nearby-card-title">{{ nearby.name }}</h4>
+                        <a href="{{ url_for('listing_page', listing_id=nearby.id) }}" class="nav-regular">
+                            <h4 class="nearby-card-title">{{ nearby.name }}</h4> </a>
                             <p class="nearby-card-address">{{ nearby.address }}</p>
                             <p class="nearby-card-rating">{{ nearby.rating }} Stars ({{ nearby.reviews }} Reviews)</p>
                             <span class="nearby-card-distance" 
                                   data-lat="{{ nearby.coordinates.latitude }}"
                                   data-lon="{{ nearby.coordinates.longitude }}">
                             </span>
-                        </a>
                     </div>
                     {% endfor %}
                 </div>
