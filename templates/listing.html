@@ -88,7 +88,9 @@
             <div class="hours-container">
                 <div class="hours-header">
                     <h2 class="h2">Hours of Operation</h2>
-                    <div id="open-status"></div>
+                    <div id="open-status" class="{{ current_status.status_class }}">
+                        {{ current_status.status }}
+                    </div>
                 </div>
                 <div class="days-hours">
                     <div class="day-column">
@@ -299,15 +301,6 @@
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/distance-calculator.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='js/business-hours.js') }}" defer></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const hoursData = {{ hours_data|tojson|safe }};
-            updateOpenStatus(hoursData);
-            // Update every minute
-            setInterval(() => updateOpenStatus(hoursData), 60000);
-        });
-    </script>
     {% include 'components/footer.html' %}
 </body>
 </html>

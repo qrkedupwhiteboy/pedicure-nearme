@@ -395,6 +395,8 @@ def parse_categories(categories: Optional[List[str]]) -> List[str]:
     except (TypeError, ValueError):
         return []
 
+from datetime import datetime
+
 def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
     """Parse hours from JSON text into a dictionary of day -> hours string"""
     if not hours_text:
@@ -475,16 +477,82 @@ def listing_page(listing_id):
         
         cities_in_state = [city[0] for city in cities_in_state]  # Unpack from tuples
         
-        # Parse hours once for the template
+        # Parse hours and check if currently open
         hours_data = parse_hours(listing.hours)
+        current_status = check_if_open(hours_data)
         
         return render_template('listing.html', 
                              listing=listing,
                              nearby_listings=nearby_listings,
                              cities_in_state=cities_in_state,
                              hours_data=hours_data,
+                             current_status=current_status,
                              parse_hours=parse_hours,
                              parse_categories=parse_categories)
+
+def check_if_open(hours_data: Dict[str, str]) -> Dict[str, Any]:
+    """Check if business is currently open based on hours data"""
+    now = datetime.now()
+    current_day = now.strftime("%A")  # Returns "Monday", "Tuesday", etc.
+    current_time = now.hour * 100 + now.minute  # Convert to HHMM format
+    
+    # Get today's hours string
+    today_hours = hours_data.get(current_day, "Not specified")
+    
+    # Handle cases where hours aren't specified
+    if not today_hours or today_hours in ["Not specified", "Not Found", "Error parsing hours"]:
+        return {
+            "is_open": False,
+            "status": "Hours not available",
+            "status_class": "unknown"
+        }
+    
+    # Split multiple time ranges (if any)
+    time_ranges = [r.strip() for r in today_hours.split(",")]
+    
+    for time_range in time_ranges:
+        try:
+            open_time_str, close_time_str = time_range.split("-")
+            
+            # Parse opening time
+            open_match = open_time_str.strip().upper()
+            open_hour = int(open_match.split(":")[0])
+            open_minute = int(open_match.split(":")[1].split()[0])
+            if "PM" in open_match and open_hour != 12:
+                open_hour += 12
+            elif "AM" in open_match and open_hour == 12:
+                open_hour = 0
+            open_time = open_hour * 100 + open_minute
+            
+            # Parse closing time
+            close_match = close_time_str.strip().upper()
+            close_hour = int(close_match.split(":")[0])
+            close_minute = int(close_match.split(":")[1].split()[0])
+            if "PM" in close_match and close_hour != 12:
+                close_hour += 12
+            elif "AM" in close_match and close_hour == 12:
+                close_hour = 0
+            close_time = close_hour * 100 + close_minute
+            
+            # Check if current time falls within range
+            if current_time >= open_time and current_time <= close_time:
+                closing_time = datetime.now().replace(
+                    hour=close_hour,
+                    minute=close_minute
+                ).strftime("%-I:%M %p")
+                return {
+                    "is_open": True,
+                    "status": f"Open Now · Closes {closing_time}",
+                    "status_class": "open"
+                }
+        except (ValueError, IndexError):
+            continue
+    
+    return {
+        "is_open": False,
+        "status": "Closed Now",
+        "status_class": "closed"
+    }
     finally:
         session.close()
 
