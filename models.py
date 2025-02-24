@@ -98,9 +98,17 @@ class PedicureListing(Base):
         """Generate URL-safe slug from name and zipcode"""
         if not self.name or not self.zip_code:
             return str(self.id)  # Fallback to ID if missing data
-        name_slug = self.name.lower().replace(' ', '-')
-        # Remove any non-alphanumeric chars except hyphens
-        name_slug = ''.join(c for c in name_slug if c.isalnum() or c == '-')
+        
+        # Replace all non-alphanumeric characters with hyphens
+        name_slug = ''.join(c if c.isalnum() else '-' for c in self.name.lower())
+        
+        # Replace multiple consecutive hyphens with a single hyphen
+        while '--' in name_slug:
+            name_slug = name_slug.replace('--', '-')
+            
+        # Remove leading/trailing hyphens
+        name_slug = name_slug.strip('-')
+        
         return f"{name_slug}-{self.zip_code}"
 
     def __repr__(self) -> str:
