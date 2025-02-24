@@ -63,6 +63,7 @@
                     <span class="score">{{listing.rating}}</span>
                     <span class="count">({{listing.reviews}})</span>
                   </div>
+                  <div id="open-status"></div>
                   <a href="#" class="nav-regular">
                     <i class="iconoir-phone" style="color: #1f1f1f;"></i> <span>{{listing.phone}}</span>
                 </a>
@@ -296,6 +297,15 @@
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/distance-calculator.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/business-hours.js') }}" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hoursData = {{ hours_data|tojson|safe }};
+            updateOpenStatus(hoursData);
+            // Update every minute
+            setInterval(() => updateOpenStatus(hoursData), 60000);
+        });
+    </script>
     {% include 'components/footer.html' %}
 </body>
 </html>
