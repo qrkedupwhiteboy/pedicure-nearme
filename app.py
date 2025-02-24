@@ -344,7 +344,7 @@ def sitemap_index():
             
             if has_listings:
                 xml.append(f'''  <sitemap>
-    <loc>{base_url}/sitemaps/listings-{state_code.lower()}.xml</loc>
+    <loc>{base_url}/sitemaps/listings-{STATE_NAMES[state_code].lower().replace(' ', '-')}.xml</loc>
     <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
   </sitemap>''')
         
@@ -411,16 +411,22 @@ def main_sitemap():
     finally:
         session.close()
 
-@app.route('/sitemaps/listings-<state>.xml')
-def state_listings_sitemap(state):
+@app.route('/sitemaps/listings-<state_name>.xml')
+def state_listings_sitemap(state_name):
     """Generate sitemap for listings in a specific state"""
     session = Session()
     try:
         base_url = request.url_root.rstrip('/')
         
+        # Convert state name back to code
+        state_code = next((code for code, name in STATE_NAMES.items() 
+                          if name.lower().replace(' ', '-') == state_name.lower()), None)
+        if not state_code:
+            abort(404)
+            
         # Get all listings for this state
         listings = session.query(PedicureListing).filter(
-            func.lower(PedicureListing.state) == state.lower()
+            PedicureListing.state == state_code
         ).all()
         
         if not listings:
