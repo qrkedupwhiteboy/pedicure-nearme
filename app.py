@@ -624,7 +624,6 @@ def listing_page(listing_path):
         # Parse hours and check if currently open
         hours_data = parse_hours(listing.hours)
         current_status = check_if_open(hours_data)
-    finally:
         return render_template('listing.html', 
                              listing=listing,
                              nearby_listings=nearby_listings,
@@ -633,6 +632,8 @@ def listing_page(listing_path):
                              current_status=current_status,
                              parse_hours=parse_hours,
                              parse_categories=parse_categories)
+    finally:
+        session.close()
 
 def check_if_open(hours_data: Dict[str, str]) -> Dict[str, any]:
     """Check if business is currently open based on hours data"""
