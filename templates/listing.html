@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ listing.name }} - Pedicure Directory</title>
+    <title>{{ listing.name }} | Pedicures in {{listing.city}} </title>
+    <meta name="description" content="Experience pedicure services at {{listing.name}} in {{listing.city}}, {{listing.state}}. View service types, ratings, check availability, and contact in just a few clicks.">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
@@ -449,25 +450,6 @@
                            class="nav-regular">{{ city }}</a>
                     {% endfor %}
                 </div>
-            </div>
-        </div>
-        <div class="sidebar-contact-form-container">
-          <div class="sidebar-contact-form">
-            <div class="text-container">
-                <h3 class="form-heading">Contact Pedicure</h3>
-                <p class="form-subheading">Send a message to this listing below</p>
-            </div>
-            
-            <div class="inputs-container">
-                <input type="text" class="input-field" placeholder="Name *">
-                <input type="tel" class="input-field" placeholder="Phone number *">
-                <input type="text" class="input-field" placeholder="Zip code">
-                <textarea class="input-field message-input" placeholder="Message *"></textarea>
-            </div>
-    
-            <button class="primary-button">
-                <span class="button-label">Send message</span>
-            </button>
             </div>
         </div>
     </div>    

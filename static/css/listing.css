@@ -440,6 +440,7 @@
 
   .pedicures-near-container {
     position: sticky;
+    top: 1.5rem;
     width: 100%;
     height: auto;
     padding: 32px;
