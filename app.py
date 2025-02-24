@@ -470,7 +470,7 @@ def listing_page(listing_path):
         # Get nearby listings in same zipcode, ordered by rating
         nearby_listings = session.query(PedicureListing).filter(
             PedicureListing.zip_code == listing.zip_code,
-            PedicureListing.id != listing_id,
+            PedicureListing.id != listing.id,  # Use listing.id instead of listing_id
             PedicureListing.coordinates.isnot(None)
         ).order_by(
             PedicureListing.rating.desc()
