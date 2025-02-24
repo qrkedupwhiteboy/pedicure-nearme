@@ -109,6 +109,30 @@
   gap: .25rem;
 }
 
+#open-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#open-status.open {
+  background-color: #ecfdf3;
+  color: #059669;
+}
+
+#open-status.closed {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+#open-status.unknown {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
 /* Indiviual listing styles */
 
 

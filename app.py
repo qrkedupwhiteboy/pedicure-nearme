@@ -475,10 +475,14 @@ def listing_page(listing_id):
         
         cities_in_state = [city[0] for city in cities_in_state]  # Unpack from tuples
         
+        # Parse hours once for the template
+        hours_data = parse_hours(listing.hours)
+        
         return render_template('listing.html', 
                              listing=listing,
                              nearby_listings=nearby_listings,
                              cities_in_state=cities_in_state,
+                             hours_data=hours_data,
                              parse_hours=parse_hours,
                              parse_categories=parse_categories)
     finally:
