@@ -1,5 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Text
+from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime
 from typing import Optional, Tuple
+from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
@@ -40,6 +41,7 @@ class PedicureListing(Base):
     coordinates = Column(Text)  # JSON data
     hours = Column(Text)  # JSON data
     detailed_reviews = Column(String(10000))  # JSON data
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Valid US state codes
     US_STATES = {
