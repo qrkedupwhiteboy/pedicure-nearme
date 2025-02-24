@@ -80,6 +80,48 @@ def home():
     finally:
         session.close()
 
+@app.route('/sitemaps/listings-<state_name>-<city_name>.xml')
+def city_listings_sitemap(state_name, city_name):
+    """Generate sitemap for listings in a specific city"""
+    session = Session()
+    try:
+        base_url = request.url_root.rstrip('/')
+        
+        # Convert state name back to code
+        state_code = next((code for code, name in STATE_NAMES.items() 
+                          if name.lower().replace(' ', '-') == state_name.lower()), None)
+        if not state_code:
+            abort(404)
+            
+        # Convert URL-safe city name back to proper format
+        city_name = ' '.join(word.capitalize() for word in city_name.split('-'))
+        
+        # Get all listings for this city
+        listings = session.query(PedicureListing).filter(
+            PedicureListing.state == state_code,
+            func.lower(PedicureListing.city) == func.lower(city_name)
+        ).all()
+        
+        if not listings:
+            abort(404)
+        
+        xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+        xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+        
+        for listing in listings:
+            lastmod = listing.updated_at.strftime("%Y-%m-%d") if listing.updated_at else datetime.now().strftime("%Y-%m-%d")
+            xml.append(f'''  <url>
+    <loc>{base_url}/listing/{listing.get_url_slug()}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>''')
+            
+        xml.append('</urlset>')
+        return Response('\n'.join(xml), mimetype='application/xml')
+    finally:
+        session.close()
+
 @app.route('/get_geoapify_location')
 def get_geoapify_location():
     """Get basic location data from IP"""
@@ -413,7 +455,7 @@ def main_sitemap():
 
 @app.route('/sitemaps/listings-<state_name>.xml')
 def state_listings_sitemap(state_name):
-    """Generate sitemap for listings in a specific state"""
+    """Generate sitemap index for cities in a state"""
     session = Session()
     try:
         base_url = request.url_root.rstrip('/')
@@ -424,27 +466,32 @@ def state_listings_sitemap(state_name):
         if not state_code:
             abort(404)
             
-        # Get all listings for this state
-        listings = session.query(PedicureListing).filter(
-            PedicureListing.state == state_code
+        # Get all cities in this state that have listings
+        cities = session.query(
+            PedicureListing.city,
+            func.max(PedicureListing.updated_at).label('last_updated')
+        ).filter(
+            PedicureListing.state == state_code,
+            PedicureListing.city.isnot(None)
+        ).group_by(
+            PedicureListing.city
         ).all()
         
-        if not listings:
+        if not cities:
             abort(404)
         
         xml = ['<?xml version="1.0" encoding="UTF-8"?>']
-        xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+        xml.append('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
         
-        for listing in listings:
-            lastmod = listing.updated_at.strftime("%Y-%m-%d") if listing.updated_at else datetime.now().strftime("%Y-%m-%d")
-            xml.append(f'''  <url>
-    <loc>{base_url}/listing/{listing.get_url_slug()}</loc>
+        for city, last_updated in cities:
+            city_slug = city.lower().replace(' ', '-')
+            lastmod = last_updated.strftime("%Y-%m-%d") if last_updated else datetime.now().strftime("%Y-%m-%d")
+            xml.append(f'''  <sitemap>
+    <loc>{base_url}/sitemaps/listings-{state_name}-{city_slug}.xml</loc>
     <lastmod>{lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>''')
+  </sitemap>''')
             
-        xml.append('</urlset>')
+        xml.append('</sitemapindex>')
         return Response('\n'.join(xml), mimetype='application/xml')
     finally:
         session.close()
