@@ -420,13 +420,13 @@ def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
             
         # Ensure all days are present
         default_hours = {
-            'Monday': 'CLOSED',
-            'Tuesday': 'CLOSED',
-            'Wednesday': 'CLOSED', 
-            'Thursday': 'CLOSED',
-            'Friday': 'CLOSED',
-            'Saturday': 'CLOSED',
-            'Sunday': 'CLOSED'
+            'Monday': 'Not Found',
+            'Tuesday': 'Not Found',
+            'Wednesday': 'Not Found', 
+            'Thursday': 'Not Found',
+            'Friday': 'Not Found',
+            'Saturday': 'Not Found',
+            'Sunday': 'Not Found'
         }
         default_hours.update(hours_dict)
         return default_hours
