@@ -20,19 +20,29 @@ function isBusinessOpen(hoursData) {
     
     for (const range of timeRanges) {
         // Extract opening and closing times
-        const [openTime, closeTime] = range.split('-').map(time => {
-            const [hours, minutes, period] = time.trim().match(/(\d+):(\d+)\s*(AM|PM)/i).slice(1);
-            let militaryHours = parseInt(hours);
-            
-            // Convert to 24-hour format
-            if (period.toUpperCase() === 'PM' && militaryHours !== 12) {
-                militaryHours += 12;
-            } else if (period.toUpperCase() === 'AM' && militaryHours === 12) {
-                militaryHours = 0;
+        try {
+            const [openTime, closeTime] = range.split('-').map(time => {
+                const matches = time.trim().match(/(\d+):(\d+)\s*(AM|PM)/i);
+                if (!matches) {
+                    return null;
+                }
+                const [hours, minutes, period] = matches.slice(1);
+                let militaryHours = parseInt(hours);
+                
+                // Convert to 24-hour format
+                if (period.toUpperCase() === 'PM' && militaryHours !== 12) {
+                    militaryHours += 12;
+                } else if (period.toUpperCase() === 'AM' && militaryHours === 12) {
+                    militaryHours = 0;
+                }
+                
+                return militaryHours * 100 + parseInt(minutes);
+            });
+
+            // Skip invalid time ranges
+            if (!openTime || !closeTime) {
+                continue;
             }
-            
-            return militaryHours * 100 + parseInt(minutes);
-        });
 
         // Check if current time falls within this range
         if (currentTime >= openTime && currentTime <= closeTime) {
