@@ -92,6 +92,15 @@ class PedicureListing(Base):
         
         return None, None, None
 
+    def get_url_slug(self) -> str:
+        """Generate URL-safe slug from name and zipcode"""
+        if not self.name or not self.zip_code:
+            return str(self.id)  # Fallback to ID if missing data
+        name_slug = self.name.lower().replace(' ', '-')
+        # Remove any non-alphanumeric chars except hyphens
+        name_slug = ''.join(c for c in name_slug if c.isalnum() or c == '-')
+        return f"{name_slug}-{self.zip_code}"
+
     def __repr__(self) -> str:
         """Return string representation of the listing."""
         return f"<PedicureListing(name='{self.name or ''}', city='{self.city or ''}')>"

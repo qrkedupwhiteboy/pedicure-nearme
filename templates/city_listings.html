@@ -73,7 +73,7 @@
                         </div>
                         <div class="city-listing-info">
                             <div class="city-listing-header">
-                                <h2><a href="/listing/{{ listing.id }}" class="nav-large">{{ listing.name }}</a></h2>
+                                <h2><a href="/listing/{{ listing.get_url_slug() }}" class="nav-large">{{ listing.name }}</a></h2>
                                 <p class="address">{{ listing.address }}</p>
                             </div>
 

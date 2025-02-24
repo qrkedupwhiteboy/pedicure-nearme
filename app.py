@@ -357,7 +357,7 @@ def sitemap():
 
         # Add individual listing pages
         for listing in listings:
-            xml.append(f'  <url><loc>{base_url}/listing/{listing.id}</loc></url>')
+            xml.append(f'  <url><loc>{base_url}/listing/{listing.get_url_slug()}</loc></url>')
 
         xml.append('</urlset>')
         
@@ -444,13 +444,26 @@ def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
             'Sunday': 'Error parsing hours'
         }
 
-@app.route('/listing/<int:listing_id>')
-def listing_page(listing_id):
+@app.route('/listing/<path:listing_path>')
+def listing_page(listing_path):
     """Display a single pedicure listing"""
     session = Session()
     try:
+        # Parse the listing path to get name and zipcode
+        if '-' not in listing_path:
+            abort(404)
+            
+        name_part = listing_path.rsplit('-', 1)[0]
+        zipcode = listing_path.rsplit('-', 1)[1]
+        
+        # Convert URL-safe name back to possible name variations
+        possible_name = ' '.join(word.capitalize() for word in name_part.split('-'))
+        
         # Get the main listing
-        listing = session.query(PedicureListing).get(listing_id)
+        listing = session.query(PedicureListing).filter(
+            func.lower(func.regexp_replace(PedicureListing.name, '[^a-zA-Z0-9]+', '-', 'g')) == name_part,
+            PedicureListing.zip_code == zipcode
+        ).first()
         if not listing:
             abort(404)
             

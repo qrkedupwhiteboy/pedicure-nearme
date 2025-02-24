@@ -427,7 +427,7 @@
                 <div class="nearby-cards">
                     {% for nearby in nearby_listings %}
                     <div class="nearby-card">
-                        <a href="{{ url_for('listing_page', listing_id=nearby.id) }}" class="nav-regular">
+                        <a href="{{ url_for('listing_page', listing_path=nearby.get_url_slug()) }}" class="nav-regular">
                             <h4 class="nearby-card-title">{{ nearby.name }}</h4> </a>
                             <p class="nearby-card-address">{{ nearby.address }}</p>
                             <p class="nearby-card-rating">{{ nearby.rating }} Stars ({{ nearby.reviews }} Reviews)</p>
