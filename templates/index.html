@@ -5,6 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find Pedicures Near You | Best Local Pedicures & Manicures</title>
     <meta name="description" content="Discover the best pedicure services near you. Browse services, ratings, and book your perfect pedicure today.">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Find Pedicures Near You",
+      "url": "{{ request.url_root }}",
+      "description": "Discover the best pedicure services near you. Browse services, ratings, and book your perfect pedicure today.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "{{ request.url_root }}pedicures-in/{location}"
+        },
+        "query-input": "required name=location"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How often should you get a pedicure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Generally, it's recommended to get a pedicure every 4-6 weeks. However, this can vary based on how quickly your nails grow and your lifestyle."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should a diabetic get a pedicure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Diabetics can get pedicures but should consult their healthcare provider first and choose a salon experienced with diabetic foot care. Medical pedicures are often recommended."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between manicure and pedicure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A manicure focuses on hand and fingernail care, while a pedicure treats feet, toenails, and often includes foot massage and exfoliation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does a pedicure take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A standard pedicure typically takes 45-60 minutes. Luxury or spa pedicures may take 60-90 minutes."
+          }
+        }
+      ]
+    }
+    </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
