@@ -449,6 +449,7 @@ def listing_page(listing_id):
     """Display a single pedicure listing"""
     session = Session()
     try:
+    try:
         # Get the main listing
         listing = session.query(PedicureListing).get(listing_id)
         if not listing:
@@ -553,8 +554,6 @@ def check_if_open(hours_data: Dict[str, str]) -> Dict[str, Any]:
         "status": "Closed Now",
         "status_class": "closed"
     }
-    finally:
-        session.close()
 
 @app.route('/search_locations', methods=['GET'])
 def search_locations():
