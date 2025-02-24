@@ -63,7 +63,6 @@
                     <span class="score">{{listing.rating}}</span>
                     <span class="count">({{listing.reviews}})</span>
                   </div>
-                  <div id="open-status"></div>
                   <a href="#" class="nav-regular">
                     <i class="iconoir-phone" style="color: #1f1f1f;"></i> <span>{{listing.phone}}</span>
                 </a>
@@ -87,7 +86,10 @@
             <h2 class="h2">About</h2>
             <div class="text">"{{listing.description}}"</div>
             <div class="hours-container">
-                <h2 class="h2">Hours of Operation</h2>
+                <div class="hours-header">
+                    <h2 class="h2">Hours of Operation</h2>
+                    <div id="open-status"></div>
+                </div>
                 <div class="days-hours">
                     <div class="day-column">
                         <p class="body-md-semibold">Monday</p>
