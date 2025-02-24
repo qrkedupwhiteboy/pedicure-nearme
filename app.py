@@ -15,6 +15,8 @@ import requests
 from requests.structures import CaseInsensitiveDict
 from functools import lru_cache
 
+
+
 # State code to full name mapping
 STATE_NAMES = {
     'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
@@ -29,7 +31,10 @@ STATE_NAMES = {
     'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
 }
 
+
+
 load_dotenv()
+
 
 GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
 REVERSE_GEOCODE_KEY = os.getenv('REVERSE_GEOCODE_KEY')
@@ -568,4 +573,11 @@ def get_zipcode():
     except Exception as e:
         app.logger.error(f"Zipcode lookup error: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.context_processor                                                                                    
+def utility_processor():                                                                                  
+     return {                                                                                              
+         'STATE_NAMES': STATE_NAMES                                                                        
+     }                                                                                                     
+                          
 
