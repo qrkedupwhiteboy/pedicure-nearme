@@ -449,7 +449,6 @@ def listing_page(listing_id):
     """Display a single pedicure listing"""
     session = Session()
     try:
-    try:
         # Get the main listing
         listing = session.query(PedicureListing).get(listing_id)
         if not listing:
