@@ -661,8 +661,13 @@ def check_if_open(hours_data: Dict[str, str]) -> Dict[str, any]:
             
             # Parse opening time
             open_match = open_time_str.strip().upper()
-            open_hour = int(open_match.split(":")[0])
-            open_minute = int(open_match.split(":")[1].split()[0])
+            if ':' in open_match:
+                open_hour = int(open_match.split(":")[0])
+                open_minute = int(open_match.split(":")[1].split()[0])
+            else:
+                open_hour = int(open_match.split()[0])
+                open_minute = 0
+            
             if "PM" in open_match and open_hour != 12:
                 open_hour += 12
             elif "AM" in open_match and open_hour == 12:
@@ -671,8 +676,13 @@ def check_if_open(hours_data: Dict[str, str]) -> Dict[str, any]:
             
             # Parse closing time
             close_match = close_time_str.strip().upper()
-            close_hour = int(close_match.split(":")[0])
-            close_minute = int(close_match.split(":")[1].split()[0])
+            if ':' in close_match:
+                close_hour = int(close_match.split(":")[0])
+                close_minute = int(close_match.split(":")[1].split()[0])
+            else:
+                close_hour = int(close_match.split()[0])
+                close_minute = 0
+                
             if "PM" in close_match and close_hour != 12:
                 close_hour += 12
             elif "AM" in close_match and close_hour == 12:
