@@ -280,7 +280,22 @@ def map_view(location):
                 icon=folium.Icon(color='blue', icon='info-sign')
             ).add_to(m)
             
-        return render_template('map_view.html', map_html=m._repr_html_(), listings=listings)
+        # Format location name for display
+        location_display = location
+        if location.isdigit() and len(location) == 5:
+            # If location is zipcode, get city name from first listing
+            location_display = f"{listings[0].city}, {listings[0].state} {location}"
+        else:
+            # If location is city name, format it properly
+            location_display = " ".join(word.capitalize() for word in location.split('-'))
+            if listings:
+                location_display = f"{location_display}, {listings[0].state}"
+
+        return render_template('map_view.html', 
+                             map_html=m._repr_html_(), 
+                             listings=listings,
+                             location_display=location_display,
+                             listing_count=len(listings))
     finally:
         session.close()
 
