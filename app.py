@@ -690,10 +690,12 @@ def state_listings_sitemap(state_name):
 def submit_contact():
     """Handle contact form submission"""
     try:
+        data = request.get_json()
+        
         # Get and validate form data
-        name = request.form.get('name', '').strip()
-        email = request.form.get('email', '').strip()
-        message = request.form.get('message', '').strip()
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+        message = data.get('message', '').strip()
         
         # Basic validation
         if not name or len(name) < 2:
@@ -705,17 +707,14 @@ def submit_contact():
         if not message or len(message) < 10:
             return jsonify({'error': 'Please enter a message (minimum 10 characters)'}), 400
             
-        # Prepare webhook payload
-        payload = {
-            'name': name,
-            'email': email,
-            'message': message,
-            'timestamp': datetime.now().isoformat(),
-            'source': request.headers.get('User-Agent')
-        }
-        
+        # Get webhook URL from environment
+        webhook_url = os.getenv('email_webhook')
+        if not webhook_url:
+            app.logger.error("Webhook URL not configured")
+            return jsonify({'error': 'Contact form not properly configured'}), 500
+            
         # Send to webhook
-        response = requests.post(WEBHOOK_URL, json=payload)
+        response = requests.post(webhook_url, json=data)
         if not response.ok:
             app.logger.error(f"Webhook error: {response.status_code} - {response.text}")
             return jsonify({'error': 'Failed to send message'}), 500
