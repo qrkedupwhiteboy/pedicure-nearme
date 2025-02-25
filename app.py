@@ -3,9 +3,9 @@ from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
 from dotenv import load_dotenv
-from flask_mail import Mail, Message
 import json
 from typing import Dict, Optional, List
+import requests
 
 # Create Flask app instance
 app = Flask(__name__)
@@ -39,15 +39,7 @@ STATE_NAMES = {
 
 load_dotenv()
 
-# Email Configuration
-app.config['MAIL_SERVER'] = 'smtp.zoho.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'contact@localpedicures.com'
-app.config['MAIL_PASSWORD'] = os.getenv('ZOHO_MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = 'contact@localpedicures.com'
-mail = Mail(app)
-
+WEBHOOK_URL = "https://hook.us1.make.com/1znal41n11wynkb9i8wtgds8td64yyjy"
 GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
 REVERSE_GEOCODE_KEY = os.getenv('REVERSE_GEOCODE_KEY')
 app = Flask(__name__)
@@ -713,24 +705,22 @@ def submit_contact():
         if not message or len(message) < 10:
             return jsonify({'error': 'Please enter a message (minimum 10 characters)'}), 400
             
-        # Create and send email
-        msg = Message(
-            subject=f"Contact Form Submission from {name}",
-            recipients=['contact@localpedicures.com'],
-            reply_to=email,
-            body=f"""
-New contact form submission:
-
-Name: {name}
-Email: {email}
-
-Message:
-{message}
-            """
-        )
+        # Prepare webhook payload
+        payload = {
+            'name': name,
+            'email': email,
+            'message': message,
+            'timestamp': datetime.now().isoformat(),
+            'source': request.headers.get('User-Agent')
+        }
         
-        mail.send(msg)
-        app.logger.info(f"Contact form submission from {name} ({email}) sent successfully")
+        # Send to webhook
+        response = requests.post(WEBHOOK_URL, json=payload)
+        if not response.ok:
+            app.logger.error(f"Webhook error: {response.status_code} - {response.text}")
+            return jsonify({'error': 'Failed to send message'}), 500
+            
+        app.logger.info(f"Contact form submission from {name} ({email}) sent to webhook successfully")
         
         return jsonify({
             'success': True, 
