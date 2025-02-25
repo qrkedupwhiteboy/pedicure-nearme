@@ -360,10 +360,63 @@ def city_listings(city):
         # Get state from first listing
         state = listings[0].state
         
+        # Prepare schema data
+        schema_data = {
+            "@context": "https://schema.org",
+            "@type": "SearchResultsPage",
+            "name": f"Pedicure Places in {city_name}, {state}",
+            "description": f"Find top-rated pedicures in {city_name}, {state}. Browse and compare {len(listings)} nail salons and pedicure services.",
+            "about": {
+                "@type": "Service",
+                "serviceType": "Pedicure",
+                "areaServed": {
+                    "@type": "City",
+                    "name": city_name,
+                    "containedInPlace": {
+                        "@type": "State",
+                        "name": STATE_NAMES[state]
+                    }
+                }
+            },
+            "mainEntity": {
+                "@type": "ItemList",
+                "numberOfItems": len(listings),
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": i + 1,
+                        "item": {
+                            "@type": "NailSalon",
+                            "name": listing.name,
+                            "address": {
+                                "@type": "PostalAddress",
+                                "streetAddress": listing.address,
+                                "addressLocality": listing.city,
+                                "addressRegion": listing.state,
+                                "postalCode": listing.zip_code,
+                                "addressCountry": "US"
+                            },
+                            "geo": {
+                                "@type": "GeoCoordinates",
+                                "latitude": listing.coordinates['latitude'] if listing.coordinates else None,
+                                "longitude": listing.coordinates['longitude'] if listing.coordinates else None
+                            } if listing.coordinates else None,
+                            "aggregateRating": {
+                                "@type": "AggregateRating",
+                                "ratingValue": str(listing.rating),
+                                "reviewCount": str(listing.reviews)
+                            } if listing.rating and listing.reviews else None
+                        }
+                    } for i, listing in enumerate(listings)
+                ]
+            }
+        }
+
         return render_template('city_listings.html',
                              city=city_name,
                              state=state,
-                             listings=listings)
+                             listings=listings,
+                             schema_data=schema_data)
     finally:
         session.close()
 
