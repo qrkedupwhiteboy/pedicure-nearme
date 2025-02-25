@@ -9,6 +9,7 @@
         {{ schema_data | tojson | safe }}
     </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
@@ -92,10 +93,7 @@
             .listing-card {
                 padding: 10px;
             }
-            
-            .main-header .container {
-                padding: 0 10px;
-            }
+
         }
         .filters {
             padding: 20px;
@@ -183,8 +181,8 @@
     </style>
 </head>
 <body>
+    {% include 'components/header.html' %}
     <div class="page-container">
-        {% include 'components/header.html' %}
         <h1 class="page-title">{{ listing_count }} Pedicure Places in {{ location_display }}</h1>
         
         <div class="content-container">
