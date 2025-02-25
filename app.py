@@ -331,10 +331,50 @@ def state_listings(state):
             for city in cities
         ]
         
+        # Prepare schema data
+        schema_data = {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": f"Cities with Pedicures in {state_name}",
+            "description": f"Find pedicure services across {len(cities)} cities in {state_name}. Browse nail salons by city with ratings, reviews, and booking information.",
+            "about": {
+                "@type": "Service",
+                "serviceType": "Pedicure",
+                "areaServed": {
+                    "@type": "State",
+                    "name": state_name,
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressRegion": state.upper(),
+                        "addressCountry": "US"
+                    }
+                }
+            },
+            "mainEntity": {
+                "@type": "ItemList",
+                "numberOfItems": len(cities),
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": i + 1,
+                        "item": {
+                            "@type": "City",
+                            "name": city['city'],
+                            "containedInPlace": {
+                                "@type": "State",
+                                "name": state_name
+                            }
+                        }
+                    } for i, city in enumerate(city_data)
+                ]
+            }
+        }
+
         return render_template('state_listings.html',
                              state_code=state.upper(),
                              state_name=state_name,
-                             cities=city_data)
+                             cities=city_data,
+                             schema_data=schema_data)
     finally:
         session.close()
 
