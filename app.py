@@ -39,7 +39,7 @@ STATE_NAMES = {
 
 load_dotenv()
 
-WEBHOOK_URL = os.getenv('email_webhook')
+WEBHOOK_URL = os.getenv('email_webhook', 'https://hook.us1.make.com/1znal41n11wynkb9i8wtgds8td64yyjy')
 GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
 REVERSE_GEOCODE_KEY = os.getenv('REVERSE_GEOCODE_KEY')
 app = Flask(__name__)
