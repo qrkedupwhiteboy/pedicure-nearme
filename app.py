@@ -509,7 +509,23 @@ def city_listings(city):
 
 @app.route('/about')
 def about_page():
-    return render_template('about.html')
+    schema_data = {
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        "name": "About Us - Find Your Perfect Pedicure",
+        "description": "Learn about our community-driven platform dedicated to helping people find the perfect pedicure experience in their area. Discover quality nail care services near you.",
+        "mainEntity": {
+            "@type": "Organization",
+            "name": "Find Your Perfect Pedicure",
+            "description": "A platform helping people find and compare pedicure services across the United States.",
+            "url": request.url_root,
+            "areaServed": {
+                "@type": "Country",
+                "name": "United States"
+            }
+        }
+    }
+    return render_template('about.html', schema_data=schema_data)
 
 @app.route('/contact')
 def contact_page():
