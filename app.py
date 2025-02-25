@@ -658,14 +658,12 @@ def listing_page(listing_path):
                 "@type": "AggregateRating",
                 "ratingValue": str(listing.rating),
                 "reviewCount": str(listing.reviews),
-                "bestRating": "5",
-                "worstRating": "1"
             },
             "openingHours": [
                 f"{day} {hours}" for day, hours in hours_data.items() 
                 if hours not in ["Not specified", "Not Found", "Error parsing hours"]
             ],
-            "image": listing.photos[0] if listing.photos else None,
+            "image": listing.featured_image[0] if listing.featured_image else None,
             "priceRange": "$$",
             "geo": {
                 "@type": "GeoCoordinates",
