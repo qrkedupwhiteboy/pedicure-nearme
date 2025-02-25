@@ -548,7 +548,9 @@ def contact_page():
             }
         }
     }
-    return render_template('contact.html', schema_data=schema_data)
+    return render_template('contact.html', 
+                          schema_data=schema_data,
+                          email_webhook=os.getenv('email_webhook'))
 
 @app.route('/sitemap.xml')
 def sitemap_index():

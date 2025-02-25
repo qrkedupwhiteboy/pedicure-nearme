@@ -59,7 +59,7 @@
     {% include 'components/footer.html' %}
     <script>
         function sendFormToWebhook(formData) {
-            const webhookUrl = 'https://hook.us1.make.com/vva5mcqi0aoff3tvvvizxfqqci9j5khw';
+            const webhookUrl = '{{ email_webhook }}';
             
             fetch(webhookUrl, {
                 method: 'POST',
