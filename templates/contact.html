@@ -58,34 +58,73 @@
     </main>
     {% include 'components/footer.html' %}
     <script>
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        function sendFormToWebhook(formData) {
+            const webhookUrl = 'https://hook.us1.make.com/1znal41n11wynkb9i8wtgds8td64yyjy';
             
-            const formMessage = document.getElementById('formMessage');
-            const formData = new FormData(e.target);
-            
-            try {
-                const response = await fetch('/submit_contact', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    timestamp: new Date().toISOString(),
+                    source: navigator.userAgent
+                })
+            })
+            .then(response => {
+                const formMessage = document.getElementById('formMessage');
                 formMessage.style.display = 'block';
+                
                 if (response.ok) {
                     formMessage.className = 'form-message success';
-                    formMessage.textContent = data.message;
-                    e.target.reset();
+                    formMessage.textContent = 'Thank you for your message. We will respond shortly.';
+                    document.getElementById('contactForm').reset();
                 } else {
                     formMessage.className = 'form-message error';
-                    formMessage.textContent = data.error || 'Failed to send message. Please try again.';
+                    formMessage.textContent = 'Failed to send message. Please try again.';
                 }
-            } catch (error) {
+            })
+            .catch(error => {
+                const formMessage = document.getElementById('formMessage');
                 formMessage.style.display = 'block';
                 formMessage.className = 'form-message error';
                 formMessage.textContent = 'An error occurred. Please try again later.';
+                console.error('Error:', error);
+            });
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Basic validation
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            const formMessage = document.getElementById('formMessage');
+            formMessage.style.display = 'block';
+            
+            if (name.length < 2) {
+                formMessage.className = 'form-message error';
+                formMessage.textContent = 'Please enter your name';
+                return;
             }
+            
+            if (!email.includes('@')) {
+                formMessage.className = 'form-message error';
+                formMessage.textContent = 'Please enter a valid email address';
+                return;
+            }
+            
+            if (message.length < 10) {
+                formMessage.className = 'form-message error';
+                formMessage.textContent = 'Please enter a message (minimum 10 characters)';
+                return;
+            }
+            
+            const formData = { name, email, message };
+            sendFormToWebhook(formData);
         });
     </script>
 </body>
