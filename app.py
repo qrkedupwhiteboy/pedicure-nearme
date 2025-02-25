@@ -686,17 +686,29 @@ def state_listings_sitemap(state_name):
 def submit_contact():
     """Handle contact form submission"""
     try:
-        # Get form data
-        name = request.form.get('name')
-        email = request.form.get('email')
-        message = request.form.get('message')
+        # Get and validate form data
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        message = request.form.get('message', '').strip()
         
-        # Here you would typically:
-        # 1. Validate the data
-        # 2. Send an email or store in database
-        # 3. Send confirmation email to user
+        # Basic validation
+        if not name or len(name) < 2:
+            return jsonify({'error': 'Please enter your name'}), 400
+            
+        if not email or '@' not in email:
+            return jsonify({'error': 'Please enter a valid email address'}), 400
+            
+        if not message or len(message) < 10:
+            return jsonify({'error': 'Please enter a message (minimum 10 characters)'}), 400
+            
+        # TODO: Add your preferred method of storing/sending the contact form data
+        # Example: Send email, store in database, etc.
+        app.logger.info(f"Contact form submission from {name} ({email})")
         
-        return jsonify({'success': True, 'message': 'Thank you for your message. We will respond shortly.'})
+        return jsonify({
+            'success': True, 
+            'message': 'Thank you for your message. We will respond shortly.'
+        })
     except Exception as e:
         app.logger.error(f"Contact form error: {str(e)}")
         return jsonify({'error': 'Failed to send message'}), 500

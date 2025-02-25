@@ -9,6 +9,23 @@
     </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+    <style>
+        .form-message {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+        .form-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </head>
 <body>
     {% include 'components/header.html' %}
@@ -20,17 +37,18 @@
             </section>
 
             <section class="contact-form">
-                <form class="sidebar-contact-form">
+                <form id="contactForm" class="sidebar-contact-form">
                     <div class="text-container">
                         <h2 class="form-heading">Send Us a Message</h2>
                         <p class="form-subheading">We'll get back to you as soon as possible.</p>
+                        <div id="formMessage" class="form-message" style="display: none;"></div>
                     </div>
                     
                     <div class="inputs-container">
-                        <input type="text" class="input-field" placeholder="Your Name">
-                        <input type="email" class="input-field" placeholder="Email Address">
-                        <textarea class="input-field message-input" placeholder="Your Message"></textarea>
-                        <button class="primary-button">
+                        <input type="text" name="name" id="name" class="input-field" placeholder="Your Name" required>
+                        <input type="email" name="email" id="email" class="input-field" placeholder="Email Address" required>
+                        <textarea name="message" id="message" class="input-field message-input" placeholder="Your Message" required></textarea>
+                        <button type="submit" class="primary-button">
                             <span class="button-label">Send Message</span>
                         </button>
                     </div>
@@ -39,5 +57,36 @@
         </div>
     </main>
     {% include 'components/footer.html' %}
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formMessage = document.getElementById('formMessage');
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/submit_contact', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                formMessage.style.display = 'block';
+                if (response.ok) {
+                    formMessage.className = 'form-message success';
+                    formMessage.textContent = data.message;
+                    e.target.reset();
+                } else {
+                    formMessage.className = 'form-message error';
+                    formMessage.textContent = data.error || 'Failed to send message. Please try again.';
+                }
+            } catch (error) {
+                formMessage.style.display = 'block';
+                formMessage.className = 'form-message error';
+                formMessage.textContent = 'An error occurred. Please try again later.';
+            }
+        });
+    </script>
 </body>
 </html>
