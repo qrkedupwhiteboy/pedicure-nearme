@@ -3,6 +3,7 @@ from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
 from dotenv import load_dotenv
+from flask_mail import Mail, Message
 import json
 from typing import Dict, Optional, List
 from geopy.geocoders import Nominatim
@@ -35,6 +36,14 @@ STATE_NAMES = {
 
 load_dotenv()
 
+# Email Configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+mail = Mail(app)
 
 GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
 REVERSE_GEOCODE_KEY = os.getenv('REVERSE_GEOCODE_KEY')
@@ -701,9 +710,24 @@ def submit_contact():
         if not message or len(message) < 10:
             return jsonify({'error': 'Please enter a message (minimum 10 characters)'}), 400
             
-        # TODO: Add your preferred method of storing/sending the contact form data
-        # Example: Send email, store in database, etc.
-        app.logger.info(f"Contact form submission from {name} ({email})")
+        # Create and send email
+        msg = Message(
+            subject=f"Contact Form Submission from {name}",
+            recipients=['contact@localpedicures.com'],
+            reply_to=email,
+            body=f"""
+New contact form submission:
+
+Name: {name}
+Email: {email}
+
+Message:
+{message}
+            """
+        )
+        
+        mail.send(msg)
+        app.logger.info(f"Contact form submission from {name} ({email}) sent successfully")
         
         return jsonify({
             'success': True, 
