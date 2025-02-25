@@ -336,7 +336,7 @@ def state_listings(state):
             "@context": "https://schema.org",
             "@type": "CollectionPage",
             "name": f"Cities with Pedicures in {state_name}",
-            "description": f"Find pedicure services across {len(cities)} cities in {state_name}. Browse nail salons by city with ratings, reviews, and booking information.",
+            "description": f"Find pedicure services across {len(cities)} cities in {state_name}. Browse pedicures by city with ratings, hours, and contact information.",
             "about": {
                 "@type": "Service",
                 "serviceType": "Pedicure",
@@ -405,7 +405,7 @@ def city_listings(city):
             "@context": "https://schema.org",
             "@type": "SearchResultsPage",
             "name": f"Pedicure Places in {city_name}, {state}",
-            "description": f"Find top-rated pedicures in {city_name}, {state}. Browse and compare {len(listings)} nail salons and pedicure services.",
+            "description": f"Find top-rated pedicures in {city_name}, {state}. Browse and compare {len(listings)} manicure and pedicure services.",
             "about": {
                 "@type": "Service",
                 "serviceType": "Pedicure",
