@@ -291,11 +291,58 @@ def map_view(location):
             if listings:
                 location_display = f"{location_display}, {listings[0].state}"
 
+        # Prepare schema data
+        schema_data = {
+            "@context": "https://schema.org",
+            "@type": "SearchResultsPage",
+            "name": f"{len(listings)} Pedicure Places in {location_display}",
+            "description": f"View {len(listings)} pedicure salons and nail spas in {location_display} on an interactive map. Compare ratings, services, and locations to find the best pedicure near you.",
+            "about": {
+                "@type": "Service",
+                "serviceType": "Pedicure"
+            },
+            "mainEntity": {
+                "@type": "ItemList",
+                "numberOfItems": len(listings),
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": i + 1,
+                        "item": {
+                            "@type": "NailSalon",
+                            "name": listing.name,
+                            "address": {
+                                "@type": "PostalAddress",
+                                "streetAddress": listing.address,
+                                "addressLocality": listing.city,
+                                "addressRegion": listing.state,
+                                "postalCode": listing.zip_code,
+                                "addressCountry": "US"
+                            },
+                            "geo": {
+                                "@type": "GeoCoordinates",
+                                "latitude": listing.coordinates['latitude'],
+                                "longitude": listing.coordinates['longitude']
+                            },
+                            "telephone": listing.phone,
+                            "url": listing.website if listing.website else None,
+                            "aggregateRating": {
+                                "@type": "AggregateRating",
+                                "ratingValue": str(listing.rating),
+                                "reviewCount": str(listing.reviews)
+                            } if listing.rating and listing.reviews else None
+                        }
+                    } for i, listing in enumerate(listings)
+                ]
+            }
+        }
+
         return render_template('map_view.html', 
                              map_html=m._repr_html_(), 
                              listings=listings,
                              location_display=location_display,
-                             listing_count=len(listings))
+                             listing_count=len(listings),
+                             schema_data=schema_data)
     finally:
         session.close()
 
