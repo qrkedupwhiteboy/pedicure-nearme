@@ -639,6 +639,41 @@ def listing_page(listing_path):
         # Parse hours and check if currently open
         hours_data = parse_hours(listing.hours)
         current_status = check_if_open(hours_data)
+        # Prepare schema data
+        schema_data = {
+            "@context": "https://schema.org",
+            "@type": "NailSalon",
+            "name": listing.name,
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": listing.address,
+                "addressLocality": listing.city,
+                "addressRegion": listing.state,
+                "postalCode": listing.zip_code,
+                "addressCountry": "US"
+            },
+            "telephone": listing.phone,
+            "url": listing.website if listing.website else request.url,
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": str(listing.rating),
+                "reviewCount": str(listing.reviews),
+                "bestRating": "5",
+                "worstRating": "1"
+            },
+            "openingHours": [
+                f"{day} {hours}" for day, hours in hours_data.items() 
+                if hours not in ["Not specified", "Not Found", "Error parsing hours"]
+            ],
+            "image": listing.photos[0] if listing.photos else None,
+            "priceRange": "$$",
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": listing.coordinates.get('latitude'),
+                "longitude": listing.coordinates.get('longitude')
+            } if listing.coordinates else None
+        }
+
         return render_template('listing.html', 
                              listing=listing,
                              nearby_listings=nearby_listings,
@@ -646,7 +681,8 @@ def listing_page(listing_path):
                              hours_data=hours_data,
                              current_status=current_status,
                              parse_hours=parse_hours,
-                             parse_categories=parse_categories)
+                             parse_categories=parse_categories,
+                             schema_data=schema_data)
     finally:
         session.close()
 

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ listing.name }} | Pedicures in {{listing.city}} </title>
     <meta name="description" content="Experience pedicure services at {{listing.name}} in {{listing.city}}, {{listing.state}}. View service types, ratings, check availability, and contact in just a few clicks.">
+    <script type="application/ld+json">
+        {{ schema_data | tojson | safe }}
+    </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
