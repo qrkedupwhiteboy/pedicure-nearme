@@ -516,7 +516,7 @@ def about_page():
         "description": "Learn about our community-driven platform dedicated to helping people find the perfect pedicure experience in their area. Discover quality nail care services near you.",
         "mainEntity": {
             "@type": "Organization",
-            "name": "Find Your Perfect Pedicure",
+            "name": "LocalPedicures",
             "description": "A platform helping people find and compare pedicure services across the United States.",
             "url": request.url_root,
             "areaServed": {
