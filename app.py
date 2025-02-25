@@ -529,7 +529,22 @@ def about_page():
 
 @app.route('/contact')
 def contact_page():
-    return render_template('contact.html')
+    schema_data = {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "name": "Contact Us - Find Your Perfect Pedicure",
+        "description": "Get in touch with us about pedicure services, salon listings, or any questions about finding the perfect pedicure near you.",
+        "mainEntity": {
+            "@type": "Organization",
+            "name": "LocalPedicures",
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "url": request.url
+            }
+        }
+    }
+    return render_template('contact.html', schema_data=schema_data)
 
 @app.route('/sitemap.xml')
 def sitemap_index():
