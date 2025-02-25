@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 from flask_mail import Mail, Message
 import json
 from typing import Dict, Optional, List
+
+# Create Flask app instance
+app = Flask(__name__)
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import folium
