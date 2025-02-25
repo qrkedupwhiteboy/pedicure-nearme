@@ -39,7 +39,7 @@ STATE_NAMES = {
 
 load_dotenv()
 
-WEBHOOK_URL = os.getenv('email_webhook')
+WEBHOOK_URL = os.getenv('email_webhook',)
 GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
 REVERSE_GEOCODE_KEY = os.getenv('REVERSE_GEOCODE_KEY')
 app = Flask(__name__)
@@ -548,9 +548,7 @@ def contact_page():
             }
         }
     }
-    return render_template('contact.html', 
-                          schema_data=schema_data,
-                          email_webhook=os.getenv('email_webhook'))
+    return render_template('contact.html', schema_data=schema_data)
 
 @app.route('/sitemap.xml')
 def sitemap_index():
@@ -688,6 +686,49 @@ def state_listings_sitemap(state_name):
     finally:
         session.close()
 
+@app.route('/submit_contact', methods=['POST'])
+def submit_contact():
+    """Handle contact form submission"""
+    try:
+        # Get and validate form data
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        message = request.form.get('message', '').strip()
+        
+        # Basic validation
+        if not name or len(name) < 2:
+            return jsonify({'error': 'Please enter your name'}), 400
+            
+        if not email or '@' not in email:
+            return jsonify({'error': 'Please enter a valid email address'}), 400
+            
+        if not message or len(message) < 10:
+            return jsonify({'error': 'Please enter a message (minimum 10 characters)'}), 400
+            
+        # Prepare webhook payload
+        payload = {
+            'name': name,
+            'email': email,
+            'message': message,
+            'timestamp': datetime.now().isoformat(),
+            'source': request.headers.get('User-Agent')
+        }
+        
+        # Send to webhook
+        response = requests.post(WEBHOOK_URL, json=payload)
+        if not response.ok:
+            app.logger.error(f"Webhook error: {response.status_code} - {response.text}")
+            return jsonify({'error': 'Failed to send message'}), 500
+            
+        app.logger.info(f"Contact form submission from {name} ({email}) sent to webhook successfully")
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Thank you for your message. We will respond shortly.'
+        })
+    except Exception as e:
+        app.logger.error(f"Contact form error: {str(e)}")
+        return jsonify({'error': 'Failed to send message'}), 500
 
 def parse_categories(categories: Optional[List[str]]) -> List[str]:
     """Convert categories list into list of strings"""
