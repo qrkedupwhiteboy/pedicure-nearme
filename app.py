@@ -37,12 +37,12 @@ STATE_NAMES = {
 load_dotenv()
 
 # Email Configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.zoho.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+app.config['MAIL_USERNAME'] = 'contact@localpedicures.com'
+app.config['MAIL_PASSWORD'] = os.getenv('ZOHO_MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = 'contact@localpedicures.com'
 mail = Mail(app)
 
 GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
