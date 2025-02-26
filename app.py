@@ -132,7 +132,7 @@ def get_geoapify_location():
         user_ip = request.headers.get('x-forwarded-for') or request.headers.get('x-real-ip') 
         if user_ip and ',' in user_ip:
             user_ip = user_ip.split(',')[0].strip()
-            app.logger.info(f"Client IP detected: {user_ip}")
+        app.logger.info(f"Client IP detected: {user_ip}")
             
         url = f"https://api.geoapify.com/v1/ipinfo?ip={user_ip}&apiKey={GEOAPIFY_API_KEY}"
         headers = {
@@ -140,7 +140,6 @@ def get_geoapify_location():
         }
         response = requests.get(url, headers=headers)
         
-        app.logger.info(f"Geoapify API status code: {response.status_code}")
         
         if not response.ok:
             app.logger.error(f"Geoapify API error: Status {response.status_code}")
