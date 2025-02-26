@@ -128,9 +128,9 @@ def city_listings_sitemap(state_name, city_name):
 
 @app.route('/get_geoapify_location')
 def get_geoapify_location():
-    """Get basic location data from IP"""
     try:
-        url = f"https://api.geoapify.com/v1/ipinfo?apiKey={GEOAPIFY_API_KEY}"
+        user_ip = request.remote_addr  # Or from X-Forwarded-For header if behind a proxy
+        url = f"https://api.geoapify.com/v1/ipinfo?ip={user_ip}&apiKey={GEOAPIFY_API_KEY}"
         headers = {
             "Accept": "application/json"
         }
