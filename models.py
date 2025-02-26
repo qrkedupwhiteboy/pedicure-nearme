@@ -25,7 +25,7 @@ class PedicureListing(Base):
     name = Column(String(500))
     description = Column(String(10000))
     reviews = Column(Integer)
-    rating = Column(Integer)
+    rating = Column(Text)
     website = Column(Text)
     phone = Column(String(50))
     featured_image = Column(Text)
@@ -40,7 +40,7 @@ class PedicureListing(Base):
     reviews_per_rating = Column(Text)  # JSON data
     coordinates = Column(Text)  # JSON data
     hours = Column(Text)  # JSON data
-    detailed_reviews = Column(String(10000))  # JSON data
+    detailed_reviews = Column(Text)  # JSON data
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Valid US state codes
