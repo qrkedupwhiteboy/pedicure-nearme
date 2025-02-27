@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find Locations With Pedicures in {{ state_name }} | Local Pedicures</title>
     <meta name="description" content="Find the best pedicures in {{ state_name }}. Discover top-rated nail salons by city with real customer ratings, current hours, and easy booking for all pedicure types.">
-    <link rel="canonical" href="https://localpedicures.com/{{ state_code|lower }}" />
-    <link rel="sitemap" type="application/xml" href="https://localpedicures.com/sitemap.xml" />
+    <link rel="canonical" href="{{ request.url_root }}{{ state_code|lower }}" />
+    <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
