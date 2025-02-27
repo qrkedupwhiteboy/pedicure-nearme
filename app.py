@@ -331,7 +331,7 @@ def map_view(location):
                                 "latitude": json.loads(listing.coordinates)['latitude'] if listing.coordinates else None,
                                 "longitude": json.loads(listing.coordinates)['longitude'] if listing.coordinates else None
 
-                            } if listing.coordinates else None,
+                           } if listing.coordinates else None,
                             "telephone": listing.phone,
                             "url": listing.website if listing.website else None,
                             "aggregateRating": {
