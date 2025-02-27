@@ -115,7 +115,7 @@ def city_listings_sitemap(state_name, city_name):
         for listing in listings:
             lastmod = listing.updated_at.strftime("%Y-%m-%d") if listing.updated_at else datetime.now().strftime("%Y-%m-%d")
             xml.append(f'''  <url>
-    <loc>{base_url}/listing/{listing.get_url_slug()}</loc>
+    <loc>{base_url}/pedicures-in/{listing.state.lower()}/{listing.city.lower().replace(' ', '-')}/{listing.get_url_slug()}</loc>
     <lastmod>{lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -795,8 +795,8 @@ def parse_hours(hours_text: Optional[str]) -> Dict[str, str]:
             'Sunday': 'Error parsing hours'
         }
 
-@app.route('/listing/<path:listing_path>')
-def listing_page(listing_path):
+@app.route('/pedicures-in/<state>/<city>/<path:listing_path>')
+def listing_page(state, city, listing_path):
     """Display a single pedicure listing"""
     session = Session()
     try:

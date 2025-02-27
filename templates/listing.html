@@ -25,7 +25,7 @@
             <i class="iconoir-nav-arrow-right"></i>
             <a href="{{ url_for('state_listings', state=listing.state.lower()) }}" class="nav-regular">{{ STATE_NAMES[listing.state] }}     Cities with Pedicures</a>
             <i class="iconoir-nav-arrow-right"></i>
-            <a href="{{ url_for('city_listings', city=listing.city.lower().replace(' ', '-')) }}" class="nav-regular">Pedicures in {{listing.city}}</a>
+            <a href="{{ url_for('city_listings', state=listing.state.lower(), city=listing.city.lower().replace(' ', '-')) }}" class="nav-regular">Pedicures in {{listing.city}}</a>
             <i class="iconoir-nav-arrow-right"></i>
             <a href="#" class="nav-regular breadcrumb-link inactive">{{listing.name}}</a>
           </div>
@@ -432,7 +432,7 @@
                 <div class="nearby-cards">
                     {% for nearby in nearby_listings %}
                     <div class="nearby-card">
-                        <a href="{{ url_for('listing_page', listing_path=nearby.get_url_slug()) }}" class="nav-regular">
+                        <a href="{{ url_for('listing_page', state=nearby.state.lower(), city=nearby.city.lower().replace(' ', '-'), listing_path=nearby.get_url_slug()) }}" class="nav-regular">
                             <h4 class="nearby-card-title">{{ nearby.name }}</h4> </a>
                             <p class="nearby-card-address">{{ nearby.address }}</p>
                             <p class="nearby-card-rating">{{ nearby.rating }} Stars ({{ nearby.reviews }} Reviews)</p>
@@ -450,7 +450,7 @@
                 <h3 class="state-cities-heading">Explore Pedicures in Other {{ STATE_NAMES[listing.state] }}     Cities</h3>
                 <div class="cities-grid">
                     {% for city in cities_in_state %}
-                        <a href="{{ url_for('city_listings', city=city.lower().replace(' ', '-')) }}" 
+                        <a href="{{ url_for('city_listings', state=state_code_lower, city=city.lower().replace(' ', '-')) }}" 
                            class="nav-regular">{{ city }}</a>
                     {% endfor %}
                 </div>
