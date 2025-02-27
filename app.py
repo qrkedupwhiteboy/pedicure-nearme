@@ -218,9 +218,9 @@ def get_nearby_locations():
         app.logger.error(f"Nearby locations error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/map/<location>')
-def map_view(location):
-    """Display a map of pedicure listings for a given location (zipcode or city)"""
+@app.route('/map/<state>/<location>')
+def map_view(state, location):
+    """Display a map of pedicure listings for a given location (zipcode or city) in a state"""
     session = Session()
     try:
         # Get filter parameters
@@ -230,7 +230,8 @@ def map_view(location):
         
         # Build base query
         query = session.query(PedicureListing).filter(
-            PedicureListing.coordinates.isnot(None)
+            PedicureListing.coordinates.isnot(None),
+            func.upper(PedicureListing.state) == state.upper()
         )
 
         # Check if location is a zipcode (5 digits) or city name
@@ -271,13 +272,15 @@ def map_view(location):
         # Add markers for each listing
         for listing in listings:
             coords = json.loads(listing.coordinates)
+            listing_url = url_for('listing_page', state=listing.state.lower(), city=listing.city.lower().replace(' ', '-'), listing_path=listing.get_url_slug(), _external=True)
             popup_html = f"""
                 <div class='listing-popup'>
                     <h3>{listing.name}</h3>
                     <p>{listing.address}</p>
                     <p class='rating'>Rating: {listing.rating}/5 ({listing.reviews} reviews)</p>
                     <p>{listing.phone}</p>
-                    <a href='{listing.website}' target='_blank'>Visit Website</a>
+                    <a href='{listing_url}' target='_blank'>View Details</a>
+                    {f"<a href='{listing.website}' target='_blank'>Visit Website</a>" if listing.website else ""}
                 </div>
             """
             
@@ -350,6 +353,7 @@ def map_view(location):
                              listings=listings,
                              location_display=location_display,
                              listing_count=len(listings),
+                             state=state,
                              schema_data=schema_data)
     finally:
         session.close()
