@@ -20,7 +20,7 @@
         <div class="breadcrumb">
             <a href="/" class="nav-regular">Local Pedicures</a>
             <i class="iconoir-nav-arrow-right"></i>
-            <a href="/cities-with-pedicures-in/{{state}}" class="nav-regular">{{ STATE_NAMES[state] }} Cities with Pedicures</a>
+            <a href="{{ url_for('state_listings', state=state.lower()) }}" class="nav-regular">{{ STATE_NAMES[state] }} Cities with Pedicures</a>
             <i class="iconoir-nav-arrow-right"></i>
             <a href="#" class="nav-regular breadcrumb-link inactive">Pedicures in {{city}}</a>
           </div>    
@@ -77,7 +77,7 @@
                         </div>
                         <div class="city-listing-info">
                             <div class="city-listing-header">
-                                <h2><a href="/listing/{{ listing.get_url_slug() }}" class="nav-large">{{ listing.name }}</a></h2>
+                                <h2><a href="{{ url_for('listing_page', state=state.lower(), city=city.lower().replace(' ', '-'), listing_path=listing.get_url_slug()) }}" class="nav-large">{{ listing.name }}</a></h2>
                                 <p class="address">{{ listing.address }}</p>
                             </div>
 
