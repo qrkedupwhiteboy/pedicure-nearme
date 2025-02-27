@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
+import os, json
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -20,6 +20,21 @@ Base = declarative_base()
 
 class PedicureListing(Base):
     __tablename__ = 'pedicure_listings'
+
+    @property
+    def latitude(self):
+        if self.coordinates:
+            coords = json.loads(self.coordinates)
+            return coords.get('latitude')
+        return None
+    
+
+    @property
+    def longitude(self):
+        if self.coordinates:
+            coords = json.loads(self.coordinates)
+            return coords.get('longitude')
+        return None
 
     id = Column(Integer, primary_key=True)
     name = Column(String(500))
