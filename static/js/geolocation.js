@@ -44,12 +44,30 @@ searchButton.addEventListener('click', () => {
 });
 
 // Add enter key handler for search
-locationInput.addEventListener('keypress', (e) => {
+locationInput.addEventListener('keypress', async (e) => {
     if (e.key === 'Enter') {
         const zipcode = locationInput.value.trim();
         if (zipcode) {
             const location = zipcode.toLowerCase().replace(/\s+/g, '-');
-            window.location.href = `/map/${location}`;
+            
+            try {
+                // Try to get state for this location
+                if (zipcode.match(/^\d{5}$/)) {
+                    // It's a zipcode
+                    const response = await fetch(`/get_state_for_zipcode?zipcode=${zipcode}`);
+                    const data = await response.json();
+                    if (data.state) {
+                        window.location.href = `/map/${data.state.toLowerCase()}/${location}`;
+                        return;
+                    }
+                }
+                // Fallback to legacy route which will handle the redirect
+                window.location.href = `/map/${location}`;
+            } catch (error) {
+                console.error('Error getting state for location:', error);
+                // Fallback to legacy route
+                window.location.href = `/map/${location}`;
+            }
         }
     }
 });
@@ -79,10 +97,11 @@ function showNearbyLocations(locations) {
     document.querySelectorAll('.suggestion-item').forEach(item => {
         item.addEventListener('click', () => {
             const zipcode = item.dataset.value;
+            const state = item.querySelector('.suggestion-detail').textContent.trim().split(' ')[0].toLowerCase();
             locationInput.value = zipcode;
             suggestionsContainer.style.display = 'none';
             const location = zipcode.toLowerCase().replace(/\s+/g, '-');
-            window.open(`/map/${location}`, '_blank');
+            window.open(`/map/${state}/${location}`, '_blank');
         });
     });
     
@@ -176,10 +195,24 @@ locationInput.addEventListener('focus', async () => {
                     console.log('Stored zipcode:', data.zipcode);
                     
                     // Add click handler for current location button
-                    document.getElementById('use-current-location').addEventListener('click', () => {
+                    document.getElementById('use-current-location').addEventListener('click', async () => {
                         const zipcode = localStorage.getItem('userZipcode');
                         if (zipcode) {
-                            window.open(`/map/${zipcode}`, '_blank');
+                            try {
+                                // Get state for this zipcode
+                                const response = await fetch(`/get_state_for_zipcode?zipcode=${zipcode}`);
+                                const data = await response.json();
+                                if (data.state) {
+                                    window.open(`/map/${data.state.toLowerCase()}/${zipcode}`, '_blank');
+                                } else {
+                                    // Fallback to legacy route which will handle the redirect
+                                    window.open(`/map/${zipcode}`, '_blank');
+                                }
+                            } catch (error) {
+                                console.error('Error getting state for zipcode:', error);
+                                // Fallback to legacy route
+                                window.open(`/map/${zipcode}`, '_blank');
+                            }
                         } else {
                             const lat = localStorage.getItem('userLat');
                             const lon = localStorage.getItem('userLon');

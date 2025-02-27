@@ -239,8 +239,10 @@
     </div>
     
     <script>
-        // Store the current zipcode
-        const currentZipcode = window.location.pathname.split('/').pop();
+        // Store the current location and state
+        const pathParts = window.location.pathname.split('/');
+        const currentState = pathParts[pathParts.length - 2];
+        const currentLocation = pathParts[pathParts.length - 1];
         
         // Add click handlers for listing cards
         document.querySelectorAll('.listing-card').forEach(card => {

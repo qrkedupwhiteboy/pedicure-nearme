@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort, jsonify, Response
+from flask import Flask, render_template, request, abort, jsonify, Response, url_for, redirect
 from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
@@ -156,6 +156,31 @@ def get_geoapify_location():
         app.logger.error(f"Geoapify location error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/get_state_for_zipcode', methods=['GET'])
+def get_state_for_zipcode():
+    """Get state for a zipcode"""
+    try:
+        zipcode = request.args.get('zipcode')
+        if not zipcode:
+            return jsonify({'error': 'Missing zipcode'}), 400
+            
+        session = Session()
+        try:
+            # Find state for this zipcode
+            listing = session.query(PedicureListing.state).filter(
+                PedicureListing.zip_code == zipcode
+            ).first()
+            
+            if listing:
+                return jsonify({'state': listing.state})
+            else:
+                return jsonify({'error': 'No state found for this zipcode'}), 404
+        finally:
+            session.close()
+    except Exception as e:
+        app.logger.error(f"State lookup error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/nearby_locations', methods=['GET'])
 def get_nearby_locations():
     """Get nearby zipcodes with pedicure listings"""
@@ -204,7 +229,8 @@ def get_nearby_locations():
                     'city': loc.city,
                     'state': loc.state,
                     'zipcode': loc.zip_code,
-                    'listing_count': loc.listing_count
+                    'listing_count': loc.listing_count,
+                    'url': url_for('map_view', state=loc.state.lower(), location=loc.zip_code if loc.zip_code else loc.city.lower().replace(' ', '-'), _external=True)
                 }
                 for loc in nearby
             ]
@@ -217,6 +243,32 @@ def get_nearby_locations():
     except Exception as e:
         app.logger.error(f"Nearby locations error: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/map/<location>')
+def map_view_legacy(location):
+    """Redirect old map URLs to new structure"""
+    session = Session()
+    try:
+        # Check if location is a zipcode (5 digits) or city name
+        if location.isdigit() and len(location) == 5:
+            # Get state from zipcode
+            listing = session.query(PedicureListing).filter(
+                PedicureListing.zip_code == location
+            ).first()
+        else:
+            # Convert URL format (e.g., "new-york") to proper city name ("New York")
+            city_name = " ".join(word.capitalize() for word in location.split('-'))
+            listing = session.query(PedicureListing).filter(
+                func.lower(PedicureListing.city) == func.lower(city_name)
+            ).first()
+            
+        if not listing:
+            abort(404)
+            
+        # Redirect to new URL structure
+        return redirect(url_for('map_view', state=listing.state.lower(), location=location))
+    finally:
+        session.close()
 
 @app.route('/map/<state>/<location>')
 def map_view(state, location):
