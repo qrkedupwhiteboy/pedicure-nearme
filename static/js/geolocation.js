@@ -114,8 +114,12 @@ async function getUserLocation() {
             }
             
             // Store coordinates for later use
+        if (data && data.location && data.location.lat && data.location.lon) {
             localStorage.setItem('userLat', data.location.latitude);
             localStorage.setItem('userLon', data.location.longitude);
+        } else {
+            console.error('Invalid User Location Data:', data);
+        }
             
             const locationDisplay = (data.city && data.city.name) || 'your location';
             locationInput.setAttribute('placeholder', `Locations near ${locationDisplay}`);
