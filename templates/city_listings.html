@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedicures in {{ city }}, {{STATE_NAMES [state]}} | Best Pedicures & Manicures</title>
     <meta name="description" content="Find top-rated pedicures in {{city}}, {{state}}. To save you time, we have compiled a list of the best pedicures d {{city}} to ensure you get the best beauty care."/>
+    <link rel="canonical" href="{{ request.url_root }}{{ state|lower }}/{{ city|lower|replace(' ', '-') }}" />
+    <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">

@@ -8,6 +8,8 @@
     <script type="application/ld+json">
         {{ schema_data | tojson | safe }}
     </script>
+    <link rel="canonical" href="{{ request.url_root }}about" />
+    <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
 </head>
