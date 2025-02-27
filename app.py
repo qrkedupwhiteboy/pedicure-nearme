@@ -264,13 +264,13 @@ def map_view(location):
             abort(404)
             
         # Create map centered on the first listing
-        first_coords = listings[0].coordinates
+        first_coords = json.loads(listings[0].coordinates)
         map_center = [first_coords['latitude'], first_coords['longitude']]
         m = folium.Map(location=map_center, zoom_start=13)
         
         # Add markers for each listing
         for listing in listings:
-            coords = listing.coordinates
+            coords = json.loads(listing.coordinates)
             popup_html = f"""
                 <div class='listing-popup'>
                     <h3>{listing.name}</h3>
@@ -328,9 +328,10 @@ def map_view(location):
                             },
                             "geo": {
                                 "@type": "GeoCoordinates",
-                                "latitude": listing.coordinates['latitude'],
-                                "longitude": listing.coordinates['longitude']
-                            },
+                                "latitude": json.loads(listing.coordinates)['latitude'] if listing.coordinates else None,
+                                "longitude": json.loads(listing.coordinates)['longitude'] if listing.coordinates else None
+
+                            } if listing.coordinates else None,
                             "telephone": listing.phone,
                             "url": listing.website if listing.website else None,
                             "aggregateRating": {
