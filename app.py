@@ -183,8 +183,8 @@ def get_nearby_locations():
                 PedicureListing.zip_code,
                 func.count(PedicureListing.id).label('listing_count')
             ).filter(
-                text("(coordinates->>'latitude')::float BETWEEN :lat_min AND :lat_max"),
-                text("(coordinates->>'longitude')::float BETWEEN :lon_min AND :lon_max"),
+                text("(coordinates::json->>'latitude')::float BETWEEN :lat_min AND :lat_max"),
+                text("(coordinates:json->>'longitude')::float BETWEEN :lon_min AND :lon_max"),
                 PedicureListing.zip_code.isnot(None)
             ).params(
                 lat_min=lat - radius,
