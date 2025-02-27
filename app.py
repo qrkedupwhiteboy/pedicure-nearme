@@ -434,7 +434,7 @@ def state_listings(state):
         session.close()
 
 @app.route('/pedicures-in/<city>')
-def city_listings(city, lat_min, lat_max, lon_min, lon_max):
+def city_listings(city):
     """Display pedicure listings for a specific city"""
     session = Session()
     try:
@@ -444,10 +444,7 @@ def city_listings(city, lat_min, lat_max, lon_min, lon_max):
         # Query listings for the city
         listings = session.query(PedicureListing).filter(
             func.lower(PedicureListing.city) == func.lower(city_name),
-            PedicureListing.coordinates.isnot(None),  # Ensure we have coordinates
-            text("(coordinates::json->>'latitude')::float BETWEEN :lat_min AND :lat_max"),
-            text("(coordinates::json->>'longitude')::float BETWEEN :lon_min AND :lon_max")
-        ).params(lat_min=lat_min, lat_max=lat_max, lon_min=lon_min, lon_max=lon_max
+            PedicureListing.coordinates.isnot(None)  # Ensure we have coordinates
         ).order_by(
             PedicureListing.rating.desc()
         ).all()
