@@ -294,7 +294,7 @@
                             <h3 class="state-name">Pedicures in {{ data.name }}</h3>
                             <div class="city-links">
                                 {% for city in data.top_cities %}
-                                <a href="{{ url_for('city_listings', city=city|lower|replace(' ', '-')) }}" class="city-link">Pedicures in <span class="city-highlight">{{ city }}</span></a>                            {% endfor %}
+                                <a href="{{ url_for('city_listings', state=state|lower, city=city|lower|replace(' ', '-')) }}" class="city-link">Pedicures in <span class="city-highlight">{{ city }}</span></a>                            {% endfor %}
                                 {% if data.total_cities > 5 %}
                                 <a href="{{ url_for('state_listings', state=state|lower) }}" class="city-link see-all">See all {{ data.total_cities }} cities in {{ state }} →</a>
                                 {% endif %}
