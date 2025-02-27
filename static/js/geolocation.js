@@ -114,7 +114,7 @@ async function getUserLocation() {
             }
             
             // Store coordinates for later use
-        if (data && data.location && data.location.lat && data.location.lon) {
+        if (data && data.location && data.location.latitude && data.location.longitude) {
             localStorage.setItem('userLat', data.location.latitude);
             localStorage.setItem('userLon', data.location.longitude);
         } else {
