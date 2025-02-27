@@ -354,7 +354,7 @@ def map_view(location):
     finally:
         session.close()
 
-@app.route('/cities-with-pedicures-in/<state>')
+@app.route('/pedicures-in/<state>')
 def state_listings(state):
     """Display pedicure listings for a specific state"""
     session = Session()
@@ -433,17 +433,21 @@ def state_listings(state):
     finally:
         session.close()
 
-@app.route('/pedicures-in/<city>')
-def city_listings(city):
-    """Display pedicure listings for a specific city"""
+@app.route('/pedicures-in/<state>/<city>')
+def city_listings(state, city):
+    """Display pedicure listings for a specific city in a state"""
     session = Session()
     try:
         # Parse city name to handle URL format (e.g., "new-york" -> "New York")
         city_name = " ".join(word.capitalize() for word in city.split('-'))
         
-        # Query listings for the city
+        # Convert state to uppercase for consistency
+        state = state.upper()
+        
+        # Query listings for the city and state
         listings = session.query(PedicureListing).filter(
             func.lower(PedicureListing.city) == func.lower(city_name),
+            func.upper(PedicureListing.state) == state,
             PedicureListing.coordinates.isnot(None)  # Ensure we have coordinates
         ).order_by(
             PedicureListing.rating.desc()
@@ -451,9 +455,6 @@ def city_listings(city):
         
         if not listings:
             abort(404)
-            
-        # Get state from first listing
-        state = listings[0].state
         
         # Prepare schema data
         schema_data = {
@@ -612,7 +613,7 @@ def main_sitemap():
         # Add state pages
         for state_code in STATE_NAMES.keys():
             xml.append(f'''  <url>
-    <loc>{base_url}/cities-with-pedicures-in/{state_code.lower()}</loc>
+    <loc>{base_url}/pedicures-in/{state_code.lower()}</loc>
     <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -634,9 +635,10 @@ def main_sitemap():
         for city, state, last_updated in cities:
             if city and state:
                 city_url = city.lower().replace(' ', '-')
+                state_url = state.lower()
                 lastmod = last_updated.strftime("%Y-%m-%d") if last_updated else datetime.now().strftime("%Y-%m-%d")
                 xml.append(f'''  <url>
-    <loc>{base_url}/pedicures-in/{city_url}</loc>
+    <loc>{base_url}/pedicures-in/{state_url}/{city_url}</loc>
     <lastmod>{lastmod}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -838,6 +840,7 @@ def listing_page(listing_path):
         ).all()
         
         cities_in_state = [city[0] for city in cities_in_state]  # Unpack from tuples
+        state_code_lower = listing.state.lower()  # For URL generation
         
         # Parse hours and check if currently open
         hours_data = parse_hours(listing.hours)
@@ -879,6 +882,7 @@ def listing_page(listing_path):
                              listing=listing,
                              nearby_listings=nearby_listings,
                              cities_in_state=cities_in_state,
+                             state_code_lower=state_code_lower,
                              hours_data=hours_data,
                              current_status=current_status,
                              parse_hours=parse_hours,
