@@ -492,8 +492,8 @@ def city_listings(city):
                             },
                             "geo": {
                                 "@type": "GeoCoordinates",
-                                "latitude": listing.coordinates['latitude'] if listing.coordinates else None,
-                                "longitude": listing.coordinates['longitude'] if listing.coordinates else None
+                                "latitude": json.loads(listing.coordinates)['latitude'] if listing.coordinates else None,
+                                "longitude": json.loads(listing.coordinates)['longitude'] if listing.coordinates else None
                             } if listing.coordinates else None,
                             "aggregateRating": {
                                 "@type": "AggregateRating",
@@ -869,8 +869,8 @@ def listing_page(listing_path):
             "priceRange": "$$",
             "geo": {
                 "@type": "GeoCoordinates",
-                "latitude": listing.coordinates.get('latitude'),
-                "longitude": listing.coordinates.get('longitude')
+                "latitude": json.loads(listing.coordinates).get('latitude') if listing.coordinates else None,
+                "longitude": json.loads(listing.coordinates).get('longitude') if listing.coordinates else None
             } if listing.coordinates else None
         }
 
