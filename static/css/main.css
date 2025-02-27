@@ -685,10 +685,12 @@ body {
 
 .footer-section h3 {
     color: white;
+    margin-bottom: .75rem;
 }
 
 .footer-links {
     list-style: none;
+    gap: .75rem;
     padding: 0;
     display: flex;
     flex-direction: column;
