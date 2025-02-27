@@ -66,8 +66,8 @@
                     <div class="listing-card" 
                          data-rating="{{ listing.rating }}"
                          data-reviews="{{ listing.reviews }}"
-                         data-lat="{{ listing.coordinates.latitude }}"
-                         data-lon="{{ listing.coordinates.longitude }}">
+                         data-lat="{{ listing.latitude }}"
+                         data-lon="{{ listing.longitude }}">
                         <div class="listing-image">
                             {% if listing.featured_image %}
                             <img src="{{ listing.featured_image }}" alt="{{ listing.name }}">
