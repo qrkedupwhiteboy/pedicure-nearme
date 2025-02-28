@@ -84,44 +84,56 @@ def home():
     finally:
         session.close()
 
-@app.route('/sitemaps/listings-<state_name>-<city_name>.xml')
-def city_listings_sitemap(state_name, city_name):
-    """Generate sitemap for listings in a specific city"""
+@app.route('/sitemaps/state-<state_code>.xml')
+def state_sitemap(state_code):
+    """Generate sitemap for a specific state with links to city sitemaps"""
     session = Session()
     try:
         base_url = request.url_root.rstrip('/')
+        state_code = state_code.upper()
         
-        # Convert state name back to code
-        state_code = next((code for code, name in STATE_NAMES.items() 
-                          if name.lower().replace(' ', '-') == state_name.lower()), None)
-        if not state_code:
+        # Verify state exists and has listings
+        has_listings = session.query(PedicureListing).filter(
+            PedicureListing.state == state_code
+        ).first() is not None
+        
+        if not has_listings:
             abort(404)
-            
-        # Convert URL-safe city name back to proper format
-        city_name = ' '.join(word.capitalize() for word in city_name.split('-'))
         
-        # Get all listings for this city
-        listings = session.query(PedicureListing).filter(
-            PedicureListing.state == state_code,
-            func.lower(PedicureListing.city) == func.lower(city_name)
-        ).all()
-        
-        if not listings:
-            abort(404)
+        # Get the state page URL
+        state_url = f"{base_url}/pedicures-in/{state_code.lower()}"
         
         xml = ['<?xml version="1.0" encoding="UTF-8"?>']
-        xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+        xml.append('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
         
-        for listing in listings:
-            lastmod = listing.updated_at.strftime("%Y-%m-%d") if listing.updated_at else datetime.now().strftime("%Y-%m-%d")
-            xml.append(f'''  <url>
-    <loc>{base_url}/pedicures-in/{listing.state.lower()}/{listing.city.lower().replace(' ', '-')}/{listing.get_url_slug()}</loc>
+        # Add the state page itself
+        xml.append(f'''  <sitemap>
+    <loc>{base_url}/sitemaps/state-page-{state_code.lower()}.xml</loc>
+    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
+  </sitemap>''')
+        
+        # Get all cities in this state that have listings
+        cities = session.query(
+            PedicureListing.city,
+            func.max(PedicureListing.updated_at).label('last_updated')
+        ).filter(
+            PedicureListing.state == state_code,
+            PedicureListing.city.isnot(None)
+        ).group_by(
+            PedicureListing.city
+        ).all()
+        
+        # Add city sitemaps
+        for city, last_updated in cities:
+            if city:
+                city_slug = city.lower().replace(' ', '-')
+                lastmod = last_updated.strftime("%Y-%m-%d") if last_updated else datetime.now().strftime("%Y-%m-%d")
+                xml.append(f'''  <sitemap>
+    <loc>{base_url}/sitemaps/city-{state_code.lower()}-{city_slug}.xml</loc>
     <lastmod>{lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>''')
-            
-        xml.append('</urlset>')
+  </sitemap>''')
+        
+        xml.append('</sitemapindex>')
         return Response('\n'.join(xml), mimetype='application/xml')
     finally:
         session.close()
@@ -622,22 +634,15 @@ def sitemap_index():
         xml = ['<?xml version="1.0" encoding="UTF-8"?>']
         xml.append('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
         
-        # Add main sitemap for static and state/city pages
+        # Add static pages sitemap
         xml.append(f'''  <sitemap>
-    <loc>{base_url}/sitemaps/main.xml</loc>
+    <loc>{base_url}/sitemaps/static.xml</loc>
     <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
   </sitemap>''')
         
-        # Add state-specific sitemaps for listings
-        for state_code in STATE_NAMES.keys():
-            # Check if state has any listings
-            has_listings = session.query(PedicureListing).filter(
-                PedicureListing.state == state_code
-            ).first() is not None
-            
-            if has_listings:
-                xml.append(f'''  <sitemap>
-    <loc>{base_url}/sitemaps/listings-{STATE_NAMES[state_code].lower().replace(' ', '-')}.xml</loc>
+        # Add states sitemap
+        xml.append(f'''  <sitemap>
+    <loc>{base_url}/sitemaps/states.xml</loc>
     <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
   </sitemap>''')
         
@@ -646,103 +651,50 @@ def sitemap_index():
     finally:
         session.close()
 
-@app.route('/sitemaps/main.xml')
-def main_sitemap():
-    """Generate main sitemap with static pages and city/state pages"""
-    session = Session()
-    try:
-        base_url = request.url_root.rstrip('/')
-        
-        xml = ['<?xml version="1.0" encoding="UTF-8"?>']
-        xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
-        
-        # Add static pages
-        static_paths = ['', '/about', '/contact']
-        for path in static_paths:
-            xml.append(f'''  <url>
+@app.route('/sitemaps/static.xml')
+def static_sitemap():
+    """Generate sitemap for static pages"""
+    base_url = request.url_root.rstrip('/')
+    
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    
+    # Add static pages
+    static_paths = ['', '/about', '/contact']
+    for path in static_paths:
+        xml.append(f'''  <url>
     <loc>{base_url}{path}</loc>
     <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>''')
+    
+    xml.append('</urlset>')
+    return Response('\n'.join(xml), mimetype='application/xml')
 
-        # Add state pages
-        for state_code in STATE_NAMES.keys():
-            xml.append(f'''  <url>
-    <loc>{base_url}/pedicures-in/{state_code.lower()}</loc>
-    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>''')
-
-        # Add city pages
-        cities = session.query(
-            PedicureListing.city,
-            PedicureListing.state,
-            func.max(PedicureListing.updated_at).label('last_updated')
-        ).filter(
-            PedicureListing.city.isnot(None),
-            PedicureListing.state.isnot(None)
-        ).group_by(
-            PedicureListing.city,
-            PedicureListing.state
-        ).all()
-
-        for city, state, last_updated in cities:
-            if city and state:
-                city_url = city.lower().replace(' ', '-')
-                state_url = state.lower()
-                lastmod = last_updated.strftime("%Y-%m-%d") if last_updated else datetime.now().strftime("%Y-%m-%d")
-                xml.append(f'''  <url>
-    <loc>{base_url}/pedicures-in/{state_url}/{city_url}</loc>
-    <lastmod>{lastmod}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>''')
-
-        xml.append('</urlset>')
-        return Response('\n'.join(xml), mimetype='application/xml')
-    finally:
-        session.close()
-
-@app.route('/sitemaps/listings-<state_name>.xml')
-def state_listings_sitemap(state_name):
-    """Generate sitemap index for cities in a state"""
+@app.route('/sitemaps/states.xml')
+def states_sitemap():
+    """Generate sitemap for state pages with links to city sitemaps"""
     session = Session()
     try:
         base_url = request.url_root.rstrip('/')
         
-        # Convert state name back to code
-        state_code = next((code for code, name in STATE_NAMES.items() 
-                          if name.lower().replace(' ', '-') == state_name.lower()), None)
-        if not state_code:
-            abort(404)
-            
-        # Get all cities in this state that have listings
-        cities = session.query(
-            PedicureListing.city,
-            func.max(PedicureListing.updated_at).label('last_updated')
-        ).filter(
-            PedicureListing.state == state_code,
-            PedicureListing.city.isnot(None)
-        ).group_by(
-            PedicureListing.city
-        ).all()
-        
-        if not cities:
-            abort(404)
-        
         xml = ['<?xml version="1.0" encoding="UTF-8"?>']
         xml.append('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
         
-        for city, last_updated in cities:
-            city_slug = city.lower().replace(' ', '-')
-            lastmod = last_updated.strftime("%Y-%m-%d") if last_updated else datetime.now().strftime("%Y-%m-%d")
-            xml.append(f'''  <sitemap>
-    <loc>{base_url}/sitemaps/listings-{state_name}-{city_slug}.xml</loc>
-    <lastmod>{lastmod}</lastmod>
-  </sitemap>''')
+        # Add state pages and link to their city sitemaps
+        for state_code in STATE_NAMES.keys():
+            # Check if state has any listings
+            has_listings = session.query(PedicureListing).filter(
+                PedicureListing.state == state_code
+            ).first() is not None
             
+            if has_listings:
+                xml.append(f'''  <sitemap>
+    <loc>{base_url}/sitemaps/state-{state_code.lower()}.xml</loc>
+    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
+  </sitemap>''')
+        
         xml.append('</sitemapindex>')
         return Response('\n'.join(xml), mimetype='application/xml')
     finally:
@@ -944,6 +896,130 @@ def listing_page(state, city, listing_path):
                              parse_hours=parse_hours,
                              parse_categories=parse_categories,
                              schema_data=schema_data)
+    finally:
+        session.close()
+
+@app.route('/sitemaps/state-page-<state_code>.xml')
+def state_page_sitemap(state_code):
+    """Generate sitemap for a specific state page"""
+    base_url = request.url_root.rstrip('/')
+    state_code = state_code.upper()
+    
+    # Verify state exists
+    if state_code not in STATE_NAMES:
+        abort(404)
+    
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    
+    # Add the state page
+    xml.append(f'''  <url>
+    <loc>{base_url}/pedicures-in/{state_code.lower()}</loc>
+    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>''')
+    
+    xml.append('</urlset>')
+    return Response('\n'.join(xml), mimetype='application/xml')
+
+@app.route('/sitemaps/city-<state_code>-<city_name>.xml')
+def city_sitemap(state_code, city_name):
+    """Generate sitemap for a specific city with links to individual listings"""
+    session = Session()
+    try:
+        base_url = request.url_root.rstrip('/')
+        state_code = state_code.upper()
+        
+        # Convert URL-safe city name back to proper format for querying
+        city_name_proper = ' '.join(word.capitalize() for word in city_name.split('-'))
+        
+        # Get all listings for this city
+        listings = session.query(PedicureListing).filter(
+            PedicureListing.state == state_code,
+            func.lower(PedicureListing.city) == func.lower(city_name_proper)
+        ).all()
+        
+        if not listings:
+            abort(404)
+        
+        xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+        xml.append('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+        
+        # Add the city page itself
+        xml.append(f'''  <sitemap>
+    <loc>{base_url}/sitemaps/city-page-{state_code.lower()}-{city_name}.xml</loc>
+    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
+  </sitemap>''')
+        
+        # Add listings sitemap
+        xml.append(f'''  <sitemap>
+    <loc>{base_url}/sitemaps/listings-{state_code.lower()}-{city_name}.xml</loc>
+    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
+  </sitemap>''')
+        
+        xml.append('</sitemapindex>')
+        return Response('\n'.join(xml), mimetype='application/xml')
+    finally:
+        session.close()
+
+@app.route('/sitemaps/city-page-<state_code>-<city_name>.xml')
+def city_page_sitemap(state_code, city_name):
+    """Generate sitemap for a specific city page"""
+    base_url = request.url_root.rstrip('/')
+    state_code = state_code.upper()
+    
+    # Convert URL-safe city name back to proper format for display
+    city_name_proper = ' '.join(word.capitalize() for word in city_name.split('-'))
+    
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    
+    # Add the city page
+    xml.append(f'''  <url>
+    <loc>{base_url}/pedicures-in/{state_code.lower()}/{city_name}</loc>
+    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>''')
+    
+    xml.append('</urlset>')
+    return Response('\n'.join(xml), mimetype='application/xml')
+
+@app.route('/sitemaps/listings-<state_code>-<city_name>.xml')
+def listings_sitemap(state_code, city_name):
+    """Generate sitemap for individual listings in a specific city"""
+    session = Session()
+    try:
+        base_url = request.url_root.rstrip('/')
+        state_code = state_code.upper()
+        
+        # Convert URL-safe city name back to proper format for querying
+        city_name_proper = ' '.join(word.capitalize() for word in city_name.split('-'))
+        
+        # Get all listings for this city
+        listings = session.query(PedicureListing).filter(
+            PedicureListing.state == state_code,
+            func.lower(PedicureListing.city) == func.lower(city_name_proper)
+        ).all()
+        
+        if not listings:
+            abort(404)
+        
+        xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+        xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+        
+        for listing in listings:
+            lastmod = listing.updated_at.strftime("%Y-%m-%d") if listing.updated_at else datetime.now().strftime("%Y-%m-%d")
+            xml.append(f'''  <url>
+    <loc>{base_url}/pedicures-in/{listing.state.lower()}/{listing.city.lower().replace(' ', '-')}/{listing.get_url_slug()}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>''')
+            
+        xml.append('</urlset>')
+        return Response('\n'.join(xml), mimetype='application/xml')
     finally:
         session.close()
 
