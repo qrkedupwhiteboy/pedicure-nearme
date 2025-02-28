@@ -1065,17 +1065,27 @@ def check_if_open(hours_data: Dict[str, str]) -> Dict[str, any]:
     
     # Get today's hours string
     today_hours = hours_data.get(current_day, "Not specified")
+
+    debug_info = {
+        "current_day": current_day,
+        "current_time": current_time,
+        "today_hours": today_hours,
+        "parsing_errors": []
+    }
     
     # Handle cases where hours aren't specified
     if not today_hours or today_hours in ["Not specified", "Not Found", "Error parsing hours"]:
         return {
             "is_open": False,
             "status": "Hours not available",
-            "status_class": "unknown"
+            "status_class": "unknown",
+            "debug": debug_info
         }
     
     # Split multiple time ranges (if any)
     time_ranges = [r.strip() for r in today_hours.split(",")]
+    debug_info["time_ranges"] = time_ranges
+
     
     for time_range in time_ranges:
         try:
@@ -1110,6 +1120,16 @@ def check_if_open(hours_data: Dict[str, str]) -> Dict[str, any]:
             elif "AM" in close_match and close_hour == 12:
                 close_hour = 0
             close_time = close_hour * 100 + close_minute
+
+            # Add parsed time info to debug data
+            range_debug = {
+                "range": time_range,
+                "open_match": open_match,
+                "close_match": close_match,
+                "parsed_open_time": open_time,
+                "parsed_close_time": close_time,
+                "current_time": current_time
+            }
             
             # Check if current time falls within range
             if current_time >= open_time and current_time <= close_time:
@@ -1120,15 +1140,28 @@ def check_if_open(hours_data: Dict[str, str]) -> Dict[str, any]:
                 return {
                     "is_open": True,
                     "status": f"Open Now · Closes {closing_time}",
-                    "status_class": "open"
+                    "status_class": "open",
+                    "debug": debug_info
+
                 }
-        except (ValueError, IndexError):
+            
+            debug_info["parsed_ranges"] = debug_info.get("parsed_ranges", []) + [range_debug]
+
+        except Exception as e:
+            # Capture specific error information
+            error_info = {
+                "range": time_range,
+                "error_type": type(e).__name__,
+                "error_message": str(e)
+            }
+            debug_info["parsing_errors"].append(error_info)
             continue
     
     return {
         "is_open": False,
         "status": "Closed Now",
-        "status_class": "closed"
+        "status_class": "closed",
+        "debug": debug_info
     }
 
 @app.route('/search_locations', methods=['GET'])
