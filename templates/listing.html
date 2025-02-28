@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ listing.name }} | Pedicures in {{listing.city}} </title>
     <meta name="description" content="Experience pedicure services at {{listing.name}} in {{listing.city}}, {{listing.state}}. View service types, ratings, check availability, and contact in just a few clicks.">
-    <link rel="canonical" href="{{ request.url_root }}{{ listing.state|lower }}/{{ listing.city|lower|replace(' ', '-') }}/{{ listing.get_url_slug() }}" />
+    <link rel="canonical" href="{{ request.url_root }}pedicures-in/{{ listing.state|lower }}/{{ listing.city|lower|replace(' ', '-') }}/{{ listing.get_url_slug() }}" />
     <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
     <script type="application/ld+json">
         {{ schema_data | tojson | safe }}
