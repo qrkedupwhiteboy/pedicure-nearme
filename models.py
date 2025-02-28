@@ -114,15 +114,15 @@ class PedicureListing(Base):
         if not self.name or not self.zip_code:
             return str(self.id)  # Fallback to ID if missing data
         
-        # Replace all non-alphanumeric characters with hyphens
-        name_slug = ''.join(c if c.isalnum() else '-' for c in self.name.lower())
+        # Remove all non-alphanumeric characters, replace with spaces
+        name_clean = ''.join(c if c.isalnum() or c.isspace() else ' ' for c in self.name.lower())
         
-        # Replace multiple consecutive hyphens with a single hyphen
-        while '--' in name_slug:
-            name_slug = name_slug.replace('--', '-')
-            
-        # Remove leading/trailing hyphens
-        name_slug = name_slug.strip('-')
+        # Replace multiple spaces with a single space
+        while '  ' in name_clean:
+            name_clean = name_clean.replace('  ', ' ')
+        
+        # Replace spaces with hyphens
+        name_slug = name_clean.strip().replace(' ', '-')
         
         return f"{name_slug}-{self.zip_code}"
 

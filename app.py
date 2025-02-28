@@ -337,7 +337,7 @@ def map_view(state, location):
         # Add markers for each listing
         for listing in listings:
             coords = json.loads(listing.coordinates)
-            listing_url = url_for('listing_page', state=listing.state.lower(), city=listing.city.lower().replace(' ', '-'), listing_path=listing.get_url_slug(), _external=True)
+            listing_url = url_for('listing_page', state=listing.state.lower(), city=city_to_url_slug(listing.city), listing_path=to_url_slug(listing.name) + '-' + listing.zip_code, _external=True)
             popup_html = f"""
                 <div class='listing-popup'>
                     <h3>{listing.name}</h3>
@@ -820,14 +820,26 @@ def listing_page(state, city, listing_path):
         name_part = listing_path.rsplit('-', 1)[0]
         zipcode = listing_path.rsplit('-', 1)[1]
         
-        # Convert URL-safe name back to possible name variations
-        possible_name = ' '.join(word.capitalize() for word in name_part.split('-'))
-        
-        # Get the main listing
-        listing = session.query(PedicureListing).filter(
-            func.lower(func.regexp_replace(PedicureListing.name, '[^a-zA-Z0-9]+', '-', 'g')) == name_part,
+        # First try to find the listing by exact URL slug match
+        listings = session.query(PedicureListing).filter(
             PedicureListing.zip_code == zipcode
-        ).first()
+        ).all()
+        
+        listing = None
+        for potential_listing in listings:
+            if to_url_slug(potential_listing.name) == name_part:
+                listing = potential_listing
+                break
+                
+        # If not found, try a more flexible approach
+        if not listing:
+            # Try with the model's get_url_slug method
+            listing = session.query(PedicureListing).filter(
+                PedicureListing.zip_code == zipcode
+            ).filter(
+                func.lower(func.regexp_replace(PedicureListing.name, '[^a-zA-Z0-9\s]+', ' ', 'g')) == 
+                name_part.replace('-', ' ')
+            ).first()
         if not listing:
             abort(404)
             
@@ -1017,8 +1029,10 @@ def listings_sitemap(state_code, city_name):
         
         for listing in listings:
             lastmod = listing.updated_at.strftime("%Y-%m-%d") if listing.updated_at else datetime.now().strftime("%Y-%m-%d")
+            city_slug = city_to_url_slug(listing.city)
+            listing_slug = to_url_slug(listing.name) + '-' + listing.zip_code
             xml.append(f'''  <url>
-    <loc>{base_url}/pedicures-in/{listing.state.lower()}/{listing.city.lower().replace(' ', '-')}/{listing.get_url_slug()}</loc>
+    <loc>{base_url}/pedicures-in/{listing.state.lower()}/{city_slug}/{listing_slug}</loc>
     <lastmod>{lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -1193,12 +1207,21 @@ def get_zipcode():
         app.logger.error(f"Zipcode lookup error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+def to_url_slug(text):
+    """Convert any text to a URL-safe slug"""
+    if not text:
+        return ""
+    # Replace non-alphanumeric characters with spaces
+    text_clean = ''.join(c if c.isalnum() or c.isspace() else ' ' for c in text.lower())
+    # Replace multiple spaces with single space
+    while '  ' in text_clean:
+        text_clean = text_clean.replace('  ', ' ')
+    # Replace spaces with hyphens
+    return text_clean.strip().replace(' ', '-')
+
 def city_to_url_slug(city_name):
     """Convert a city name to a URL-safe slug"""
-    if not city_name:
-        return ""
-    # Replace non-alphanumeric characters with spaces, then replace spaces with hyphens
-    return re.sub(r'\s+', '-', re.sub(r'[^a-zA-Z0-9\s]', '', city_name)).lower()
+    return to_url_slug(city_name)
 
 def url_slug_to_city_query(slug):
     """Convert a URL slug to a format suitable for database queries"""
@@ -1211,7 +1234,8 @@ def url_slug_to_city_query(slug):
 def utility_processor():                                                                                  
      return {                                                                                              
          'STATE_NAMES': STATE_NAMES,
-         'city_to_url_slug': city_to_url_slug                                                                      
+         'city_to_url_slug': city_to_url_slug,
+         'to_url_slug': to_url_slug                                                                     
      }                                                                                                     
                           
 
