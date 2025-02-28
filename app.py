@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 import json
 import re
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Union
 import requests
 
 # Create Flask app instance
@@ -748,16 +748,30 @@ def submit_contact():
         app.logger.error(f"Contact form error: {str(e)}")
         return jsonify({'error': 'Failed to send message'}), 500
 
-def parse_categories(categories: Optional[List[str]]) -> List[str]:
-    """Convert categories list into list of strings"""
+import ast
+from typing import List, Optional, Union
+
+def parse_categories(categories: Optional[Union[List[str], str]]) -> List[str]:
+    """Convert categories into a list of strings."""
     if not categories:
         return []
     
-    try:
-        # Ensure each category is converted to string
-        return [str(cat) for cat in categories]
-    except (TypeError, ValueError):
+    if isinstance(categories, str):
+        try:
+            # Attempt to parse the string as a Python literal
+            parsed_categories = ast.literal_eval(categories)
+            if isinstance(parsed_categories, list):
+                categories = parsed_categories
+            else:
+                return [categories]  # If it's not a list, treat it as a single category
+        except (ValueError, SyntaxError):
+            return [categories]  # If parsing fails, treat it as a single category
+    
+    if not isinstance(categories, list):
         return []
+    
+    return [str(cat) for cat in categories if cat]
+
 
 from datetime import datetime
 
