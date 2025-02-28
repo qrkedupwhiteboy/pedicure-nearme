@@ -49,7 +49,7 @@
                          data-city="{{ city.city }}"
                          data-listings="{{ city.listing_count }}">
                         <div class="city-info">
-                            <h2><a href="{{ url_for('city_listings', state=state_code|lower, city=city.city|lower|replace(' ', '-')) }}" class="nav-large">{{ city.city }}</a></h2>
+                            <h2><a href="{{ url_for('city_listings', state=state_code|lower, city=city_to_url_slug(city.city)) }}" class="nav-large">{{ city.city }}</a></h2>
                             <p class="listing-count">{{ city.listing_count }} pedicure locations</p>
                         </div>
                     </div>

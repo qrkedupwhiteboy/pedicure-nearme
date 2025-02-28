@@ -4,6 +4,7 @@ from sqlalchemy import text, func
 import os
 from dotenv import load_dotenv
 import json
+import re
 from typing import Dict, Optional, List
 import requests
 
@@ -506,15 +507,16 @@ def city_listings(state, city):
     """Display pedicure listings for a specific city in a state"""
     session = Session()
     try:
-        # Parse city name to handle URL format (e.g., "new-york" -> "New York")
-        city_name = " ".join(word.capitalize() for word in city.split('-'))
-        
         # Convert state to uppercase for consistency
         state = state.upper()
         
+        # First try exact match with the URL-formatted city name
+        url_formatted_city = city.replace('-', ' ')
+        
         # Query listings for the city and state
         listings = session.query(PedicureListing).filter(
-            func.lower(PedicureListing.city) == func.lower(city_name),
+            func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
+            func.lower(url_formatted_city),
             func.upper(PedicureListing.state) == state,
             PedicureListing.coordinates.isnot(None)  # Ensure we have coordinates
         ).order_by(
@@ -523,6 +525,9 @@ def city_listings(state, city):
         
         if not listings:
             abort(404)
+        
+        # Get the actual city name from the first listing for display
+        city_name = listings[0].city if listings else city.replace('-', ' ').title()
         
         # Prepare schema data
         schema_data = {
@@ -931,13 +936,14 @@ def city_sitemap(state_code, city_name):
         base_url = request.url_root.rstrip('/')
         state_code = state_code.upper()
         
-        # Convert URL-safe city name back to proper format for querying
-        city_name_proper = ' '.join(word.capitalize() for word in city_name.split('-'))
+        # Convert URL-safe city name for querying
+        url_formatted_city = city_name.replace('-', ' ')
         
         # Get all listings for this city
         listings = session.query(PedicureListing).filter(
             PedicureListing.state == state_code,
-            func.lower(PedicureListing.city) == func.lower(city_name_proper)
+            func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
+            func.lower(url_formatted_city)
         ).all()
         
         if not listings:
@@ -969,8 +975,7 @@ def city_page_sitemap(state_code, city_name):
     base_url = request.url_root.rstrip('/')
     state_code = state_code.upper()
     
-    # Convert URL-safe city name back to proper format for display
-    city_name_proper = ' '.join(word.capitalize() for word in city_name.split('-'))
+    # We'll use the URL-formatted city name directly in the URL
     
     xml = ['<?xml version="1.0" encoding="UTF-8"?>']
     xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
@@ -994,13 +999,14 @@ def listings_sitemap(state_code, city_name):
         base_url = request.url_root.rstrip('/')
         state_code = state_code.upper()
         
-        # Convert URL-safe city name back to proper format for querying
-        city_name_proper = ' '.join(word.capitalize() for word in city_name.split('-'))
+        # Convert URL-safe city name for querying
+        url_formatted_city = city_name.replace('-', ' ')
         
         # Get all listings for this city
         listings = session.query(PedicureListing).filter(
             PedicureListing.state == state_code,
-            func.lower(PedicureListing.city) == func.lower(city_name_proper)
+            func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
+            func.lower(url_formatted_city)
         ).all()
         
         if not listings:
@@ -1187,10 +1193,25 @@ def get_zipcode():
         app.logger.error(f"Zipcode lookup error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+def city_to_url_slug(city_name):
+    """Convert a city name to a URL-safe slug"""
+    if not city_name:
+        return ""
+    # Replace non-alphanumeric characters with spaces, then replace spaces with hyphens
+    return re.sub(r'\s+', '-', re.sub(r'[^a-zA-Z0-9\s]', '', city_name)).lower()
+
+def url_slug_to_city_query(slug):
+    """Convert a URL slug to a format suitable for database queries"""
+    if not slug:
+        return ""
+    # Replace hyphens with spaces for querying
+    return slug.replace('-', ' ')
+
 @app.context_processor                                                                                    
 def utility_processor():                                                                                  
      return {                                                                                              
-         'STATE_NAMES': STATE_NAMES                                                                        
+         'STATE_NAMES': STATE_NAMES,
+         'city_to_url_slug': city_to_url_slug                                                                      
      }                                                                                                     
                           
 
