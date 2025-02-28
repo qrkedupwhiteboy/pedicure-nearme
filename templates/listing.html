@@ -439,8 +439,8 @@
                             <p class="nearby-card-address">{{ nearby.address }}</p>
                             <p class="nearby-card-rating">{{ nearby.rating }} Stars ({{ nearby.reviews }} Reviews)</p>
                             <span class="nearby-card-distance" 
-                                  data-lat="{{ nearby.coordinates.latitude }}"
-                                  data-lon="{{ nearby.coordinates.longitude }}">
+                                  data-lat="{{ nearby.latitude }}"
+                                  data-lon="{{ nearby.longitude }}">
                             </span>
                     </div>
                     {% endfor %}
