@@ -61,7 +61,7 @@
                 <div class="city-listings-header">
                     <h1 class="h1">Pedicures in {{ city }}, {{ STATE_NAMES[state] }}</h1>
                     <p class="results-count">{{ listings|length }} pedicure locations found</p>
-                    <p class="body-md">Looking for a pedicure near you in {{ city }}, {{ STATE_NAMES[state] }}? Our comprehensive directory connects you with the best pedicure places in your area. Compare pedicure hours, read descriptions, and read price options on their website. Each listing shows detailed information about available services - whether you're looking for basic pedicures or specialized treatments like zero-gravity pedicures. Browse top-rated nail salons for men and women in {{ city }}, {{ STATE_NAMES[state] }} and book your appointment today at the best place for a professional pedicure just minutes from you.</p>
+                    <p class="body-xl">Looking for a pedicure near you in {{ city }}, {{ STATE_NAMES[state] }}? Our comprehensive directory connects you with the best pedicure places in your area based on user ratings, services offered, availability and more. Each listing shows detailed information about available services - whether you're looking for basic pedicures or specialized treatments like zero-gravity pedicures. Browse top-rated nail salons for men and women in {{ city }}, {{ STATE_NAMES[state] }} and book your appointment today at the best place for a professional pedicure just minutes from you.</p>
                 </div> 
                 
                 <div id="listings-grid">
@@ -85,6 +85,7 @@
                             </div>
 
                             <div class="rating-reviews">
+                                <icon class="iconoir-star-solid" style="color:#FC9231"></icon>
                                 <span class="body-md">{{ listing.rating }}/5</span>
                                 <span class="body-md">({{ listing.reviews }} reviews)</span>
                             </div>

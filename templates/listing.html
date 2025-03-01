@@ -123,6 +123,27 @@
             </div>
         </div>
 
+        <div class="services" data-layer="services">
+            <h2 class="h2" data-layer="heading">
+              Other Services Offered by This Location
+            </h2>
+            
+            <div class="grid" data-layer="grid">
+              {% set categories = parse_categories(listing.categories) %}
+              {% set columns = (categories|length / 3)|round(method='ceil')|int %}
+              {% for i in range(0, categories|length, columns) %}
+              <div class="column" data-layer="column">
+                {% for category in categories[i:i+columns] %}
+                <div class="item" data-layer="item">
+                  <icon class="iconoir-asterisk"></icon>
+                  <h3 class="text" data-layer="text">{{ category }}</h3>
+                </div>
+                {% endfor %}
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
         <div class="general-info">
             <section class="listing-info-section">
                 <h2 class="h2">About Pedicure Services</h2>
@@ -212,26 +233,6 @@
             </section>
         </div>
 
-        <div class="services" data-layer="services">
-            <h2 class="h2" data-layer="heading">
-              Other Services Offered by Location
-            </h2>
-            
-            <div class="grid" data-layer="grid">
-              {% set categories = parse_categories(listing.categories) %}
-              {% set columns = (categories|length / 3)|round(method='ceil')|int %}
-              {% for i in range(0, categories|length, columns) %}
-              <div class="column" data-layer="column">
-                {% for category in categories[i:i+columns] %}
-                <div class="item" data-layer="item">
-                  <icon class="iconoir-asterisk"></icon>
-                  <div class="text" data-layer="text">{{ category }}</div>
-                </div>
-                {% endfor %}
-              </div>
-              {% endfor %}
-            </div>
-          </div>
 
           <section class="faq-section" id="faqs" style="padding-left: 0;">
             <div class="faqs-container">
