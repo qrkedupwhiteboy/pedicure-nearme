@@ -95,8 +95,8 @@
             <div class="hours-container">
                 <div class="hours-header">
                     <h2 class="h2">Hours of Operation</h2>
-                    <div id="open-status" class="{{ current_status.status_class }}">
-                        {{ current_status.status }}
+                    <div id="open-status" class="unknown" data-hours="{{ hours|tojson }}">
+                        Checking hours...
                     </div>
                 </div>
                 <div class="days-hours">
@@ -481,6 +481,7 @@
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/distance-calculator.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/opening-hours.js') }}" defer></script>
     {% include 'components/footer.html' %}
     <script src="{{ url_for('static', filename='js/faq.js') }}"></script>
 </body>
