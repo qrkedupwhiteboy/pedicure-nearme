@@ -225,7 +225,7 @@
                 
                 <div class="listings">
                     {% for listing in listings %}
-                    <div class="listing-card" data-lat="{{ listing.coordinates.latitude }}" data-lon="{{ listing.coordinates.longitude }}">
+                    <div class="listing-card" data-lat="{{ listing.latitude }}" data-lon="{{ listing.longitude }}">
                         <a class="nav-regular" href="{{ url_for('listing_page', state=listing.state.lower(), city=listing.city.lower().replace(' ', '-'), listing_path=listing.get_url_slug()) }}"><h2> {{ listing.name }} </h2> </a>
                         <p>{{ listing.address }}</p>
                         <p class="rating">Rating: {{ listing.rating }}/5 ({{ listing.reviews }} reviews)</p>
