@@ -8,47 +8,62 @@ document.addEventListener('DOMContentLoaded', function() {
     // If there's no status element on the page, exit early
     if (!openStatusElement) return;
     
-    // Get hours data from the data attribute
-    const hoursDataString = openStatusElement.getAttribute('data-hours');
-    if (!hoursDataString) return;
+    // Get the current day of the week
+    const now = new Date();
+    const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' }); // Returns "Monday", "Tuesday", etc.
     
-    try {
-        // The hours data is already a JavaScript object (parsed by Jinja's tojson filter)
-        const hoursData = JSON.parse(hoursDataString);
-        const currentStatus = checkIfOpen(hoursData);
-        
-        // Update the status element
-        openStatusElement.textContent = currentStatus.status;
-        openStatusElement.className = currentStatus.status_class;
-    } catch (error) {
-        console.error('Error parsing hours data:', error);
-        // Fallback to unknown status
-        openStatusElement.textContent = "Hours not available";
-        openStatusElement.className = "unknown";
+    // Find the hours for today from the HTML
+    const dayColumns = document.querySelectorAll('.day-column');
+    if (dayColumns.length < 2) return;
+    
+    // First column has day names, second column has hours
+    const daysColumn = dayColumns[0];
+    const hoursColumn = dayColumns[1];
+    
+    // Find the index of the current day
+    let dayIndex = -1;
+    const dayElements = daysColumn.querySelectorAll('p');
+    
+    for (let i = 0; i < dayElements.length; i++) {
+        if (dayElements[i].textContent.trim() === currentDay) {
+            dayIndex = i;
+            break;
+        }
     }
+    
+    if (dayIndex === -1) return;
+    
+    // Get today's hours
+    const hourElements = hoursColumn.querySelectorAll('.time');
+    if (dayIndex >= hourElements.length) return;
+    
+    const todayHours = hourElements[dayIndex].textContent.trim();
+    
+    // Check if the business is currently open
+    const currentStatus = checkIfOpen(todayHours);
+    
+    // Update the status element
+    openStatusElement.textContent = currentStatus.status;
+    openStatusElement.className = currentStatus.status_class;
 });
 
 /**
- * Determines if a business is currently open based on hours data
- * @param {Object} hoursData - Object with days of week as keys and hour ranges as values
+ * Determines if a business is currently open based on hours string
+ * @param {String} todayHours - String containing the hours for today
  * @returns {Object} Status object with is_open, status text, and status_class
  */
-function checkIfOpen(hoursData) {
+function checkIfOpen(todayHours) {
     const now = new Date();
-    const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' }); // Returns "Monday", "Tuesday", etc.
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
     const currentTime = currentHour * 100 + currentMinute; // Convert to HHMM format
     
-    // Get today's hours string
-    const todayHours = hoursData[currentDay];
-
     // Handle cases where hours aren't specified
-    if (!todayHours || todayHours === "Not specified" || todayHours === "Not Found" || todayHours === "Error parsing hours") {
+    if (!todayHours || todayHours === "Not specified" || todayHours === "Not Found" || todayHours === "Error parsing hours" || todayHours === "Closed") {
         return {
             is_open: false,
-            status: "Hours not available",
-            status_class: "unknown"
+            status: todayHours === "Closed" ? "Closed Today" : "Hours not available",
+            status_class: "closed"
         };
     }
     
