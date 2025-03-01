@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!hoursDataString) return;
     
     try {
+        // The hours data is already a JavaScript object (parsed by Jinja's tojson filter)
         const hoursData = JSON.parse(hoursDataString);
         const currentStatus = checkIfOpen(hoursData);
         
@@ -21,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
         openStatusElement.className = currentStatus.status_class;
     } catch (error) {
         console.error('Error parsing hours data:', error);
+        // Fallback to unknown status
+        openStatusElement.textContent = "Hours not available";
+        openStatusElement.className = "unknown";
     }
 });
 

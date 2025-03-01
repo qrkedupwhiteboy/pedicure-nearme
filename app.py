@@ -957,7 +957,6 @@ def listing_page(state, city, listing_path):
                              cities_in_state=cities_in_state,
                              state_code_lower=state_code_lower,
                              hours_data=hours_data,
-                             hours=hours_data,
                              parse_hours=parse_hours,
                              parse_categories=parse_categories,
                              schema_data=schema_data)
