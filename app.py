@@ -257,6 +257,10 @@ def get_nearby_locations():
 @app.route('/pedicures-in/<location>')
 def legacy_city_redirect(location):
     """Redirect old URLs like /pedicures-in/wilton to new structure /pedicures-in/state/city"""
+    # First check if this is a valid state code - if so, let the state_listings route handle it
+    if location.upper() in STATE_NAMES:
+        return state_listings(location)
+        
     session = Session()
     try:
         # Convert URL format (e.g., "wilton") to proper city name for searching
@@ -1221,6 +1225,9 @@ def page_not_found(e):
     location = None
     if path.startswith('/pedicures-in/'):
         location = path[14:]
+        # Check if this is a valid state code - if so, don't try to redirect
+        if location.upper() in STATE_NAMES:
+            return render_template('404.html'), 404
     elif path.startswith('/map/'):
         location = path[5:]
     elif path.startswith('/listing/'):
