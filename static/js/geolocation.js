@@ -141,7 +141,7 @@ async function getUserLocation() {
         }
             
             const locationDisplay = (data.city && data.city.name) || 'your location';
-            locationInput.setAttribute('placeholder', `Locations near ${locationDisplay}`);
+            locationInput.setAttribute('placeholder', `Locations Near You`);
         } else {
             console.log('Invalid location data structure:', data);
             throw new Error('Could not determine location');
