@@ -254,6 +254,38 @@ def get_nearby_locations():
         app.logger.error(f"Nearby locations error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/pedicures-in/<location>')
+def legacy_city_redirect(location):
+    """Redirect old URLs like /pedicures-in/wilton to new structure /pedicures-in/state/city"""
+    session = Session()
+    try:
+        # Convert URL format (e.g., "wilton") to proper city name for searching
+        city_name = " ".join(word.capitalize() for word in location.split('-'))
+        
+        # Find the city in our database
+        listing = session.query(PedicureListing).filter(
+            func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
+            func.lower(location.replace('-', ' '))
+        ).first()
+        
+        if not listing:
+            # If not found by exact match, try a more flexible approach
+            listing = session.query(PedicureListing).filter(
+                func.lower(PedicureListing.city).like(f"%{location.replace('-', ' ')}%")
+            ).first()
+            
+        if not listing:
+            abort(404)
+            
+        # Redirect to new URL structure
+        city_slug = city_to_url_slug(listing.city)
+        return redirect(url_for('city_listings', 
+                              state=listing.state.lower(), 
+                              city=city_slug, 
+                              _external=True))
+    finally:
+        session.close()
+
 @app.route('/map/<location>')
 def map_view_legacy(location):
     """Redirect old map URLs to new structure"""
@@ -857,6 +889,51 @@ def parse_hours(hours_json: str) -> List[Dict[str, Union[str, List[str]]]]:
     
 # check_if_open function removed - now handled by JavaScript
 
+@app.route('/listing/<path:listing_path>')
+def legacy_listing_redirect(listing_path):
+    """Redirect old listing URLs to new structure"""
+    session = Session()
+    try:
+        # Parse the listing path to get name and zipcode
+        if '-' not in listing_path:
+            abort(404)
+            
+        name_part = listing_path.rsplit('-', 1)[0]
+        zipcode = listing_path.rsplit('-', 1)[1]
+        
+        # Find the listing
+        listing = None
+        listings = session.query(PedicureListing).filter(
+            PedicureListing.zip_code == zipcode
+        ).all()
+        
+        for potential_listing in listings:
+            if to_url_slug(potential_listing.name) == name_part:
+                listing = potential_listing
+                break
+                
+        if not listing:
+            # Try with a more flexible approach
+            listing = session.query(PedicureListing).filter(
+                PedicureListing.zip_code == zipcode
+            ).filter(
+                func.lower(func.regexp_replace(PedicureListing.name, '[^a-zA-Z0-9\s]+', ' ', 'g')) == 
+                name_part.replace('-', ' ')
+            ).first()
+            
+        if not listing:
+            abort(404)
+            
+        # Redirect to new URL structure
+        city_slug = city_to_url_slug(listing.city)
+        return redirect(url_for('listing_page', 
+                              state=listing.state.lower(), 
+                              city=city_slug, 
+                              listing_path=listing_path,
+                              _external=True))
+    finally:
+        session.close()
+
 @app.route('/pedicures-in/<state>/<city>/<path:listing_path>')
 def listing_page(state, city, listing_path):
     """Display a single pedicure listing"""
@@ -1128,6 +1205,61 @@ def utility_processor():
          'STATE_NAMES': STATE_NAMES,
          'city_to_url_slug': city_to_url_slug,
          'to_url_slug': to_url_slug                                                                     
-     }                                                                                                     
-                          
+     }
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Handle 404 errors and try to redirect legacy URLs"""
+    path = request.path
+    
+    # Check if this might be a legacy URL we can redirect
+    if path.startswith('/pedicures-in/') and '/' in path[14:]:
+        # Already using new URL structure, just a 404
+        return render_template('404.html'), 404
+        
+    # Try to extract location from various URL patterns
+    location = None
+    if path.startswith('/pedicures-in/'):
+        location = path[14:]
+    elif path.startswith('/map/'):
+        location = path[5:]
+    elif path.startswith('/listing/'):
+        return redirect(url_for('legacy_listing_redirect', listing_path=path[9:]))
+        
+    if location:
+        # Try to find this location in our database
+        session = Session()
+        try:
+            # First check if it's a zipcode
+            if location.isdigit() and len(location) == 5:
+                listing = session.query(PedicureListing).filter(
+                    PedicureListing.zip_code == location
+                ).first()
+                
+                if listing:
+                    city_slug = city_to_url_slug(listing.city)
+                    return redirect(url_for('city_listings', 
+                                          state=listing.state.lower(), 
+                                          city=city_slug,
+                                          _external=True))
+            
+            # Then check if it's a city name
+            location_query = location.replace('-', ' ').lower()
+            listing = session.query(PedicureListing).filter(
+                func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
+                location_query
+            ).first()
+            
+            if listing:
+                city_slug = city_to_url_slug(listing.city)
+                return redirect(url_for('city_listings', 
+                                      state=listing.state.lower(), 
+                                      city=city_slug,
+                                      _external=True))
+                                      
+        finally:
+            session.close()
+    
+    # If we couldn't find a redirect, return 404
+    return render_template('404.html'), 404
 
