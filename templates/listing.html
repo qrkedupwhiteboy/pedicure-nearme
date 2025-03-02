@@ -8,6 +8,14 @@
     <meta name="description" content="Experience pedicure services at {{listing.name}} in {{listing.city}}, {{listing.state}}. View service types, ratings, check availability, and contact in just a few clicks.">
     <link rel="canonical" href="{{ request.url_root }}pedicures-in/{{ listing.state|lower }}/{{ listing.city|lower|replace(' ', '-') }}/{{ listing.get_url_slug() }}" />
     <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B75P8ERD84"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B75P8ERD84');
+</script>
     <script type="application/ld+json">
         {{ schema_data | tojson | safe }}
     </script>

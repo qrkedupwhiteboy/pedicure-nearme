@@ -12,6 +12,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B75P8ERD84"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B75P8ERD84');
+</script>
     <script type="application/ld+json">
         {{ schema_data | tojson | safe }}
     </script>

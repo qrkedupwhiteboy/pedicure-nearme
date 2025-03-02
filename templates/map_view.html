@@ -8,6 +8,14 @@
     <meta name="description" content="View {{ listing_count }} pedicure salons and nail spas in {{ location_display }} on an interactive map. Compare ratings, services, and locations to find the best pedicure near you.">
     <link rel="canonical" href="{{ request.url_root }}map/{{ location_display|lower|replace(' ', '-') }}" />
     <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B75P8ERD84"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B75P8ERD84');
+</script>
     <script type="application/ld+json">
         {{ schema_data | tojson | safe }}
     </script>
