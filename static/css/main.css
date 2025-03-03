@@ -169,6 +169,8 @@ body {
     padding-bottom: 24px;
     text-wrap: pretty;
     line-height: 1.6;
+    text-wrap: pretty; 
+    color:white !important
 }
 
 .location-search {
