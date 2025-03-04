@@ -6,3 +6,4 @@ python-dotenv==1.0.1
 geopy==2.4.1
 folium==0.15.1
 branca==0.7.1
+ipinfo==4.4.2

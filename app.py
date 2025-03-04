@@ -9,6 +9,7 @@ from typing import Dict, Optional, List, Union
 import requests
 import pytz
 import ipaddress
+import ipinfo
 
 # Create Flask app instance
 app = Flask(__name__)
@@ -43,7 +44,7 @@ STATE_NAMES = {
 load_dotenv()
 
 WEBHOOK_URL = os.getenv('email_webhook',)
-GEOAPIFY_API_KEY = os.getenv('GEOAPIFY_API_KEY')
+IPINFO_API_KEY = os.getenv('ipinfo_api_key')
 REVERSE_GEOCODE_KEY = os.getenv('REVERSE_GEOCODE_KEY')
 app = Flask(__name__)
 
@@ -137,64 +138,53 @@ def cities_sitemap(state_code):
     finally:
         session.close()
 
-def get_ipv6_address(request):
+def get_client_ip(request):
     """
-    Retrieve IPv6 address from request headers.
+    Retrieve client IP address from request headers.
     
     Returns:
-    - IPv6 address if present
-    - None if no IPv6 address found
+    - IP address (IPv4 or IPv6)
+    - None if no IP address found
     """
     # Retrieve potential IP addresses from headers
-    potential_ips = request.headers.get('x-forwarded-for', '').split(',') + \
-                    [request.headers.get('x-real-ip', '')]
+    user_ip = request.headers.get('x-forwarded-for') or request.headers.get('x-real-ip')
+    if user_ip and ',' in user_ip:
+        user_ip = user_ip.split(',')[0].strip()
     
-    # Filter and validate IPv6 addresses
-    for ip in potential_ips:
-        ip = ip.strip()
-        try:
-            # Attempt to parse the IP address
-            parsed_ip = ipaddress.ip_address(ip)
-            
-            # Check if it's an IPv6 address
-            if parsed_ip.version == 6:
-                return str(parsed_ip)
-        except ValueError:
-            # Invalid IP address format
-            continue
-    
-    return None
+    return user_ip
 
 @app.route('/get_geoapify_location')
 def get_geoapify_location():
     try:
-        user_ip = get_ipv6_address(request)
-        app.logger.info(f"IPv6 Client IP detected: {user_ip}")
+        # Initialize the ipinfo handler
+        handler = ipinfo.getHandler(IPINFO_API_KEY)
+        
+        # Get client IP
+        user_ip = get_client_ip(request)
+        app.logger.info(f"Client IP detected: {user_ip}")
         
         if not user_ip:
-            app.logger.warning("No IPv6 address found, falling back to any IP")
-            user_ip = request.headers.get('x-forwarded-for') or request.headers.get('x-real-ip')
-            if user_ip and ',' in user_ip:
-                user_ip = user_ip.split(',')[0].strip()
-            app.logger.info(f"Fallback IP detected: {user_ip}")
-            
-        url = f"https://api.geoapify.com/v1/ipinfo?ip={user_ip}&apiKey={GEOAPIFY_API_KEY}"
-        headers = {
-            "Accept": "application/json"
+            app.logger.error("No IP address found in request headers")
+            return jsonify({'error': 'Could not detect IP address'}), 400
+        
+        # Get location details from ipinfo
+        details = handler.getDetails(user_ip)
+        app.logger.info(f"ipinfo response: {details.all}")
+        
+        # Format response to match expected structure in frontend
+        location_data = {
+            'ip': details.ip,
+            'location': {
+                'latitude': float(details.loc.split(',')[0]) if details.loc else None,
+                'longitude': float(details.loc.split(',')[1]) if details.loc else None,
+                'city': details.city,
+                'state': details.region,
+                'country': details.country,
+                'postal': details.postal
+            }
         }
-        response = requests.get(url, headers=headers)
         
-        
-        if not response.ok:
-            app.logger.error(f"Geoapify API error: Status {response.status_code}")
-            return jsonify({'error': 'Could not detect location'}), response.status_code
-            
-        location_data = response.json()
-        if not location_data:
-            app.logger.error("Empty response from Geoapify")
-            return jsonify({'error': 'Empty response from Geoapify'}), 500
-
-        app.logger.info(f"Location data: {location_data}")
+        app.logger.info(f"Formatted location data: {location_data}")
         return jsonify(location_data)
     except Exception as e:
         app.logger.error(f"Geoapify location error: {str(e)}")
@@ -1170,45 +1160,63 @@ def search_locations():
 
 @app.route('/get_zipcode', methods=['GET'])
 def get_zipcode():
-    """Get zipcode from latitude and longitude"""
+    """Get zipcode from latitude and longitude or directly from IP"""
     try:
+        # Check if lat/lon are provided
         lat = request.args.get('lat')
         lon = request.args.get('lon')
         
-        app.logger.info(f"Received coordinates: lat={lat}, lon={lon}")
-        
-        if not lat or not lon:
-            return jsonify({'error': 'Missing latitude or longitude'}), 400
+        # If coordinates are provided, use reverse geocoding
+        if lat and lon:
+            app.logger.info(f"Received coordinates: lat={lat}, lon={lon}")
             
-        # Call reverse geocoding API
-        url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={REVERSE_GEOCODE_KEY}"
-        headers = {
-            "Accept": "application/json"
-        }
-        response = requests.get(url, headers=headers)
-        
-        # Log the actual URL being called for debugging
-        app.logger.debug(f"Calling URL: {response.url}")
-        app.logger.info(f"Geoapify raw response: {response.text}")
-        
-        if not response.ok:
-            app.logger.error(f"Reverse geocoding failed: {response.status_code}")
-            return jsonify({'error': 'Reverse geocoding failed'}), response.status_code
+            # Call reverse geocoding API
+            url = f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&apiKey={REVERSE_GEOCODE_KEY}"
+            headers = {"Accept": "application/json"}
+            response = requests.get(url, headers=headers)
             
-        data = response.json()
-        app.logger.debug(f"Reverse geocoding response: {data}")
-        
-        if data and 'features' in data and len(data['features']) > 0:
-            properties = data['features'][0]['properties']
-            if 'postcode' in properties:
-                app.logger.info(f"Found zipcode: {properties['postcode']}")
-                return jsonify({'zipcode': properties['postcode']})
+            app.logger.debug(f"Calling URL: {response.url}")
+            
+            if not response.ok:
+                app.logger.error(f"Reverse geocoding failed: {response.status_code}")
+                return jsonify({'error': 'Reverse geocoding failed'}), response.status_code
+                
+            data = response.json()
+            
+            if data and 'features' in data and len(data['features']) > 0:
+                properties = data['features'][0]['properties']
+                if 'postcode' in properties:
+                    app.logger.info(f"Found zipcode: {properties['postcode']}")
+                    return jsonify({'zipcode': properties['postcode']})
+                else:
+                    app.logger.warning("No postcode found in properties")
+                    return jsonify({'error': 'No zipcode found'}), 404
             else:
-                app.logger.warning("No postcode found in properties")
-                return jsonify({'error': 'No zipcode found'}), 404
+                app.logger.warning("No features found in response")
+                return jsonify({'error': 'No location data found'}), 404
+        
+        # If no coordinates, try to get zipcode directly from IP
         else:
-            app.logger.warning("No features found in response")
-            return jsonify({'error': 'No location data found'}), 404
+            # Initialize the ipinfo handler
+            handler = ipinfo.getHandler(IPINFO_API_KEY)
+            
+            # Get client IP
+            user_ip = get_client_ip(request)
+            app.logger.info(f"Getting zipcode for IP: {user_ip}")
+            
+            if not user_ip:
+                app.logger.error("No IP address found in request headers")
+                return jsonify({'error': 'Could not detect IP address'}), 400
+            
+            # Get location details from ipinfo
+            details = handler.getDetails(user_ip)
+            
+            if details and details.postal:
+                app.logger.info(f"Found zipcode from IP: {details.postal}")
+                return jsonify({'zipcode': details.postal})
+            else:
+                app.logger.warning("No postal code found in ipinfo response")
+                return jsonify({'error': 'No zipcode found for this IP'}), 404
             
     except Exception as e:
         app.logger.error(f"Zipcode lookup error: {str(e)}")
