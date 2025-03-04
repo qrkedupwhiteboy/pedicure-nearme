@@ -1024,6 +1024,7 @@ def listing_page(state, city, listing_path):
         # Parse hours
         hours_data = parse_hours(listing.hours)
         # Prepare schema data
+        parsed_categories = parse_categories(listing.categories)
         schema_data = {
             "@context": "https://schema.org",
             "@type": "NailSalon",
@@ -1053,7 +1054,15 @@ def listing_page(state, city, listing_path):
                 "@type": "GeoCoordinates",
                 "latitude": json.loads(listing.coordinates).get('latitude') if listing.coordinates else None,
                 "longitude": json.loads(listing.coordinates).get('longitude') if listing.coordinates else None
-            } if listing.coordinates else None
+            } if listing.coordinates else None,
+
+            "keywords": ", ".join(parsed_categories + [
+                "pedicure",
+                f"pedicure in {listing.city}",
+                f"nail salon in {listing.city}",
+                f"nail care in {listing.state}",
+                listing.name
+          ])
         }
 
         return render_template('listing.html', 
