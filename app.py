@@ -8,6 +8,7 @@ import re
 from typing import Dict, Optional, List, Union
 import requests
 import pytz
+import ipaddress
 
 # Create Flask app instance
 app = Flask(__name__)
@@ -136,13 +137,46 @@ def cities_sitemap(state_code):
     finally:
         session.close()
 
+def get_ipv6_address(request):
+    """
+    Retrieve IPv6 address from request headers.
+    
+    Returns:
+    - IPv6 address if present
+    - None if no IPv6 address found
+    """
+    # Retrieve potential IP addresses from headers
+    potential_ips = request.headers.get('x-forwarded-for', '').split(',') + \
+                    [request.headers.get('x-real-ip', '')]
+    
+    # Filter and validate IPv6 addresses
+    for ip in potential_ips:
+        ip = ip.strip()
+        try:
+            # Attempt to parse the IP address
+            parsed_ip = ipaddress.ip_address(ip)
+            
+            # Check if it's an IPv6 address
+            if parsed_ip.version == 6:
+                return str(parsed_ip)
+        except ValueError:
+            # Invalid IP address format
+            continue
+    
+    return None
+
 @app.route('/get_geoapify_location')
 def get_geoapify_location():
     try:
-        user_ip = request.headers.get('x-forwarded-for') or request.headers.get('x-real-ip') 
-        if user_ip and ',' in user_ip:
-            user_ip = user_ip.split(',')[0].strip()
-        app.logger.info(f"Client IP detected: {user_ip}")
+        user_ip = get_ipv6_address(request)
+        app.logger.info(f"IPv6 Client IP detected: {user_ip}")
+        
+        if not user_ip:
+            app.logger.warning("No IPv6 address found, falling back to any IP")
+            user_ip = request.headers.get('x-forwarded-for') or request.headers.get('x-real-ip')
+            if user_ip and ',' in user_ip:
+                user_ip = user_ip.split(',')[0].strip()
+            app.logger.info(f"Fallback IP detected: {user_ip}")
             
         url = f"https://api.geoapify.com/v1/ipinfo?ip={user_ip}&apiKey={GEOAPIFY_API_KEY}"
         headers = {
