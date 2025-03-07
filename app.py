@@ -991,7 +991,7 @@ def listing_page(state, city, listing_path):
             listing = session.query(PedicureListing).filter(
                 PedicureListing.zip_code == zipcode
             ).filter(
-                func.lower(func.regexp_replace(PedicureListing.name, '[^a-zA-Z0-9\s]+', ' ', 'g')) == 
+                func.lower(func.regexp_replace(PedicureListing.name, '[^a-zA-Z0-9[:space:]]+', ' ', 'g')) == 
                 name_part.replace('-', ' ')
             ).first()
         if not listing:
