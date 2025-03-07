@@ -1025,44 +1025,145 @@ def listing_page(state, city, listing_path):
         hours_data = parse_hours(listing.hours)
         # Prepare schema data
         parsed_categories = parse_categories(listing.categories)
+        
+        # Base URL for breadcrumbs
+        base_url = request.url_root.rstrip('/')
+        
+        # Create schema data with multiple types
         schema_data = {
             "@context": "https://schema.org",
-            "@type": "NailSalon",
-            "name": listing.name,
-            "address": {
-                "@type": "PostalAddress",
-                "streetAddress": listing.address,
-                "addressLocality": listing.city,
-                "addressRegion": listing.state,
-                "postalCode": listing.zip_code,
-                "addressCountry": "US"
-            },
-            "telephone": listing.phone,
-            "url": listing.website if listing.website else request.url,
-            "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": str(listing.rating),
-                "reviewCount": str(listing.reviews),
-            },
-            "openingHours": [
-                f"{day} {hours}" for day, hours in hours_data.items() 
-                if hours not in ["Not specified", "Not Found", "Error parsing hours"]
-            ],
-            "image": listing.featured_image[0] if listing.featured_image else None,
-            "priceRange": "$$",
-            "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": json.loads(listing.coordinates).get('latitude') if listing.coordinates else None,
-                "longitude": json.loads(listing.coordinates).get('longitude') if listing.coordinates else None
-            } if listing.coordinates else None,
-
-            "keywords": ", ".join(parsed_categories + [
-                "pedicure",
-                f"pedicure in {listing.city}",
-                f"nail salon in {listing.city}",
-                f"nail care in {listing.state}",
-                listing.name
-          ])
+            "@graph": [
+                # 1. LocalBusiness/NailSalon
+                {
+                    "@type": ["LocalBusiness", "NailSalon"],
+                    "@id": request.url + "#business",
+                    "name": listing.name,
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": listing.address,
+                        "addressLocality": listing.city,
+                        "addressRegion": listing.state,
+                        "postalCode": listing.zip_code,
+                        "addressCountry": "US"
+                    },
+                    "telephone": listing.phone,
+                    "url": listing.website if listing.website else request.url,
+                    "aggregateRating": {
+                        "@type": "AggregateRating",
+                        "ratingValue": str(listing.rating),
+                        "reviewCount": str(listing.reviews),
+                    } if listing.rating and listing.reviews else None,
+                    "openingHours": [
+                        f"{day} {hours}" for day, hours in hours_data.items() 
+                        if hours not in ["Not specified", "Not Found", "Error parsing hours"]
+                    ],
+                    "image": listing.featured_image[0] if listing.featured_image else None,
+                    "priceRange": "$$",
+                    "geo": {
+                        "@type": "GeoCoordinates",
+                        "latitude": json.loads(listing.coordinates).get('latitude') if listing.coordinates else None,
+                        "longitude": json.loads(listing.coordinates).get('longitude') if listing.coordinates else None
+                    } if listing.coordinates else None,
+                    "keywords": ", ".join(parsed_categories + [
+                        "pedicure",
+                        f"pedicure in {listing.city}",
+                        f"nail salon in {listing.city}",
+                        f"nail care in {listing.state}",
+                        listing.name
+                    ]),
+                    "mainEntityOfPage": {
+                        "@type": "WebPage",
+                        "@id": request.url
+                    },
+                    "sameAs": listing.website if listing.website else None
+                },
+                
+                # 2. Organization
+                {
+                    "@type": "Organization",
+                    "@id": request.url + "#organization",
+                    "name": listing.name,
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": listing.address,
+                        "addressLocality": listing.city,
+                        "addressRegion": listing.state,
+                        "postalCode": listing.zip_code,
+                        "addressCountry": "US"
+                    },
+                    "contactPoint": {
+                        "@type": "ContactPoint",
+                        "telephone": listing.phone,
+                        "contactType": "customer service"
+                    } if listing.phone else None,
+                    "url": listing.website if listing.website else request.url
+                },
+                
+                # 3. BreadcrumbList
+                {
+                    "@type": "BreadcrumbList",
+                    "@id": request.url + "#breadcrumb",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": base_url
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": STATE_NAMES.get(listing.state, listing.state),
+                            "item": f"{base_url}/pedicures-in/{listing.state.lower()}"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 3,
+                            "name": listing.city,
+                            "item": f"{base_url}/pedicures-in/{listing.state.lower()}/{city_to_url_slug(listing.city)}"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 4,
+                            "name": listing.name,
+                            "item": request.url
+                        }
+                    ]
+                },
+                
+                # 4. WebPage
+                {
+                    "@type": "WebPage",
+                    "@id": request.url,
+                    "url": request.url,
+                    "name": f"{listing.name} - Pedicure in {listing.city}, {listing.state}",
+                    "description": f"Get details about {listing.name} in {listing.city}, {listing.state}. View ratings, hours, services, and contact information for this pedicure salon.",
+                    "breadcrumb": {"@id": request.url + "#breadcrumb"},
+                    "primaryImageOfPage": {
+                        "@type": "ImageObject",
+                        "url": listing.featured_image[0] if listing.featured_image else None
+                    } if listing.featured_image else None,
+                    "mainEntity": {"@id": request.url + "#business"},
+                    "isPartOf": {"@id": request.url + "#website"}
+                },
+                
+                # 5. WebSite
+                {
+                    "@type": "WebSite",
+                    "@id": request.url + "#website",
+                    "url": base_url,
+                    "name": "LocalPedicures",
+                    "description": "Find the best pedicure services near you",
+                    "potentialAction": {
+                        "@type": "SearchAction",
+                        "target": {
+                            "@type": "EntryPoint",
+                            "urlTemplate": f"{base_url}/?q={{search_term_string}}"
+                        },
+                        "query-input": "required name=search_term_string"
+                    }
+                }
+            ]
         }
 
         return render_template('listing.html', 
