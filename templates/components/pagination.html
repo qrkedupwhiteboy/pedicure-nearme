@@ -1,0 +1,49 @@
+<div class="pagination-container">
+    {% if pagination.total_pages > 1 %}
+    <div class="pagination">
+        {% if pagination.has_prev %}
+        <a href="{{ url_for(request.endpoint, **dict(request.view_args, page=pagination.prev_page)) }}" class="pagination-link prev">&laquo; Previous</a>
+        {% else %}
+        <span class="pagination-link disabled">&laquo; Previous</span>
+        {% endif %}
+        
+        {% set window_size = 5 %}
+        {% set window_start = [1, pagination.page - (window_size // 2)]|max %}
+        {% set window_end = [window_start + window_size - 1, pagination.total_pages]|min %}
+        {% set window_start = [window_end - window_size + 1, 1]|max %}
+        
+        {% if window_start > 1 %}
+        <a href="{{ url_for(request.endpoint, **dict(request.view_args, page=1)) }}" class="pagination-link">1</a>
+        {% if window_start > 2 %}
+        <span class="pagination-ellipsis">&hellip;</span>
+        {% endif %}
+        {% endif %}
+        
+        {% for page_num in range(window_start, window_end + 1) %}
+        {% if page_num == pagination.page %}
+        <span class="pagination-link current">{{ page_num }}</span>
+        {% else %}
+        <a href="{{ url_for(request.endpoint, **dict(request.view_args, page=page_num)) }}" class="pagination-link">{{ page_num }}</a>
+        {% endif %}
+        {% endfor %}
+        
+        {% if window_end < pagination.total_pages %}
+        {% if window_end < pagination.total_pages - 1 %}
+        <span class="pagination-ellipsis">&hellip;</span>
+        {% endif %}
+        <a href="{{ url_for(request.endpoint, **dict(request.view_args, page=pagination.total_pages)) }}" class="pagination-link">{{ pagination.total_pages }}</a>
+        {% endif %}
+        
+        {% if pagination.has_next %}
+        <a href="{{ url_for(request.endpoint, **dict(request.view_args, page=pagination.next_page)) }}" class="pagination-link next">Next &raquo;</a>
+        {% else %}
+        <span class="pagination-link disabled">Next &raquo;</span>
+        {% endif %}
+    </div>
+    <div class="pagination-info">
+        Showing {{ (pagination.page - 1) * pagination.per_page + 1 }} - 
+        {{ [pagination.page * pagination.per_page, pagination.total_items]|min }} 
+        of {{ pagination.total_items }} items
+    </div>
+    {% endif %}
+</div>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort, jsonify, Response, url_for, redirect
+from flask import Flask, render_template, request, abort, jsonify, Response, url_for, redirect, current_app
 from models import Session, PedicureListing
 from sqlalchemy import text, func
 import os
@@ -490,7 +490,19 @@ def state_listings(state):
         if not state_name:
             abort(404)
             
-        # Query cities and their listing counts for the state
+        # Get pagination parameters
+        page = request.args.get('page', 1, type=int)
+        per_page = 50  # Number of cities per page
+            
+        # Query total count of cities for the state
+        total_cities = session.query(
+            func.count(func.distinct(PedicureListing.city))
+        ).filter(
+            func.upper(PedicureListing.state) == state.upper(),
+            PedicureListing.city.isnot(None)
+        ).scalar()
+        
+        # Query cities and their listing counts for the state with pagination
         cities = session.query(
             PedicureListing.city,
             func.count(PedicureListing.id).label('listing_count')
@@ -501,11 +513,16 @@ def state_listings(state):
             PedicureListing.city
         ).order_by(
             PedicureListing.city
-        ).all()
+        ).offset((page - 1) * per_page).limit(per_page).all()
         
-        if not cities:
+        if not cities and page == 1:
             abort(404)
             
+        # Calculate pagination metadata
+        total_pages = (total_cities + per_page - 1) // per_page
+        has_prev = page > 1
+        has_next = page < total_pages
+        
         # Format city data
         city_data = [
             {'city': city[0], 'listing_count': city[1]}
@@ -551,10 +568,23 @@ def state_listings(state):
             }
         }
 
+        # Pagination metadata for template
+        pagination = {
+            'page': page,
+            'per_page': per_page,
+            'total_pages': total_pages,
+            'total_items': total_cities,
+            'has_prev': has_prev,
+            'has_next': has_next,
+            'prev_page': page - 1 if has_prev else None,
+            'next_page': page + 1 if has_next else None
+        }
+        
         return render_template('state_listings.html',
                              state_code=state.upper(),
                              state_name=state_name,
                              cities=city_data,
+                             pagination=pagination,
                              schema_data=schema_data)
     finally:
         session.close()
@@ -567,10 +597,22 @@ def city_listings(state, city):
         # Convert state to uppercase for consistency
         state = state.upper()
         
+        # Get pagination parameters
+        page = request.args.get('page', 1, type=int)
+        per_page = 20  # Number of listings per page
+        
         # First try exact match with the URL-formatted city name
         url_formatted_city = city.replace('-', ' ')
         
-        # Query listings for the city and state
+        # Get total count of listings for pagination
+        total_listings = session.query(func.count(PedicureListing.id)).filter(
+            func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
+            func.lower(url_formatted_city),
+            func.upper(PedicureListing.state) == state,
+            PedicureListing.coordinates.isnot(None)
+        ).scalar()
+        
+        # Query listings for the city and state with pagination
         listings = session.query(PedicureListing).filter(
             func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
             func.lower(url_formatted_city),
@@ -578,10 +620,15 @@ def city_listings(state, city):
             PedicureListing.coordinates.isnot(None)  # Ensure we have coordinates
         ).order_by(
             PedicureListing.rating.desc()
-        ).all()
+        ).offset((page - 1) * per_page).limit(per_page).all()
         
-        if not listings:
+        if not listings and page == 1:
             abort(404)
+            
+        # Calculate pagination metadata
+        total_pages = (total_listings + per_page - 1) // per_page
+        has_prev = page > 1
+        has_next = page < total_pages
         
         # Get the actual city name from the first listing for display
         city_name = listings[0].city if listings else city.replace('-', ' ').title()
@@ -638,10 +685,23 @@ def city_listings(state, city):
             }
         }
 
+        # Pagination metadata for template
+        pagination = {
+            'page': page,
+            'per_page': per_page,
+            'total_pages': total_pages,
+            'total_items': total_listings,
+            'has_prev': has_prev,
+            'has_next': has_next,
+            'prev_page': page - 1 if has_prev else None,
+            'next_page': page + 1 if has_next else None
+        }
+        
         return render_template('city_listings.html',
                              city=city_name,
                              state=state,
                              listings=listings,
+                             pagination=pagination,
                              schema_data=schema_data)
     finally:
         session.close()
@@ -997,14 +1057,30 @@ def listing_page(state, city, listing_path):
         if not listing:
             abort(404)
             
-        # Get nearby listings in same zipcode, ordered by rating
+        # Get pagination parameters for nearby listings
+        page = request.args.get('page', 1, type=int)
+        per_page = 5  # Number of nearby listings per page
+        
+        # Get total count of nearby listings
+        total_nearby = session.query(func.count(PedicureListing.id)).filter(
+            PedicureListing.zip_code == listing.zip_code,
+            PedicureListing.id != listing.id,
+            PedicureListing.coordinates.isnot(None)
+        ).scalar()
+        
+        # Get nearby listings in same zipcode, ordered by rating with pagination
         nearby_listings = session.query(PedicureListing).filter(
             PedicureListing.zip_code == listing.zip_code,
-            PedicureListing.id != listing.id,  # Use listing.id instead of listing_id
+            PedicureListing.id != listing.id,
             PedicureListing.coordinates.isnot(None)
         ).order_by(
             PedicureListing.rating.desc()
-        ).limit(2).all()
+        ).offset((page - 1) * per_page).limit(per_page).all()
+        
+        # Calculate pagination metadata
+        total_pages = (total_nearby + per_page - 1) // per_page
+        has_prev = page > 1
+        has_next = page < total_pages
         
         # Get cities in the same state that have listings
         cities_in_state = session.query(
@@ -1166,6 +1242,18 @@ def listing_page(state, city, listing_path):
             ]
         }
 
+        # Pagination metadata for template
+        pagination = {
+            'page': page,
+            'per_page': per_page,
+            'total_pages': total_pages,
+            'total_items': total_nearby,
+            'has_prev': has_prev,
+            'has_next': has_next,
+            'prev_page': page - 1 if has_prev else None,
+            'next_page': page + 1 if has_next else None
+        }
+        
         return render_template('listing.html', 
                              listing=listing,
                              nearby_listings=nearby_listings,
@@ -1174,6 +1262,7 @@ def listing_page(state, city, listing_path):
                              hours_data=hours_data,
                              parse_hours=parse_hours,
                              parse_categories=parse_categories,
+                             pagination=pagination,
                              schema_data=schema_data)
     finally:
         session.close()
