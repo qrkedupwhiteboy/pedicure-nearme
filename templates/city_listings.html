@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedicures in {{ city }}, {{STATE_NAMES [state]}} | Best Pedicures & Manicures</title>
-    <meta name="description" content="Find top-rated pedicures in {{city}}, {{state}}. To save you time, we have compiled a list of the best pedicures in {{city}}, {{state}} to ensure you get the best beauty care."/>
+    <title>Pedicures and Nail Salon in {{ city }}, {{STATE_NAMES [state]}} | Best Pedicures & Manicures</title>
+    <meta name="description" content="Find top-rated nail services in {{city}}, {{state}}. To save you time, we have compiled a list of the best pedicures in {{city}}, {{state}} to ensure you get the best beauty care."/>
     <link rel="canonical" href="{{ request.url_root }}pedicures-in/{{ state|lower }}/{{ city|lower|replace(' ', '-') }}" />
     <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -36,7 +36,7 @@
           </div>    
         <div class="listings-container">
             <div class="filters-sidebar">
-                <p class="body-xl">Filters</p>
+                <p class="body-xl">Filter Salon Listings</p>
                 <div class="filter-section">
                     <p class="body-md">Sort By</p>
                     <select id="sort-select">
@@ -68,8 +68,8 @@
             <div class="listings-content">
                 <div class="city-listings-header">
                     <h1 class="h1">Pedicures in {{ city }}, {{ STATE_NAMES[state] }}</h1>
-                    <p class="results-count">{{ listings|length }} pedicure locations found</p>
-                    <p class="body-xl">Looking for a pedicure near you in {{ city }}, {{ STATE_NAMES[state] }}? Our comprehensive directory connects you with the best pedicure places in your area based on user ratings, services offered, availability and more. Each listing shows detailed information about available services - whether you're looking for basic pedicures or specialized treatments like zero-gravity pedicures. Browse top-rated nail salons for men and women in {{ city }}, {{ STATE_NAMES[state] }} and book your appointment today at the best place for a professional pedicure just minutes from you.</p>
+                    <p class="results-count">{{ listings|length }} pedicure and salon locations found</p>
+                    <p class="body-xl">Looking for open salons near you in {{ city }}, {{ STATE_NAMES[state] }}? Our comprehensive directory connects you with the best pedicure & nail places in your area based on user ratings, services offered, availability and more. Each listing shows detailed information about available services - whether you're looking for basic pedicures or specialized nail treatments. Browse top-rated nail salons for men and women in {{ city }}, {{ STATE_NAMES[state] }} and book your appointment today at the best place for a professional pedicure just minutes from you.</p>
                 </div> 
                 
                 <div id="listings-grid">

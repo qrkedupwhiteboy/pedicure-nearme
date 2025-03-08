@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ listing.name }} | Pedicures in {{listing.city}} </title>
-    <meta name="description" content="Experience pedicure services at {{listing.name}} in {{listing.city}}, {{listing.state}}. View service types, ratings, check availability, and contact in just a few clicks.">
+    <title>{{ listing.name }} | Pedicures & Nail Salons in {{listing.city}} </title>
+    <meta name="description" content="Explore pedicure and nail services at {{listing.name}} in {{listing.city}}, {{listing.state}}. View service types, ratings, check availability, and contact in just a few clicks.">
     <link rel="canonical" href="{{ request.url_root }}pedicures-in/{{ listing.state|lower }}/{{ listing.city|lower|replace(' ', '-') }}/{{ listing.get_url_slug() }}" />
     <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B75P8ERD84"></script>
@@ -154,12 +154,12 @@
 
         <div class="general-info">
             <section class="listing-info-section">
-                <h2 class="h2">About Pedicure Services</h2>
-                <ul class="text">Before booking a pedicure at any salon, here's what you should know to ensure the best experience.</ul>
+                <h2 class="h2">About Pedicure & Nail Salon Services</h2>
+                <ul class="text">Before booking any type of nail treatment at a salon, here's what you should know to ensure the best experience.</ul>
             </section>
     
             <section class="listing-info-section">
-                <h3 class="h3">Common Service Types</h3>
+                <h3 class="h3">Common Nail Service Types</h3>
                 <p class="text">Most salons offer these basic pedicure categories:</p>
                 <p class="text">
                     Standard Pedicure: Includes nail trimming, shaping, cuticle care, light foot massage, and polish<br>
@@ -169,7 +169,7 @@
             </section>
     
             <section class="listing-info-section">
-                <h3 class="h3">What to Ask Before Booking</h3>
+                <h3 class="h3">What to Ask Before Booking a Pedicure</h3>
                 <p class="text">
                     Available appointment times and walk-in policies<br>
                     Price range for different service levels<br>
@@ -208,7 +208,7 @@
             </section>
     
             <section class="listing-info-section">
-                <h3 class="h3">Typical Service Duration</h3>
+                <h3 class="h3">Typical Salon Service Duration</h3>
                 <p class="text">
                     Basic pedicures: 30-45 minutes<br>
                     Spa pedicures: 45-60 minutes<br>
