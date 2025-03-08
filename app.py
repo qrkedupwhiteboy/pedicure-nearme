@@ -427,8 +427,8 @@ def map_view(state, location):
         schema_data = {
             "@context": "https://schema.org",
             "@type": "SearchResultsPage",
-            "name": f"{len(listings)} Pedicure Places in {location_display}",
-            "description": f"View {len(listings)} pedicure salons and nail spas in {location_display} on an interactive map. Compare ratings, services, and locations to find the best pedicure near you.",
+            "name": f"{len(listings)} Nail Salons and Pedicures in {location_display} - Map View",
+            "description": f"View {len(listings)} nail salons and pedicures in {location_display} on an interactive map. Compare ratings, services, and locations to find the best salon open near you.",
             "about": {
                 "@type": "Service",
                 "serviceType": "Pedicure"
@@ -516,8 +516,8 @@ def state_listings(state):
         schema_data = {
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            "name": f"Cities with Pedicures in {state_name}",
-            "description": f"Find pedicure services across {len(cities)} cities in {state_name}. Browse pedicures by city with ratings, hours, and contact information.",
+            "name": f"Find Top Rated Nail Salons & Pedicures in {state_name} Open Today",
+            "description": f"Find the best pedicures in {state_name}. Discover top-rated nail salons by city with real customer ratings, current hours, and easy booking for all pedicure types.",
             "about": {
                 "@type": "Service",
                 "serviceType": "Pedicure",
@@ -1153,7 +1153,7 @@ def listing_page(state, city, listing_path):
                     "@id": request.url + "#website",
                     "url": base_url,
                     "name": "LocalPedicures",
-                    "description": "Find the best pedicure services near you",
+                    "description": "Find top rated nail salons and pedicures near you",
                     "potentialAction": {
                         "@type": "SearchAction",
                         "target": {

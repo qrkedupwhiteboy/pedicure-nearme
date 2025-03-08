@@ -527,7 +527,7 @@
         <div class="pedicures-near-container">
             <!-- Nearby Pedicures Section -->
             <div class="nearby-section">
-                <h3 class="nearby-heading">Other Pedicures Near You</h3>
+                <h3 class="nearby-heading">Other Salons and Pedicures Near You</h3>
                 <div class="nearby-cards">
                     {% for nearby in nearby_listings %}
                     <div class="nearby-card">
@@ -546,7 +546,7 @@
 
             <!-- State Cities Section -->
             <div class="state-cities">
-                <h3 class="state-cities-heading">Explore Pedicures in Other {{ STATE_NAMES[listing.state] }}     Cities</h3>
+                <h3 class="state-cities-heading">Explore Nail Salons and Pedicures in Other {{ STATE_NAMES[listing.state] }}     Cities</h3>
                 <div class="cities-grid">
                     {% for city in cities_in_state %}
                         <a href="{{ url_for('city_listings', state=state_code_lower, city=city.lower().replace(' ', '-')) }}" 

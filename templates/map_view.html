@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ listing_count }} Pedicure Places in {{ location_display }} - Map View</title>
-    <meta name="description" content="View {{ listing_count }} pedicure salons and nail spas in {{ location_display }} on an interactive map. Compare ratings, services, and locations to find the best pedicure near you.">
+    <title>{{ listing_count }} Nail Salons and Pedicures in {{ location_display }} - Map View</title>
+    <meta name="description" content="View {{ listing_count }} nail salons and pedicures in {{ location_display }} on an interactive map. Compare ratings, services, and locations to find the best salon open near you.">
     <link rel="canonical" href="{{ request.url_root }}map/{{ location_display|lower|replace(' ', '-') }}" />
     <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B75P8ERD84"></script>
@@ -194,7 +194,7 @@
 <body>
     {% include 'components/header.html' %}
     <div class="page-container">
-        <h1 class="page-title">{{ listing_count }} Pedicure Places in {{ location_display }}</h1>
+        <h1 class="page-title">{{ listing_count }} Nail Salon and Pedicure Locations in {{ location_display }}</h1>
         
         <div class="content-container">
             <div id="map-container">

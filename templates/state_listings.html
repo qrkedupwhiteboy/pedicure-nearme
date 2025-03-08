@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Locations With Salons & Pedicures in {{ state_name }} | Local Pedicures</title>
+    <title>Find Top Rated Nail Salons & Pedicures in {{ state_name }} Open Today</title>
     <meta name="description" content="Find the best pedicures in {{ state_name }}. Discover top-rated nail salons by city with real customer ratings, current hours, and easy booking for all pedicure types.">
     <link rel="canonical" href="{{ request.url_root }}pedicures-in/{{ state_code|lower }}" />
     <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
@@ -60,7 +60,7 @@
                          data-listings="{{ city.listing_count }}">
                         <div class="city-info">
                             <h2><a href="{{ url_for('city_listings', state=state_code|lower, city=city_to_url_slug(city.city)) }}" class="nav-large">{{ city.city }}</a></h2>
-                            <p class="body-md">{{ city.listing_count }} pedicure locations</p>
+                            <p class="body-md">{{ city.listing_count }} Nail Salons and Pedicures Found</p>
                         </div>
                     </div>
                     {% endfor %}
