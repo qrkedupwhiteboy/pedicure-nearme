@@ -19,6 +19,94 @@
     <script type="application/ld+json">
         {{ schema_data | tojson | safe }}
     </script>
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How often should you get a pedicure?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Generally, it's recommended to get a pedicure every 4-6 weeks. However, this can vary based on how quickly your nails grow and your lifestyle."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Should a diabetic get a pedicure?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Diabetics can get pedicures but should consult their healthcare provider first and choose a salon experienced with diabetic foot care. Medical pedicures are often recommended."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the difference between manicure and pedicure?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A manicure focuses on hand and fingernail care, while a pedicure treats feet, toenails, and often includes foot massage and exfoliation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How long does a pedicure take?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A standard pedicure typically takes 45-60 minutes. Luxury or spa pedicures may take 60-90 minutes."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How long after pedicure can I put shoes on?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Wait at least 2 hours for regular polish to fully dry. For gel pedicures, you can wear closed shoes immediately after UV curing."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can a pedicure induce labor?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "While foot massage might stimulate pressure points linked to labor, there's no scientific evidence that pedicures can induce labor."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can you get a pedicure while pregnant?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, pedicures are generally safe during pregnancy. Choose well-ventilated salons and inform your technician about your pregnancy."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why do my toes itch after a pedicure?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Itching could indicate an allergic reaction to products used or a minor skin irritation. If persistent, consult a healthcare provider."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a collagen pedicure?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A collagen pedicure includes special treatments and masks containing collagen to help hydrate and rejuvenate foot skin."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is it safe to get a pedicure after surgery?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Wait until your doctor clears you for pedicures post-surgery. This typically ranges from 2-6 weeks depending on the type of surgery."
+              }
+            }
+          ]
+        }
+        </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
@@ -133,7 +221,7 @@
 
         <div class="services" data-layer="services">
             <h2 class="h2" data-layer="heading">
-              Other Services Offered by This Location
+              Other Services Offered by {{listing.name}}
             </h2>
             
             <div class="grid" data-layer="grid">
@@ -155,7 +243,7 @@
         <div class="general-info">
             <section class="listing-info-section">
                 <h2 class="h2">About Pedicure & Nail Salon Services</h2>
-                <ul class="text">Before booking any type of nail treatment at a salon, here's what you should know to ensure the best experience.</ul>
+                <ul class="text">Before booking nail treatment at {{listing.name}}, here's what you should know to ensure the best experience.</ul>
             </section>
     
             <section class="listing-info-section">
