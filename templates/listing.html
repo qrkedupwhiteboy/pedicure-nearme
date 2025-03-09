@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ listing.name }} | Pedicures & Nail Salons in {{listing.city}} </title>
-    <meta name="description" content="Explore pedicure and nail services at {{listing.name}} in {{listing.city}}, {{listing.state}}. View service types, ratings, check availability, and contact in just a few clicks.">
+    <title> Ratings and Info for {{ listing.name }} in {{listing.city}} | LocalPedicures </title>
+    {% set categories = parse_categories(listing.categories) %}
+    {% set top_services = categories[:3]|join(', ') %}
+    {% set unique_feature = 'professional service' %}
+    
+    {% if listing.rating and listing.rating|float >= 4.5 %}
+        {% set unique_feature = 'top-rated service' %}
+    {% elif listing.review_count and listing.review_count|int > 20 %}
+        {% set unique_feature = 'great customer reviews' %}
+    {% endif %}
+    
+    {% set meta_description = listing.name ~ ' offers top-rated ' ~ top_services ~ ' services in ' ~ listing.city ~ ', ' ~ listing.state ~ '. View ratings, check if open today, and contact in just a few clicks.' %}
+
+    <meta name="description" content="{{ meta_description }}">
     <link rel="canonical" href="{{ request.url_root }}pedicures-in/{{ listing.state|lower }}/{{ listing.city|lower|replace(' ', '-') }}/{{ listing.get_url_slug() }}" />
     <link rel="sitemap" type="application/xml" href="{{ request.url_root }}sitemap.xml" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B75P8ERD84"></script>
@@ -187,7 +199,22 @@
 
         <div class="about">
             <h2 class="h2">About</h2>
-            <div class="text">"{{listing.description}}"</div>
+            <div class="text">
+                {% set categories = parse_categories(listing.categories) %}
+    {% set top_services = categories[:3]|join(", ") %}
+    {% set unique_feature = "professional service" %}
+    
+    {% if listing.rating and listing.rating|float >= 4.5 %}
+        {% set unique_feature = "top-rated service" %}
+    {% elif listing.review_count and listing.review_count|int > 20 %}
+        {% set unique_feature = "great customer reviews" %}
+    {% endif %}
+    
+    {{listing.name}} in {{listing.city}}, {{listing.state}} offers top-rated {{ top_services }} services. View hours, ratings, and book appointments. Here's what they have to say:<br>
+    <br>
+    "{{listing.description}}"
+    <br>
+            </div>
             <div class="hours-container">
                 <div class="hours-header">
                     <h2 class="h2">Hours of Operation</h2>
@@ -221,7 +248,7 @@
 
         <div class="services" data-layer="services">
             <h2 class="h2" data-layer="heading">
-              Other Services Offered by {{listing.name}}
+             Services Offered by {{listing.name}}
             </h2>
             
             <div class="grid" data-layer="grid">
@@ -243,11 +270,13 @@
         <div class="general-info">
             <section class="listing-info-section">
                 <h2 class="h2">About Pedicure & Nail Salon Services</h2>
-                <ul class="text">Before booking nail treatment at {{listing.name}}, here's what you should know to ensure the best experience.</ul>
+                <ul class="text"> Looking for nail spas or pedicures in {{listing.city}}? {{listing.name}} offers professional {{parse_categories(listing.categories)[:3]|join(', ')}} services with experienced technicians.
+                    
+                    Before booking nail treatment at {{listing.name}}, here's what you should know to ensure the best experience.</ul>
             </section>
     
             <section class="listing-info-section">
-                <h3 class="h3">Common Nail Service Types</h3>
+                <h3 class="h3">Popular Nail Services at {{listing.name}}</h3>
                 <p class="text">Most salons offer these basic pedicure categories:</p>
                 <p class="text">
                     Standard Pedicure: Includes nail trimming, shaping, cuticle care, light foot massage, and polish<br>
@@ -257,9 +286,9 @@
             </section>
     
             <section class="listing-info-section">
-                <h3 class="h3">What to Ask Before Booking a Pedicure</h3>
+                <h3 class="h3">What to Ask {{listing.name}} Before Booking</h3>
                 <p class="text">
-                    Available appointment times and walk-in policies<br>
+                    Ask their available appointment times and walk-in policies<br>
                     Price range for different service levels<br>
                     Group booking options and policies<br>
                     Cancellation policy<br>
@@ -284,7 +313,7 @@
     
             <section class="listing-info-section">
                 <h3 class="h3">Standard Preparation Guidelines</h3>
-                <p class="text">For optimal service results:</p>
+                <p class="text">For optimal results at {{listing.name}}:</p>
                 <p class="text">
                     Arrive with clean feet<br>
                     Remove existing nail polish<br>
@@ -325,7 +354,7 @@
                     Special accommodations may be available upon request<br>
                     Some services may have age restrictions
                 </p>
-                <p class="text">Remember to read recent reviews and contact the salon directly for their specific policies, prices, and available services.</p>
+                <p class="text">Remember to read recent ratings, and contact {{listing.name}} directly for their specific policies, prices, and available services.</p>
             </section>
         </div>
 

@@ -926,7 +926,10 @@ def parse_categories(categories: Optional[Union[List[str], str]]) -> List[str]:
     return [str(cat) for cat in categories if cat]
 
 
+
 from datetime import datetime
+
+
 
 def parse_hours(hours_json: str) -> List[Dict[str, Union[str, List[str]]]]:
     """Parse hours from JSON text into a dictionary of day -> hours string"""
@@ -1106,6 +1109,7 @@ def listing_page(state, city, listing_path):
         base_url = request.url_root.rstrip('/')
         
         # Create schema data with multiple types
+        parsed_categories_string = ", ".join(parsed_categories)
         schema_data = {
             "@context": "https://schema.org",
             "@graph": [
@@ -1144,6 +1148,8 @@ def listing_page(state, city, listing_path):
                         "pedicure",
                         f"pedicure in {listing.city}",
                         f"nail salon in {listing.city}",
+                        f"nail spa in {listing.city}",
+                        f"beauty salon in {listing.city}",
                         f"nail care in {listing.state}",
                         listing.name
                     ]),
@@ -1212,8 +1218,8 @@ def listing_page(state, city, listing_path):
                     "@type": "WebPage",
                     "@id": request.url,
                     "url": request.url,
-                    "name": f"{listing.name} - Pedicure in {listing.city}, {listing.state}",
-                    "description": f"Get details about {listing.name} in {listing.city}, {listing.state}. View ratings, hours, services, and contact information for this pedicure salon.",
+                    "name": f"Ratings and Info for {listing.name} in {listing.city} | LocalPedicures",
+                    "description": f"{listing.name} offers top-rated {parsed_categories_string} services in {listing.city}, {listing.state}. View ratings, check if open today, and contact in just a few clicks.",
                     "breadcrumb": {"@id": request.url + "#breadcrumb"},
                     "primaryImageOfPage": {
                         "@type": "ImageObject",
