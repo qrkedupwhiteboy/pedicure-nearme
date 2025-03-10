@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Ratings and Info for {{ listing.name }} in {{listing.city}} | LocalPedicures </title>
+    <title> Ratings and Info for {{ listing.name }} in {{listing.city}} </title>
     {% set categories = parse_categories(listing.categories) %}
-    {% set top_services = categories[:3]|join(', ') %}
+    {% set top_services = categories[:5]|join(', ') %}
     {% set unique_feature = 'professional service' %}
     
     {% if listing.rating and listing.rating|float >= 4.5 %}
@@ -183,7 +183,7 @@
                 </a>
                   <div class="website">
                     <i class="iconoir-internet" style="color: #1f1f1f;"></i> 
-                    <a href="{{listing.website}}" class="nav-regular"> <span> View Website</span> </a>
+                    <a href="{{listing.website}}"  class="nav-regular"> <span> View Website</span> </a>
                   </div>
                 </div>
               </div>
@@ -194,14 +194,14 @@
     <div class="main-wrapper">
         <div class="listing-content">
           <div class="gallery">
-            <img src="{{listing.featured_image}}"  class="main-image"></img>
+            <img src="{{listing.featured_image}}"  class="main-image" alt="{{listing.name}} Main Image"></img>
                 </div>
 
         <div class="about">
             <h2 class="h2">About</h2>
             <div class="text">
                 {% set categories = parse_categories(listing.categories) %}
-    {% set top_services = categories[:3]|join(", ") %}
+    {% set top_services = categories[:5]|join(", ") %}
     {% set unique_feature = "professional service" %}
     
     {% if listing.rating and listing.rating|float >= 4.5 %}

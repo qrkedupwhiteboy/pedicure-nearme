@@ -81,7 +81,7 @@
                          data-lon="{{ listing.longitude }}">
                         <div class="listing-image">
                             {% if listing.featured_image %}
-                            <img src="{{ listing.featured_image }}" alt="{{ listing.name }}">
+                            <img src="{{ listing.featured_image }}" alt="{{ listing.name }} - {{listing.city}}, {{listing.state}}">
                             {% else %}
                             <div class="placeholder-image">No Image Available</div>
                             {% endif %}
