@@ -240,6 +240,8 @@
                         <p>{{ listing.phone }}</p>
                         {% if listing.website %}
                         <a href="{{ listing.website }}" target="_blank">Visit Website</a>
+                        {% else %}
+                        <span class="nav-regular inactive">No Website Found</a>
                         {% endif %}
                     </div>
                     {% endfor %}
