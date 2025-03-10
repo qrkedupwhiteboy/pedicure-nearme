@@ -90,7 +90,7 @@ def cached_response(cache_key, expires_in_seconds=3600):
 def home():
     session = Session()
     try:
-        # Query cities with their listing counts
+        # Query cities with their listing counts - only select needed columns
         city_counts = session.query(
             PedicureListing.state,
             PedicureListing.city,
@@ -135,8 +135,8 @@ def cities_sitemap(state_code):
         base_url = request.url_root.rstrip('/')
         state_code = state_code.upper()
         
-        # Verify state exists and has listings
-        has_listings = session.query(PedicureListing).filter(
+        # Verify state exists and has listings - only select id column
+        has_listings = session.query(PedicureListing.id).filter(
             PedicureListing.state == state_code
         ).first() is not None
         
@@ -239,7 +239,7 @@ def get_state_for_zipcode():
             
         session = Session()
         try:
-            # Find state for this zipcode
+            # Find state for this zipcode - only select state column
             listing = session.query(PedicureListing.state).filter(
                 PedicureListing.zip_code == zipcode
             ).first()
@@ -329,15 +329,21 @@ def legacy_city_redirect(location):
         # Convert URL format (e.g., "wilton") to proper city name for searching
         city_name = " ".join(word.capitalize() for word in location.split('-'))
         
-        # Find the city in our database
-        listing = session.query(PedicureListing).filter(
+        # Find the city in our database - only select needed columns
+        listing = session.query(
+            PedicureListing.city, 
+            PedicureListing.state
+        ).filter(
             func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
             func.lower(location.replace('-', ' '))
         ).first()
         
         if not listing:
             # If not found by exact match, try a more flexible approach
-            listing = session.query(PedicureListing).filter(
+            listing = session.query(
+                PedicureListing.city, 
+                PedicureListing.state
+            ).filter(
                 func.lower(PedicureListing.city).like(f"%{location.replace('-', ' ')}%")
             ).first()
             
@@ -360,14 +366,20 @@ def map_view_legacy(location):
     try:
         # Check if location is a zipcode (5 digits) or city name
         if location.isdigit() and len(location) == 5:
-            # Get state from zipcode
-            listing = session.query(PedicureListing).filter(
+            # Get state from zipcode - only select needed columns
+            listing = session.query(
+                PedicureListing.state,
+                PedicureListing.city
+            ).filter(
                 PedicureListing.zip_code == location
             ).first()
         else:
             # Convert URL format (e.g., "new-york") to proper city name ("New York")
             city_name = " ".join(word.capitalize() for word in location.split('-'))
-            listing = session.query(PedicureListing).filter(
+            listing = session.query(
+                PedicureListing.state,
+                PedicureListing.city
+            ).filter(
                 func.lower(PedicureListing.city) == func.lower(city_name)
             ).first()
             
@@ -398,8 +410,20 @@ def map_view(state, location):
         min_reviews = request.args.get('reviews', type=int)
         sort_by = request.args.get('sort', 'rating')  # Default sort by rating
         
-        # Build base query
-        query = session.query(PedicureListing).filter(
+        # Build base query - select only needed columns
+        query = session.query(
+            PedicureListing.id,
+            PedicureListing.name,
+            PedicureListing.address,
+            PedicureListing.city,
+            PedicureListing.state,
+            PedicureListing.zip_code,
+            PedicureListing.phone,
+            PedicureListing.website,
+            PedicureListing.rating,
+            PedicureListing.reviews,
+            PedicureListing.coordinates
+        ).filter(
             PedicureListing.coordinates.isnot(None),
             func.upper(PedicureListing.state) == state.upper()
         )
@@ -543,7 +567,7 @@ def state_listings(state):
         page = request.args.get('page', 1, type=int)
         per_page = 50  # Number of cities per page
             
-        # Query total count of cities for the state
+        # Query total count of cities for the state - only count distinct cities
         total_cities = session.query(
             func.count(func.distinct(PedicureListing.city))
         ).filter(
@@ -821,8 +845,8 @@ def sitemap_index():
         
         # Add all state-specific city sitemaps directly
         for state_code in STATE_NAMES.keys():
-            # Check if state has any listings
-            has_listings = session.query(PedicureListing).filter(
+            # Check if state has any listings - only select id column
+            has_listings = session.query(PedicureListing.id).filter(
                 PedicureListing.state == state_code
             ).first() is not None
             
@@ -1091,7 +1115,7 @@ def listing_page(state, city, listing_path):
         name_part = listing_path.rsplit('-', 1)[0]
         zipcode = listing_path.rsplit('-', 1)[1]
         
-        # First try to find the listing by exact URL slug match
+        # First try to find the listing by exact URL slug match - select all columns since we need the full object
         listings = session.query(PedicureListing).filter(
             PedicureListing.zip_code == zipcode
         ).all()
@@ -1118,15 +1142,27 @@ def listing_page(state, city, listing_path):
         page = request.args.get('page', 1, type=int)
         per_page = 5  # Number of nearby listings per page
         
-        # Get total count of nearby listings
+        # Get total count of nearby listings - only count id column
         total_nearby = session.query(func.count(PedicureListing.id)).filter(
             PedicureListing.zip_code == listing.zip_code,
             PedicureListing.id != listing.id,
             PedicureListing.coordinates.isnot(None)
         ).scalar()
         
-        # Get nearby listings in same zipcode, ordered by rating with pagination
-        nearby_listings = session.query(PedicureListing).filter(
+        # Get nearby listings in same zipcode, ordered by rating with pagination - select only needed columns
+        nearby_listings = session.query(
+            PedicureListing.id,
+            PedicureListing.name,
+            PedicureListing.address,
+            PedicureListing.city,
+            PedicureListing.state,
+            PedicureListing.zip_code,
+            PedicureListing.phone,
+            PedicureListing.website,
+            PedicureListing.rating,
+            PedicureListing.reviews,
+            PedicureListing.coordinates
+        ).filter(
             PedicureListing.zip_code == listing.zip_code,
             PedicureListing.id != listing.id,
             PedicureListing.coordinates.isnot(None)
@@ -1139,7 +1175,7 @@ def listing_page(state, city, listing_path):
         has_prev = page > 1
         has_next = page < total_pages
         
-        # Get cities in the same state that have listings
+        # Get cities in the same state that have listings - only select city column
         cities_in_state = session.query(
             PedicureListing.city
         ).filter(
@@ -1604,7 +1640,10 @@ def page_not_found(e):
         try:
             # First check if it's a zipcode
             if location.isdigit() and len(location) == 5:
-                listing = session.query(PedicureListing).filter(
+                listing = session.query(
+                    PedicureListing.city,
+                    PedicureListing.state
+                ).filter(
                     PedicureListing.zip_code == location
                 ).first()
                 
@@ -1617,7 +1656,10 @@ def page_not_found(e):
             
             # Then check if it's a city name
             location_query = location.replace('-', ' ').lower()
-            listing = session.query(PedicureListing).filter(
+            listing = session.query(
+                PedicureListing.city,
+                PedicureListing.state
+            ).filter(
                 func.lower(func.regexp_replace(PedicureListing.city, '[^a-zA-Z0-9]+', ' ', 'g')) == 
                 location_query
             ).first()
