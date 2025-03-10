@@ -380,6 +380,15 @@ def map_view_legacy(location):
         session.close()
 
 @app.route('/map/<state>/<location>')
+@cached_response(
+    lambda state, location: (
+        f'map_view_{state}_{location}_'
+        f'rating_{request.args.get("rating", "")}_'
+        f'reviews_{request.args.get("reviews", "")}_'
+        f'sort_{request.args.get("sort", "rating")}'
+    ), 
+    expires_in_seconds=3600  # Cache for 1 hour
+)
 def map_view(state, location):
     """Display a map of pedicure listings for a given location (zipcode or city) in a state"""
     session = Session()
@@ -520,6 +529,7 @@ def map_view(state, location):
         session.close()
 
 @app.route('/pedicures-in/<state>')
+@cached_response(lambda state: f'state_listings_{state.upper()}_{request.args.get("page", 1)}', expires_in_seconds=3600)  # Cache for 1 hour
 def state_listings(state):
     """Display pedicure listings for a specific state"""
     session = Session()
@@ -629,6 +639,7 @@ def state_listings(state):
         session.close()
 
 @app.route('/pedicures-in/<state>/<city>')
+@cached_response(lambda state, city: f'city_listings_{state.upper()}_{city}_{request.args.get("page", 1)}', expires_in_seconds=3600)  # Cache for 1 hour
 def city_listings(state, city):
     """Display pedicure listings for a specific city in a state"""
     session = Session()
@@ -1364,6 +1375,7 @@ def listings_sitemap(state_code, city_name):
         session.close()
 
 @app.route('/search_locations', methods=['GET'])
+@cached_response(lambda: f'search_locations_{request.args.get("q", "")}', expires_in_seconds=1800)  # Cache for 30 minutes
 def search_locations():
     """Search locations (zipcodes or cities) based on input"""
     try:
@@ -1501,11 +1513,60 @@ def clear_cache():
     api_key = request.headers.get('X-API-Key')
     if not api_key or api_key != os.getenv('ADMIN_API_KEY'):
         return jsonify({'error': 'Unauthorized'}), 401
-        
-    # Clear the entire cache
-    _cache.clear()
-    app.logger.info("Cache cleared by admin request")
-    return jsonify({'success': True, 'message': 'Cache cleared successfully'})
+    
+    # Check if a specific pattern was provided
+    pattern = request.json.get('pattern', None) if request.is_json else None
+    
+    if pattern:
+        # Clear only cache entries matching the pattern
+        keys_to_remove = [k for k in _cache.keys() if pattern in k]
+        for key in keys_to_remove:
+            del _cache[key]
+        app.logger.info(f"Cleared {len(keys_to_remove)} cache entries matching pattern: {pattern}")
+        return jsonify({
+            'success': True, 
+            'message': f'Cleared {len(keys_to_remove)} cache entries matching pattern: {pattern}'
+        })
+    else:
+        # Clear the entire cache
+        cache_size = len(_cache)
+        _cache.clear()
+        app.logger.info(f"Cleared entire cache ({cache_size} entries)")
+        return jsonify({'success': True, 'message': f'Cleared entire cache ({cache_size} entries)'})
+
+@app.route('/admin/cache-stats', methods=['GET'])
+def cache_stats():
+    """Admin route to view cache statistics"""
+    # In a production environment, this should be protected with authentication
+    api_key = request.headers.get('X-API-Key')
+    if not api_key or api_key != os.getenv('ADMIN_API_KEY'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    # Get current time for expiration calculation
+    current_time = time.time()
+    
+    # Calculate statistics
+    total_entries = len(_cache)
+    expired_entries = sum(1 for _, (_, expiry) in _cache.items() if expiry < current_time)
+    valid_entries = total_entries - expired_entries
+    
+    # Group by cache type
+    cache_types = {}
+    for key, (_, expiry) in _cache.items():
+        # Extract the cache type from the key (e.g., 'sitemap', 'listing_page', etc.)
+        if '_' in key:
+            cache_type = key.split('_')[0]
+            if cache_type not in cache_types:
+                cache_types[cache_type] = 0
+            cache_types[cache_type] += 1
+    
+    return jsonify({
+        'total_entries': total_entries,
+        'valid_entries': valid_entries,
+        'expired_entries': expired_entries,
+        'cache_types': cache_types,
+        'cache_keys': list(_cache.keys())
+    })
 
 @app.context_processor                                                                                    
 def utility_processor():                                                                                  
