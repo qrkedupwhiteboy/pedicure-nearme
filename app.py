@@ -10,6 +10,8 @@ import requests
 import pytz
 import ipaddress
 import ipinfo
+from functools import wraps
+from datetime import datetime, timedelta
 
 # Create Flask app instance
 app = Flask(__name__)
@@ -22,6 +24,7 @@ from sqlalchemy import or_
 import requests
 from requests.structures import CaseInsensitiveDict
 from functools import lru_cache
+import time
 
 
 
@@ -47,6 +50,41 @@ WEBHOOK_URL = os.getenv('email_webhook',)
 IPINFO_API_KEY = os.getenv('ipinfo_api_key')
 REVERSE_GEOCODE_KEY = os.getenv('REVERSE_GEOCODE_KEY')
 app = Flask(__name__)
+
+# Cache for sitemap and other infrequently changing data
+_cache = {}
+
+def cached_response(cache_key, expires_in_seconds=3600):
+    """
+    Decorator to cache responses for a specified time period.
+    
+    Args:
+        cache_key: String or function to generate a cache key
+        expires_in_seconds: Cache expiration time in seconds (default: 1 hour)
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            # Generate the cache key if it's a function
+            key = cache_key(*args, **kwargs) if callable(cache_key) else cache_key
+            
+            # Check if we have a valid cached response
+            if key in _cache:
+                cached_data, expiry_time = _cache[key]
+                if time.time() < expiry_time:
+                    app.logger.debug(f"Cache hit for {key}")
+                    return cached_data
+            
+            # Generate the response if not cached or expired
+            app.logger.debug(f"Cache miss for {key}, generating response")
+            response = f(*args, **kwargs)
+            
+            # Cache the response with expiration time
+            _cache[key] = (response, time.time() + expires_in_seconds)
+            
+            return response
+        return decorated_function
+    return decorator
 
 @app.route('/')
 def home():
@@ -89,6 +127,7 @@ def home():
         session.close()
 
 @app.route('/sitemaps/cities-<state_code>.xml')
+@cached_response(lambda state_code: f'cities_sitemap_{state_code.upper()}', expires_in_seconds=86400)  # Cache for 24 hours
 def cities_sitemap(state_code):
     """Generate sitemap containing all city pages URLs for a specific state"""
     session = Session()
@@ -746,6 +785,7 @@ def contact_page():
     return render_template('contact.html', schema_data=schema_data)
 
 @app.route('/sitemap.xml')
+@cached_response('sitemap_index', expires_in_seconds=86400)  # Cache for 24 hours
 def sitemap_index():
     """Generate sitemap index file that points to all other sitemaps"""
     session = Session()
@@ -808,6 +848,7 @@ def sitemap_index():
         session.close()
 
 @app.route('/sitemaps/static.xml')
+@cached_response('static_sitemap', expires_in_seconds=604800)  # Cache for 1 week
 def static_sitemap():
     """Generate sitemap for static pages"""
     base_url = request.url_root.rstrip('/')
@@ -829,6 +870,7 @@ def static_sitemap():
     return Response('\n'.join(xml), mimetype='application/xml')
 
 @app.route('/sitemaps/state-pages.xml')
+@cached_response('state_pages_sitemap', expires_in_seconds=86400)  # Cache for 24 hours
 def state_pages_sitemap():
     """Generate sitemap containing all state pages URLs"""
     session = Session()
@@ -1026,6 +1068,7 @@ def legacy_listing_redirect(listing_path):
         session.close()
 
 @app.route('/pedicures-in/<state>/<city>/<path:listing_path>')
+@cached_response(lambda state, city, listing_path: f'listing_page_{state}_{city}_{listing_path}', expires_in_seconds=3600)  # Cache for 1 hour
 def listing_page(state, city, listing_path):
     """Display a single pedicure listing"""
     session = Session()
@@ -1280,6 +1323,7 @@ def listing_page(state, city, listing_path):
 # This route is removed as it's now handled by cities-<state_code>.xml
 
 @app.route('/sitemaps/listings-<state_code>-<city_name>.xml')
+@cached_response(lambda state_code, city_name: f'listings_sitemap_{state_code.upper()}_{city_name}', expires_in_seconds=86400)  # Cache for 24 hours
 def listings_sitemap(state_code, city_name):
     """Generate sitemap for individual listings in a specific city"""
     session = Session()
@@ -1449,6 +1493,19 @@ def url_slug_to_city_query(slug):
         return ""
     # Replace hyphens with spaces for querying
     return slug.replace('-', ' ')
+
+@app.route('/admin/clear-cache', methods=['POST'])
+def clear_cache():
+    """Admin route to clear the cache"""
+    # In a production environment, this should be protected with authentication
+    api_key = request.headers.get('X-API-Key')
+    if not api_key or api_key != os.getenv('ADMIN_API_KEY'):
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    # Clear the entire cache
+    _cache.clear()
+    app.logger.info("Cache cleared by admin request")
+    return jsonify({'success': True, 'message': 'Cache cleared successfully'})
 
 @app.context_processor                                                                                    
 def utility_processor():                                                                                  
