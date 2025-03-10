@@ -410,20 +410,8 @@ def map_view(state, location):
         min_reviews = request.args.get('reviews', type=int)
         sort_by = request.args.get('sort', 'rating')  # Default sort by rating
         
-        # Build base query - select only needed columns
-        query = session.query(
-            PedicureListing.id,
-            PedicureListing.name,
-            PedicureListing.address,
-            PedicureListing.city,
-            PedicureListing.state,
-            PedicureListing.zip_code,
-            PedicureListing.phone,
-            PedicureListing.website,
-            PedicureListing.rating,
-            PedicureListing.reviews,
-            PedicureListing.coordinates
-        ).filter(
+        # Build base query - we need full PedicureListing objects to access methods like get_url_slug
+        query = session.query(PedicureListing).filter(
             PedicureListing.coordinates.isnot(None),
             func.upper(PedicureListing.state) == state.upper()
         )
@@ -466,7 +454,7 @@ def map_view(state, location):
         # Add markers for each listing
         for listing in listings:
             coords = json.loads(listing.coordinates)
-            listing_url = url_for('listing_page', state=listing.state.lower(), city=city_to_url_slug(listing.city), listing_path=to_url_slug(listing.name) + '-' + listing.zip_code, _external=True)
+            listing_url = url_for('listing_page', state=listing.state.lower(), city=city_to_url_slug(listing.city), listing_path=generate_listing_slug(listing.name, listing.zip_code), _external=True)
             popup_html = f"""
                 <div class='listing-popup'>
                     <h3>{listing.name}</h3>
@@ -1149,20 +1137,9 @@ def listing_page(state, city, listing_path):
             PedicureListing.coordinates.isnot(None)
         ).scalar()
         
-        # Get nearby listings in same zipcode, ordered by rating with pagination - select only needed columns
-        nearby_listings = session.query(
-            PedicureListing.id,
-            PedicureListing.name,
-            PedicureListing.address,
-            PedicureListing.city,
-            PedicureListing.state,
-            PedicureListing.zip_code,
-            PedicureListing.phone,
-            PedicureListing.website,
-            PedicureListing.rating,
-            PedicureListing.reviews,
-            PedicureListing.coordinates
-        ).filter(
+        # Get nearby listings in same zipcode, ordered by rating with pagination
+        # We need the full PedicureListing objects to access methods like get_url_slug
+        nearby_listings = session.query(PedicureListing).filter(
             PedicureListing.zip_code == listing.zip_code,
             PedicureListing.id != listing.id,
             PedicureListing.coordinates.isnot(None)
@@ -1397,7 +1374,7 @@ def listings_sitemap(state_code, city_name):
         for listing in listings:
             lastmod = listing.updated_at.strftime("%Y-%m-%d") if listing.updated_at else datetime.now().strftime("%Y-%m-%d")
             city_slug = city_to_url_slug(listing.city)
-            listing_slug = to_url_slug(listing.name) + '-' + listing.zip_code
+            listing_slug = generate_listing_slug(listing.name, listing.zip_code)
             xml.append(f'''  <url>
     <loc>{base_url}/pedicures-in/{listing.state.lower()}/{city_slug}/{listing_slug}</loc>
     <lastmod>{lastmod}</lastmod>
@@ -1531,6 +1508,17 @@ def to_url_slug(text):
     # Replace spaces with hyphens
     return text_clean.strip().replace(' ', '-')
 
+def generate_listing_slug(name, zip_code):
+    """Generate URL-safe slug from name and zipcode - works with both model objects and row objects"""
+    if not name or not zip_code:
+        return ""
+    
+    # Create name slug
+    name_slug = to_url_slug(name)
+    
+    # Return combined slug
+    return f"{name_slug}-{zip_code}"
+
 def city_to_url_slug(city_name):
     """Convert a city name to a URL-safe slug"""
     return to_url_slug(city_name)
@@ -1609,7 +1597,8 @@ def utility_processor():
      return {                                                                                              
          'STATE_NAMES': STATE_NAMES,
          'city_to_url_slug': city_to_url_slug,
-         'to_url_slug': to_url_slug                                                                     
+         'to_url_slug': to_url_slug,
+         'generate_listing_slug': generate_listing_slug                                                                    
      }
 
 @app.errorhandler(404)
