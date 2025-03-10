@@ -183,7 +183,11 @@
                 </a>
                   <div class="website">
                     <i class="iconoir-internet" style="color: #1f1f1f;"></i> 
-                    <a href="{{listing.website}}"  class="nav-regular"> <span> View Website</span> </a>
+                    {% if listing.website %}
+                      <a href="{{listing.website}}" class="nav-regular"><span>View Website</span></a>
+                    {% else %}
+                      <span class="nav-regular inactive">No website found</span>
+                    {% endif %}
                   </div>
                 </div>
               </div>
