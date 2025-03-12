@@ -598,6 +598,8 @@ def state_listings(state):
             "description": f"Find the best pedicures in {state_name}. Discover top-rated nail salons by city with real customer ratings, current hours, and easy booking for all pedicure types.",
             "datePublished": "2025-02-26T08:00:00+00:00",
             "dateModified": "2025-03-11T10:30:00+00:00",
+            "datePublished": "2025-02-26T08:00:00+00:00",
+            "dateModified": "2025-03-11T10:30:00+00:00",
             "about": {
                 "@type": "Service",
                 "serviceType": "Pedicure",
@@ -703,6 +705,8 @@ def city_listings(state, city):
             "@type": "SearchResultsPage",
             "name": f"Pedicure Places in {city_name}, {state}",
             "description": f"Find top-rated pedicures in {city_name}, {state}. Browse and compare {len(listings)} manicure and pedicure services.",
+            "datePublished": "2025-02-26T08:00:00+00:00",
+            "dateModified": "2025-03-11T10:30:00+00:00",
             "datePublished": "2025-02-26T08:00:00+00:00",
             "dateModified": "2025-03-11T10:30:00+00:00",
             "about": {
