@@ -596,6 +596,8 @@ def state_listings(state):
             "@type": "CollectionPage",
             "name": f"Find Top Rated Nail Salons & Pedicures in {state_name} Open Today",
             "description": f"Find the best pedicures in {state_name}. Discover top-rated nail salons by city with real customer ratings, current hours, and easy booking for all pedicure types.",
+            "datePublished": "2025-02-26T08:00:00+00:00",
+            "dateModified": "2025-03-11T10:30:00+00:00",
             "about": {
                 "@type": "Service",
                 "serviceType": "Pedicure",
@@ -701,6 +703,8 @@ def city_listings(state, city):
             "@type": "SearchResultsPage",
             "name": f"Pedicure Places in {city_name}, {state}",
             "description": f"Find top-rated pedicures in {city_name}, {state}. Browse and compare {len(listings)} manicure and pedicure services.",
+            "datePublished": "2025-02-26T08:00:00+00:00",
+            "dateModified": "2025-03-11T10:30:00+00:00",
             "about": {
                 "@type": "Service",
                 "serviceType": "Pedicure",
@@ -1293,7 +1297,9 @@ def listing_page(state, city, listing_path):
                         "url": listing.featured_image[0] if listing.featured_image else None
                     } if listing.featured_image else None,
                     "mainEntity": {"@id": request.url + "#business"},
-                    "isPartOf": {"@id": request.url + "#website"}
+                    "isPartOf": {"@id": request.url + "#website"},
+                    "datePublished": "2025-02-26T08:00:00+00:00",
+                    "dateModified": "2025-03-11T10:30:00+00:00"
                 },
                 
                 # 5. WebSite
